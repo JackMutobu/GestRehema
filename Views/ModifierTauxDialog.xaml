@@ -1,0 +1,28 @@
+﻿<ui:ContentDialog x:Class="GestRehema.Views.ModifierTauxDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+              xmlns:ui="http://schemas.modernwpf.com/2019"
+                  xmlns:rxui="http://reactiveui.net"
+             xmlns:local="clr-namespace:GestRehema.Views"
+                  Title="Modifier le taux du jour"
+                  PrimaryButtonText="Confirmer"
+                  CloseButtonText="Annuler"
+                  DefaultButton="Primary"
+                  PrimaryButtonCommand="{Binding UpdateEntreprise}"
+             mc:Ignorable="d" 
+              Background="{DynamicResource AppBackgroundBrush}">
+    <ui:SimpleStackPanel Spacing="10">
+        <TextBlock x:Name="TxtError"  Text="{Binding Errors}"   Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" />
+        <TextBox x:Name="TxtTaux" Text="{Binding TauxDuJour,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        ui:ControlHelper.Header="Taux en FC"
+                        ui:ControlHelper.PlaceholderText="2000"  />
+        <TextBlock HorizontalAlignment="Center" >
+            <Run FontWeight="SemiBold" Text="{Binding ElementName=TxtTaux,Path=Text}"/>
+            <Run FontWeight="SemiBold" Text="FC"/>
+            <Run Text="="/>
+            <Run FontWeight="SemiBold" Text="1$"/>
+        </TextBlock>
+    </ui:SimpleStackPanel>
+</ui:ContentDialog>

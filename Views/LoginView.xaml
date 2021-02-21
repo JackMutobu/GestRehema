@@ -1,0 +1,38 @@
+﻿<Page x:Class="GestRehema.Views.LoginView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:ui="http://schemas.modernwpf.com/2019"
+      xmlns:helpers="clr-namespace:GestRehema.Helpers"
+      mc:Ignorable="d"   MaxWidth="400" d:DesignWidth="400" VerticalAlignment="Center"
+      Title="LoginView"  >
+
+    <ui:ThemeShadowChrome
+                    IsShadowEnabled="True"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Depth="6">
+        <ui:SimpleStackPanel  Spacing="25"  Background="{DynamicResource SystemControlBackgroundAltHighBrush}" >
+            <TextBlock Margin="0,40" FontSize="18" FontWeight="SemiBold" Text="Veuillez vous identifier" HorizontalAlignment="Center"/>
+
+            <TextBlock x:Name="TxtError" Text="Erreur" Margin="30,-30,30,0"  Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" />
+
+            <ui:ProgressBar x:Name="ProgIndicator"
+                    IsIndeterminate="True" Margin="0,-40,0,0" />
+            
+            <ui:SimpleStackPanel Margin="40,0" Spacing="20">
+                <TextBox Text="{Binding Username,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        ui:ControlHelper.Header="Nom d'utilisateur:"
+                        ui:ControlHelper.PlaceholderText="example@rehema.com"  />
+                <PasswordBox x:Name="TxtPassword" 
+                             helpers:PasswordHelper.Attach="True"
+                             helpers:PasswordHelper.Password="{Binding Password, Mode=TwoWay}"
+                             ui:ControlHelper.Header="Mot de passe"
+                             ui:ControlHelper.PlaceholderText="Code à 5 caractères" PasswordChar="*"/>
+
+                <Button x:Name="BtnLogin" Content="Se connecter" Height="40" FontSize="16" HorizontalAlignment="Stretch"  Margin="20,40" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"/>
+            </ui:SimpleStackPanel>
+        </ui:SimpleStackPanel>
+    </ui:ThemeShadowChrome>
+</Page>

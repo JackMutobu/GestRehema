@@ -1,0 +1,31 @@
+﻿<Window x:Class="GestRehema.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GestRehema"
+        xmlns:views="clr-namespace:GestRehema.Views"
+        mc:Ignorable="d"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <Window.Background>
+        <ImageBrush ImageSource="/Assets/Bg/mainbg.jpg"/>
+    </Window.Background>
+    <Grid>
+        <ui:CommandBar
+                x:Name="TopCommandBar"
+                Grid.Column="1"
+                Margin="0,0,12,0"
+                Background="Transparent"
+                DefaultLabelPosition="Right">
+            <ui:AppBarButton x:Name="ThemeButton" Foreground="White" Label="Basculer le Theme">
+                <ui:AppBarButton.Icon>
+                    <ui:FontIcon
+                            Glyph="&#xE771;"
+                            Margin="0,-2,0,0" />
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
+        </ui:CommandBar>
+        <ui:Frame x:Name="MainFrame"/>
+    </Grid>
+</Window>
