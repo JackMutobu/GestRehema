@@ -12,47 +12,63 @@
                   DefaultButton="Primary"
                   PrimaryButtonCommand="{Binding SaveArticle}"
                   IsPrimaryButtonEnabled="{Binding IsValid}">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-
-        <TextBlock x:Name="TxtError"  Grid.ColumnSpan="2" Text="{Binding Errors}" Margin="0,10"  Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" />
-
-        <ui:ProgressBar x:Name="ProgIndicator"
-                    IsIndeterminate="True" Grid.ColumnSpan="2" Visibility="Collapsed" />
-
-        <Grid Grid.Row="1" >
+    <ui:ScrollViewerEx Padding="5,0">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
             </Grid.RowDefinitions>
-            <Image x:Name="ImgProduct" Height="100" ToolTip="Cliquer pour modifier l'image du produit" Source="{Binding ImageUrl}" />
-            <TextBox Text="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+
+            <TextBlock x:Name="TxtError"  Grid.ColumnSpan="2" Text="{Binding Errors}" Margin="0,10"  Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" />
+
+            <ui:ProgressBar x:Name="ProgIndicator"
+                    IsIndeterminate="True" Grid.ColumnSpan="2" Visibility="Collapsed" />
+
+            <Grid Grid.Row="1" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Image x:Name="ImgProduct" Height="100" ToolTip="Cliquer pour modifier l'image du produit" Source="{Binding ImageUrl}" />
+                <TextBox Text="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                         ui:ControlHelper.Header="Nom:"
                         ui:ControlHelper.PlaceholderText="Coude" Grid.Row="1" Margin="0,5"  />
-            <TextBox Text="{Binding TechnicalCode,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding TechnicalCode,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                         ui:ControlHelper.Header="Code téchnique:"
                         ui:ControlHelper.PlaceholderText="545CFG" Grid.Row="2" Margin="0,5"  />
-            <TextBox Text="{Binding UnitOfMeasure,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                <ComboBox x:Name="ComboCategories" Text="{Binding Category,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        ui:ControlHelper.Header="Catégorie:"
+                        ui:ControlHelper.PlaceholderText="Coude" HorizontalAlignment="Stretch" IsEditable="True" Grid.Row="3" Margin="0,5"  />
+                <TextBox x:Name="TxtUnitOfMeasure" Text="{Binding UnitOfMeasure,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                         ui:ControlHelper.Header="Unité de mesure:"
-                        ui:ControlHelper.PlaceholderText="kg" Grid.Row="3" Margin="0,5"  />
-            <TextBox Text="{Binding SellingPrice,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        ui:ControlHelper.PlaceholderText="kg" Grid.Row="4" Margin="0,5"  />
+
+                <TextBox x:Name="TxtConditionement" Text="{Binding Conditionement,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        ui:ControlHelper.Header="Conditionement:"
+                        ui:ControlHelper.PlaceholderText="carton" Grid.Row="5" Margin="0,5"  />
+                <TextBox x:Name="TxtQtyConditionemement" Text="{Binding QtyPerConditionement,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        ui:ControlHelper.Header="Qté par Conditionement:"
+                        ui:ControlHelper.PlaceholderText="10" Grid.Row="6" Margin="0,5"  />
+                <TextBox x:Name="TxtPrixDeVente" Text="{Binding SellingPrice,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                         ui:ControlHelper.Header="Prix de vente en $:"
-                        ui:ControlHelper.PlaceholderText="20" Grid.Row="4" Margin="0,5"  />
-            <TextBox Text="{Binding BuyingPrice,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        ui:ControlHelper.PlaceholderText="20" Grid.Row="7" Margin="0,5"  />
+                <TextBox x:Name="TxtPrixDAchat" Text="{Binding BuyingPrice,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                         ui:ControlHelper.Header="Prix d'achat en $:"
-                        ui:ControlHelper.PlaceholderText="20" Grid.Row="5" Margin="0,5"  />
-            <TextBox Text="{Binding InStock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        ui:ControlHelper.PlaceholderText="20" Grid.Row="8" Margin="0,5"  />
+                <TextBox x:Name="TxtQteEnStock" Text="{Binding InStock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                         ui:ControlHelper.Header="Quantité en Stock:"
-                        ui:ControlHelper.PlaceholderText="20" Grid.Row="6" Margin="0,5"  />
+                        ui:ControlHelper.PlaceholderText="20" Grid.Row="9" Margin="0,5"  />
+            </Grid>
+
         </Grid>
-        
-    </Grid>
+    </ui:ScrollViewerEx>
+
 </ui:ContentDialog>

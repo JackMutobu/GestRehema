@@ -21,6 +21,9 @@ namespace GestRehema.Entities
         public int CustomerId { get; set; }
         public Customer? Customer { get; set; }
 
+        //public int EmployeeId { get; set; }
+        //public Employee Employee { get; set; }
+
         public ICollection<SaleArticle> ArticleSold { get; set; }
 
         public ICollection<SalePayement> PayementHistory { get; set; }

@@ -49,7 +49,8 @@ namespace GestRehema.Services
                 regItem.UpdatedAt = DateTime.UtcNow;
 
                 _dbContext.Customers.Update(regItem);
-                return _dbContext.Customers.First(x => x.CreatedAt == regItem.UpdatedAt);
+                _dbContext.SaveChanges();
+                return _dbContext.Customers.First(x => x.UpdatedAt == regItem.UpdatedAt);
             }
             else
             {
@@ -76,6 +77,9 @@ namespace GestRehema.Services
        => _dbContext.Customers.SingleOrDefault(x => x.Id == itemId);
 
         public List<Customer> GetCustomers(int skip = 0, int take = 100)
-            => _dbContext.Customers.Skip(skip).Take(take).ToList();
+            => _dbContext.Customers.Skip(skip)
+            .Take(take)
+            .OrderByDescending(x => x.Id)
+            .ToList();
     }
 }

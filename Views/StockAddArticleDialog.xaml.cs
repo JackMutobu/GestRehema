@@ -3,11 +3,14 @@ using GestRehema.Services;
 using GestRehema.ViewModels;
 using Microsoft.Win32;
 using ModernWpf.Controls;
+using ModernWpf.Controls.Primitives;
 using ReactiveUI;
 using Splat;
 using System;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
 
 namespace GestRehema.Views
@@ -29,8 +32,23 @@ namespace GestRehema.Views
             viewModel
                 .SaveArticle
                 .IsExecuting
-                .SubscribeOn(RxApp.MainThreadScheduler)
+                .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(x => ProgIndicator.Visibility = x.ToVisibility());
+
+            ComboCategories.ItemsSource = viewModel.Categories;
+
+            this.TxtConditionement
+               .Events().TextChanged
+               .Select(x => x.Source as TextBox)
+               .Select(x => x.Text)
+               .ObserveOn(RxApp.MainThreadScheduler)
+               .Subscribe(x =>
+               {
+                   TxtQtyConditionemement.SetValue(ControlHelper.HeaderProperty, $"Qté par Conditionement en {TxtUnitOfMeasure.Text}/{x}:");
+                   TxtPrixDAchat.SetValue(ControlHelper.HeaderProperty, $"Prix d'achat par {x} en $:");
+                   TxtPrixDeVente.SetValue(ControlHelper.HeaderProperty, $"Prix de vente par {x} en $:");
+                   TxtQteEnStock.SetValue(ControlHelper.HeaderProperty, $"Qté en Stock en nombre de {x}:");
+               });
         }
 
         private void ImgProduct_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

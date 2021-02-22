@@ -12,6 +12,8 @@ using System;
 using DynamicData;
 using System.Reactive;
 using System.Linq;
+using DynamicData.Binding;
+using GestRehema.Events;
 
 namespace GestRehema.ViewModels
 {
@@ -19,12 +21,19 @@ namespace GestRehema.ViewModels
     {
         private readonly NavigationRootViewModel _navigationRootViewModel;
         private ICustomerService _customerService;
+        private SourceList<Customer> _customers { get; } = new SourceList<Customer>();
+        private readonly IObservableCollection<Customer> _targetCollectionCustomers = new ObservableCollectionExtended<Customer>();
+
         public CustomerViewModel(NavigationRootViewModel navigationRootViewModel = null!) : base(new CustomerValidation())
         {
             _navigationRootViewModel = navigationRootViewModel ?? Locator.Current.GetService<NavigationRootViewModel>();
             Model = new Customer();
             _customerService = Locator.Current.GetService<ICustomerService>();
-            Customers = new ObservableCollection<Customer>();
+
+            _customers.Connect()
+            .ObserveOnDispatcher()
+            .Bind(_targetCollectionCustomers)
+            .Subscribe();
 
             Validate = ReactiveCommand
               .Create<ValidationParameter<Customer>, string>(p => RaiseValidation(p.Model, p.PropertyName));
@@ -37,13 +46,14 @@ namespace GestRehema.ViewModels
                {
                    CurrentPage = p.Skip;
                    ItemPerPage = p.Take;
+                   SearchQuery = p.SearchQuery;
                    return Task.Run(() => LoadingCustomers(p));
                }, Observable.Return(!IsBusy));
             LoadCustomers
                 .Subscribe(x =>
                 {
-                    Customers.Clear();
-                    Customers.AddRange(x);
+                    _customers.Clear();
+                    _customers.AddRange(x);
                 });
             LoadCustomers.ThrownExceptions
               .Select(x => x.Message)
@@ -61,10 +71,14 @@ namespace GestRehema.ViewModels
               {
                   InitializeFields();
 
-                  if (!Customers.Any(x => x.Id == x.Id))
-                      Customers.Insert(0, x);
+                  if (!_customers.Items.Any(y => y.Id == x.Id))
+                      _customers.Insert(0, x);
                   else
-                      LoadCustomers!.Execute(new LoadParameter("", CurrentPage, ItemPerPage)).Subscribe();
+                  {
+                      var updatedItem = _customers.Items.Single(y => y.Id == x.Id);
+                      int index = _customers.Items.IndexOf(updatedItem);
+                      _customers.ReplaceAt(index, x);
+                  }
               });
             SaveCustomer.ThrownExceptions
               .Select(x => x.Message)
@@ -72,11 +86,47 @@ namespace GestRehema.ViewModels
             SaveCustomer.IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
 
-            this.WhenAnyValue(x => x.SearchQuery)
-               .Select(term => term?.Trim())
-               .DistinctUntilChanged()
-               .Select(x => new LoadParameter(x, CurrentPage, ItemPerPage))
-               .InvokeCommand(LoadCustomers);
+            SelectForDelete = ReactiveCommand.Create<int,Customer>(id => Customers.Single(x => x.Id == id));
+            SelectForDelete.ThrownExceptions
+            .Select(x => x.Message)
+            .Subscribe(x => Errors = x);
+            SelectForUpdate = ReactiveCommand.Create<int, Customer>(id => Customers.Single(x => x.Id == id));
+            SelectForUpdate.ThrownExceptions
+            .Select(x => x.Message)
+            .Subscribe(x => Errors = x);
+
+            SelectForUpdate
+                .Subscribe(x =>
+                {
+                    ImageUrl = x.ImageUrl ?? "";
+                    Name = x.Name;
+                    Adresse = x.Adresse;
+                    NumTelephone = x.NumTelephone;
+                    Email = x.Email;
+                    CustomerType = x.CustomerType;
+                    Model = new Customer()
+                    {
+                        Id = x.Id,
+                        NumTelephone = x.NumTelephone,
+                        Email = x.Email,
+                        Name = x.Name,
+                        CustomerType = x.CustomerType,
+                        Adresse = x.Adresse,
+                        ImageUrl = x.ImageUrl,
+                    };
+                });
+
+            Delete = ReactiveCommand.CreateFromTask<int, int>(id => Task.Run(() => _customerService.DeleteCustomer(id)));
+            Delete.ThrownExceptions
+             .Select(x => x.Message)
+             .Subscribe(x => Errors = x);
+            Delete.IsExecuting
+                .ToPropertyEx(this, x => x.IsBusy);
+            Delete
+                .Select(_ => new LoadParameter(SearchQuery, CurrentPage, ItemPerPage))
+                .InvokeCommand(LoadCustomers);
+
+            LoadCustomers.Execute(new LoadParameter(SearchQuery, CurrentPage, ItemPerPage)).Subscribe();
         }
 
         private void InitializeFields()
@@ -87,6 +137,7 @@ namespace GestRehema.ViewModels
             NumTelephone = null;
             Email = null;
             CustomerType = CustomerTypes.First();
+            ImageUrl = "";
         }
 
         public Customer Model { get; set; }
@@ -95,8 +146,7 @@ namespace GestRehema.ViewModels
 
         public int ItemPerPage { get; set; } = 100;
 
-        [Reactive]
-        public ObservableCollection<Customer> Customers { get; set; }
+        public IObservableCollection<Customer> Customers => _targetCollectionCustomers;
 
         [Reactive]
         public string? Name { get; set; }
@@ -128,6 +178,12 @@ namespace GestRehema.ViewModels
         public ReactiveCommand<LoadParameter,List<Customer>> LoadCustomers { get; }
 
         public ReactiveCommand<Unit,Customer> SaveCustomer { get; }
+
+        public ReactiveCommand<int, Customer> SelectForUpdate { get; }
+
+        public ReactiveCommand<int, Customer> SelectForDelete { get; }
+
+        public ReactiveCommand<int, int> Delete { get; }
 
         private List<Customer> LoadingCustomers(LoadParameter parameter)
         => string.IsNullOrEmpty(parameter.SearchQuery) switch

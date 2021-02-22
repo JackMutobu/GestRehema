@@ -22,6 +22,7 @@ namespace GestRehema.Services
         ArticleStock UpdateStock(ArticleStock articleStock);
         int DeleteArticle(int articleId);
         List<Article> SearchArticles(string query);
+        List<string?> GetCategories();
     }
 
     public class ArticleService : IArticleService
@@ -129,9 +130,18 @@ namespace GestRehema.Services
             .SingleOrDefault(x => x.Id == articleId);
 
         public List<Article> GetArticles(int skip = 0, int take = 100)
-            => _dbContext.Articles.Skip(skip).Take(take).ToList();
+            => _dbContext.Articles.Skip(skip).Take(take)
+            .OrderByDescending(x => x.Id)
+            .ToList();
 
         public List<Article> GetArticlesWithSale(int skip = 0, int take = 100)
-           => _dbContext.Articles.Include(x => x.Sales).Skip(skip).Take(take).ToList();
+           => _dbContext.Articles.Include(x => x.Sales).Skip(skip).Take(take)
+            .ToList();
+
+        public List<string?> GetCategories()
+           => _dbContext.Articles.Select(x => x.Category)
+            .ToList()
+            .DistinctBy(x => x)
+            .ToList();
     }
 }

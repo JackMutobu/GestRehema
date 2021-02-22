@@ -20,21 +20,32 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <ui:SimpleStackPanel VerticalAlignment="Center">
-                <ui:AutoSuggestBox 
+                <TextBox 
                         x:Name="TxtSearch"
-                        PlaceholderText="Rechercher un client par NOM ou ID"
+                        ui:ControlHelper.PlaceholderText="Rechercher un client par NOM ou ID"
                         MinWidth="350"
                         HorizontalAlignment="Left" />
             </ui:SimpleStackPanel>
 
-            <Button x:Name="BtnAddCustomer" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
-                <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
-                    <Viewbox Height="15">
-                        <Path  Stroke="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Data="M11,2L11,11 2,11 2,13 11,13 11,22 13,22 13,13 22,13 22,11 13,11 13,2z" />
-                    </Viewbox>
-                    <TextBlock Text="Ajouter un client"/>
-                </ui:SimpleStackPanel>
-            </Button>
+            <ui:SimpleStackPanel Spacing="10" Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button x:Name="BtnRefresh">
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                        <Viewbox Height="15">
+                            <Path  Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}" Data="M7.59375,3L9.0625,5 13,5C16.324219,5,19,7.675781,19,11L19,15 16,15 20,20.46875 24,15 21,15 21,11C21,6.59375,17.40625,3,13,3z M4,3.53125L0,9 3,9 3,13C3,17.40625,6.59375,21,11,21L16.40625,21 14.9375,19 11,19C7.675781,19,5,16.324219,5,13L5,9 8,9z" />
+                        </Viewbox>
+                        <TextBlock Text="Rafraîchir"/>
+                    </ui:SimpleStackPanel>
+                </Button>
+                <Button x:Name="BtnAddCustomer"  Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                        <Viewbox Height="15">
+                            <Path  Stroke="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Data="M11,2L11,11 2,11 2,13 11,13 11,22 13,22 13,13 22,13 22,11 13,11 13,2z" />
+                        </Viewbox>
+                        <TextBlock Text="Ajouter un client"/>
+                    </ui:SimpleStackPanel>
+                </Button>
+            </ui:SimpleStackPanel>
+            
         </Grid>
         <TextBlock x:Name="TxtError" Grid.Row="1"  Margin="0,10"  Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" />
         <ui:ProgressBar  x:Name="ProgIndicator" IsIndeterminate="True" Grid.Row="1"/>
@@ -46,6 +57,26 @@
                 GridLinesVisibility="Horizontal"
                 VirtualizingPanel.VirtualizationMode="Recycling"
                 VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+            <DataGrid.Resources>
+                <ResourceDictionary>
+                    <Style x:Key="{x:Type DataGridCell}" TargetType="{x:Type DataGridCell}">
+                        <Setter Property="BorderBrush" Value="{x:Null}" />
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="BorderBrush" Value="{x:Null}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                    <Style TargetType="{x:Type DataGridRow}">
+                        <Setter Property="BorderBrush" Value="{x:Null}" />
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="BorderBrush" Value="{x:Null}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ResourceDictionary>
+            </DataGrid.Resources>
             <DataGrid.Columns>
 
                 <DataGridTextColumn 
@@ -88,7 +119,7 @@
                                         <Path  Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}" Data="M46.6,3.4C45.6,2.4 44.4,2 43.2,2 42,2 40.7,2.5 39.8,3.4 39.8,3.4 39.7,3.5 39.6,3.6 39.6,3.6 39.6,3.6 39.6,3.6L4.3,38.8C4.2,38.9,4.1,39.1,4,39.2L2,46.7C1.9,47 2,47.4 2.3,47.7 2.5,47.9 2.7,48 3,48 3.1,48 3.2,48 3.3,48L10.8,46C11,46,11.1,45.9,11.2,45.7L46.4,10.5C46.4,10.5 46.4,10.5 46.4,10.5 46.5,10.4 46.6,10.3 46.6,10.3 48.5,8.4 48.5,5.3 46.6,3.4z M45.2,4.8C46.3,5.9 46.3,7.7 45.2,8.9 44.9,9.2 44.6,9.5 44.3,9.8L40.2,5.7C40.7,5.2 41.1,4.8 41.1,4.8 41.6,4.3 42.4,4 43.1,4 43.9,4 44.6,4.3 45.2,4.8z M5.6,41.2L8.8,44.4 4.4,45.6 5.6,41.2z" />
                                     </Viewbox>
                                 </Button>
-                                <Button Command="{Binding SelectForDelete}" CommandParameter="{Binding Id}"  ToolTip="Supprimer">
+                                <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:CustomerViewBase}}, Path= DataContext.SelectForDelete}" CommandParameter="{Binding Id}"   ToolTip="Supprimer">
                                     <Viewbox Height="25">
                                         <Path  Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}" Data="M4.9902344,3.9902344A1.0001,1.0001,0,0,0,4.2929688,5.7070312L10.585938,12 4.2929688,18.292969A1.0001,1.0001,0,1,0,5.7070312,19.707031L12,13.414062 18.292969,19.707031A1.0001,1.0001,0,1,0,19.707031,18.292969L13.414062,12 19.707031,5.7070312A1.0001,1.0001,0,0,0,18.980469,3.9902344A1.0001,1.0001,0,0,0,18.292969,4.2929688L12,10.585938 5.7070312,4.2929688A1.0001,1.0001,0,0,0,4.9902344,3.9902344z" />
                                     </Viewbox>

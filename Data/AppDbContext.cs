@@ -86,19 +86,19 @@ namespace GestRehema.Data
 
             modelBuilder.Entity<Customer>()
         .HasOne(isAn => isAn.Organization)
-        .WithOne(c => c.Customer)
+        .WithOne(c => c.Customer!)
         .HasForeignKey<Organization>(b => b.CustomerId);
 
             modelBuilder.Entity<Customer>()
         .HasOne(isA => isA.Store)
-        .WithOne(c => c.Customer)
+        .WithOne(c => c.Customer!)
         .HasForeignKey<Store>(b => b.CustomerId);
 
         modelBuilder
         .Entity<Employee>()
         .HasOne(e => e.User)
-        .WithOne(e => e.Employee)
-        .OnDelete(DeleteBehavior.Cascade);
+        .WithOne(e => e.Employee!)
+        .OnDelete(DeleteBehavior.NoAction);
 
             base.OnModelCreating(modelBuilder);
         }

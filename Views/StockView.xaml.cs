@@ -5,6 +5,8 @@ using GestRehema.Extensions;
 using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Reactive.Threading.Tasks;
+using System.Windows.Controls.Primitives;
 
 namespace GestRehema.Views
 {
@@ -48,20 +50,31 @@ namespace GestRehema.Views
                  .SubscribeOn(RxApp.MainThreadScheduler)
                  .Subscribe(async x => await ShowAddDialog());
 
+                this.ViewModel
+                .SelectForDelete
+                .SubscribeOn(RxApp.MainThreadScheduler)
+                .SelectMany(x => ShowConfirmDialog($"Voulez-vous vraiment supprimé {x.Name}?", x.Id).ToObservable())
+                .Subscribe();
+
+                this.BtnAddProduct
+                .Events().Click
+                .SelectMany(_ => ShowAddDialog().ToObservable())
+                .Subscribe();
+
+                this.BtnRefresh
+               .Events().Click
+               .Select(x => new LoadParameter(ViewModel.SearchQuery, ViewModel.CurrentPage, ViewModel.ItemPerPage))
+               .InvokeCommand(ViewModel.LoadArticles);
+
             });
 
-            BtnAddProduct.Click += BtnAddProduct_Click;
             TxtSearchArticle.TextChanged += TxtSearchArticle_TextChanged;
         }
 
         private void TxtSearchArticle_TextChanged(ModernWpf.Controls.AutoSuggestBox sender, ModernWpf.Controls.AutoSuggestBoxTextChangedEventArgs args)
         {
-            ViewModel!.LoadArticles.Execute(new LoadParameter(sender.Text, ViewModel.CurrentPage, ViewModel.ItemPerPage)).Subscribe();
-        }
 
-        private async void BtnAddProduct_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            await ShowAddDialog();
+            ViewModel!.LoadArticles.Execute(new LoadParameter(sender.Text, ViewModel.CurrentPage, ViewModel.ItemPerPage)).Subscribe();
         }
 
         private async Task ShowAddDialog()
@@ -76,5 +89,22 @@ namespace GestRehema.Views
                 ViewModel!.Errors = ex.Message;
             }
         }
+
+        private async Task ShowConfirmDialog(string message,int articleId)
+        {
+            try
+            {
+                var confirmDialog = new ConfirmDialog(message);
+                var result = await confirmDialog.ShowAsync();
+
+                if (result == ModernWpf.Controls.ContentDialogResult.Primary)
+                    ViewModel!.DeleteArticle.Execute(articleId).Subscribe();
+            }
+            catch (Exception ex)
+            {
+                ViewModel!.Errors = ex.Message;
+            }
+        }
+
     }
 }

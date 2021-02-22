@@ -1,9 +1,16 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace GestRehema.Entities
 {
     public class Employee:Person,IBaseEntity
     {
+        public Employee()
+        {
+            //Sales = new Collection<Sale>();
+        }
         public int Id { get; set; }
 
         public DateTime CreatedAt { get; set; }
@@ -19,5 +26,7 @@ namespace GestRehema.Entities
         public Guid? UserId { get; set; }
 
         public User? User { get; set; }
+
+        //public ICollection<Sale> Sales { get; set; }
     }
 }

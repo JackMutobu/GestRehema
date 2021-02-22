@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestRehema.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210221165411_InitialCreate")]
+    [Migration("20210222073743_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,6 +37,12 @@ namespace GestRehema.Data.Migrations
                     b.Property<decimal>("BuyingPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Conditionement")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -55,6 +61,9 @@ namespace GestRehema.Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("QtyPerConditionement")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("SellingPrice")
                         .HasColumnType("decimal(18,2)");
@@ -181,7 +190,7 @@ namespace GestRehema.Data.Migrations
                             Position = "Admin",
                             Postnom = "Informatique",
                             Prenom = "Rehema",
-                            UserId = new Guid("4d576a7e-28a2-4170-b631-606488750f35")
+                            UserId = new Guid("7a351b99-7c24-4640-acb6-d6b210410752")
                         });
                 });
 
@@ -222,8 +231,8 @@ namespace GestRehema.Data.Migrations
                         new
                         {
                             Id = -1,
-                            CreatedAt = new DateTime(2021, 2, 21, 16, 54, 9, 46, DateTimeKind.Utc).AddTicks(5645),
-                            DateDuJour = new DateTime(2021, 2, 21, 16, 54, 9, 46, DateTimeKind.Utc).AddTicks(3631),
+                            CreatedAt = new DateTime(2021, 2, 22, 7, 37, 40, 651, DateTimeKind.Utc).AddTicks(7989),
+                            DateDuJour = new DateTime(2021, 2, 22, 7, 37, 40, 651, DateTimeKind.Utc).AddTicks(5981),
                             Description = "Votre besoin en construction est assuré",
                             Name = "Ets Rehema",
                             TauxDuJour = 2000m
@@ -462,10 +471,10 @@ namespace GestRehema.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("4d576a7e-28a2-4170-b631-606488750f35"),
+                            Id = new Guid("7a351b99-7c24-4640-acb6-d6b210410752"),
                             AccessLevel = "all",
-                            CreatedAt = new DateTime(2021, 2, 21, 16, 54, 9, 48, DateTimeKind.Utc).AddTicks(4629),
-                            Password = "10000.tB9F6K6fdzLNxCVlxdBQXA==.i6vBL0zhrkzbJ+k6AsKkZhu/CNAocaAQfH04py3TWjI=",
+                            CreatedAt = new DateTime(2021, 2, 22, 7, 37, 40, 653, DateTimeKind.Utc).AddTicks(7248),
+                            Password = "10000.URw5zOV0KRpQqV6AU81PjQ==.9v/xZF24D3DWkki7Xy0MN3rk8dqkkzAO6a/Zb8/VUbs=",
                             Role = "SuperAdmin",
                             Username = "admin@rehema.com"
                         });
@@ -482,7 +491,7 @@ namespace GestRehema.Data.Migrations
                     b.HasOne("GestRehema.Entities.User", "User")
                         .WithOne("Employee")
                         .HasForeignKey("GestRehema.Entities.Employee", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Entreprise");
 

@@ -22,6 +22,9 @@ namespace GestRehema.Data.Migrations
                     SellingPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     BuyingPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     InStock = table.Column<int>(type: "int", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Conditionement = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    QtyPerConditionement = table.Column<int>(type: "int", nullable: false),
                     AwaitingDeliveryToCompany = table.Column<int>(type: "int", nullable: false),
                     LastAwaitingDeliveryToCompanyUpdate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AwaitingDeliveryToCustomers = table.Column<int>(type: "int", nullable: false),
@@ -203,8 +206,7 @@ namespace GestRehema.Data.Migrations
                         name: "FK_Employees_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -295,17 +297,17 @@ namespace GestRehema.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Entreprises",
                 columns: new[] { "Id", "CreatedAt", "DateDuJour", "Description", "LogoUrl", "Name", "TauxDuJour", "UpdatedAt" },
-                values: new object[] { -1, new DateTime(2021, 2, 21, 16, 54, 9, 46, DateTimeKind.Utc).AddTicks(5645), new DateTime(2021, 2, 21, 16, 54, 9, 46, DateTimeKind.Utc).AddTicks(3631), "Votre besoin en construction est assuré", null, "Ets Rehema", 2000m, null });
+                values: new object[] { -1, new DateTime(2021, 2, 22, 7, 37, 40, 651, DateTimeKind.Utc).AddTicks(7989), new DateTime(2021, 2, 22, 7, 37, 40, 651, DateTimeKind.Utc).AddTicks(5981), "Votre besoin en construction est assuré", null, "Ets Rehema", 2000m, null });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "AccessLevel", "CreatedAt", "Password", "Role", "Username" },
-                values: new object[] { new Guid("4d576a7e-28a2-4170-b631-606488750f35"), "all", new DateTime(2021, 2, 21, 16, 54, 9, 48, DateTimeKind.Utc).AddTicks(4629), "10000.tB9F6K6fdzLNxCVlxdBQXA==.i6vBL0zhrkzbJ+k6AsKkZhu/CNAocaAQfH04py3TWjI=", "SuperAdmin", "admin@rehema.com" });
+                values: new object[] { new Guid("7a351b99-7c24-4640-acb6-d6b210410752"), "all", new DateTime(2021, 2, 22, 7, 37, 40, 653, DateTimeKind.Utc).AddTicks(7248), "10000.URw5zOV0KRpQqV6AU81PjQ==.9v/xZF24D3DWkki7Xy0MN3rk8dqkkzAO6a/Zb8/VUbs=", "SuperAdmin", "admin@rehema.com" });
 
             migrationBuilder.InsertData(
                 table: "Employees",
                 columns: new[] { "Id", "Adresse", "CreatedAt", "Email", "EntrepriseId", "Nom", "NumTelephone", "Position", "Postnom", "Prenom", "ProfileUrl", "UpdatedAt", "UserId" },
-                values: new object[] { -1, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -1, "Admin", "09786408335", "Admin", "Informatique", "Rehema", null, null, new Guid("4d576a7e-28a2-4170-b631-606488750f35") });
+                values: new object[] { -1, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -1, "Admin", "09786408335", "Admin", "Informatique", "Rehema", null, null, new Guid("7a351b99-7c24-4640-acb6-d6b210410752") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_EntrepriseId",

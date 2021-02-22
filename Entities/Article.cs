@@ -31,6 +31,12 @@ namespace GestRehema.Entities
 
         public int InStock { get; set; }
 
+        public string? Category { get; set; }
+
+        public string? Conditionement { get; set; }
+
+        public int QtyPerConditionement { get; set; }
+
         public int AwaitingDeliveryToCompany { get; set; }
         public DateTime? LastAwaitingDeliveryToCompanyUpdate { get; set; }
 
