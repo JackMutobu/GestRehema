@@ -55,6 +55,10 @@ namespace GestRehema.Services
             else
             {
                 item!.CreatedAt = DateTime.UtcNow;
+                item.Wallet = new Wallet()
+                {
+                    CreatedAt = DateTime.UtcNow,
+                };
                 _dbContext.Customers.Add(item);
                 _dbContext.SaveChanges();
                 return _dbContext.Customers.First(x => x.CreatedAt == item.CreatedAt);

@@ -31,6 +31,10 @@ namespace GestRehema.Data
 
         public DbSet<SaleDelivery> SaleDeliveries { get; set; } = null!;
 
+        public DbSet<Wallet> Wallets { get; set; } = null!;
+
+        public DbSet<WalletHistory> WalletHistories { get; set; } = null!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,6 +42,12 @@ namespace GestRehema.Data
                 .HasIndex(x => x.Username)
                 .IsUnique();
 
+            modelBuilder.Entity<Wallet>()
+               .HasData(new Wallet
+               {
+                   Id = -1,
+                   CreatedAt = DateTime.UtcNow
+               });
 
             modelBuilder.Entity<Entreprise>()
                 .HasData(new Entreprise
@@ -46,7 +56,14 @@ namespace GestRehema.Data
                     Name = "Ets Rehema",
                     CreatedAt = DateTime.UtcNow,
                     Description = "Votre besoin en construction est assuré",
-                    TauxDuJour = 2000
+                    TauxDuJour = 2000,
+                    WalletId = -1,
+                    Slogan = "Chez FLORENCE",
+                    RCCM = "BIA/RCCM/19-A-1320265",
+                    IDNAT = "493-N50888J",
+                    PoBox = "76",
+                    Contact = $"+243971871546{Environment.NewLine}+243822903906{Environment.NewLine}+243819521649",
+                    Location = "Bunia"
                 });
             var userId = Guid.NewGuid();
             modelBuilder.Entity<Employee>()
@@ -72,6 +89,7 @@ namespace GestRehema.Data
                     Username = "admin@rehema.com",
                     Password = "aDmin@2021".Hash(),
                 });
+           
 
             modelBuilder.Entity<SaleArticle>()
        .HasKey(sa => new { sa.ArticleId, sa.SaleId});
@@ -86,19 +104,19 @@ namespace GestRehema.Data
 
             modelBuilder.Entity<Customer>()
         .HasOne(isAn => isAn.Organization)
-        .WithOne(c => c.Customer!)
+        .WithOne(c => c!.Customer!)
         .HasForeignKey<Organization>(b => b.CustomerId);
 
             modelBuilder.Entity<Customer>()
         .HasOne(isA => isA.Store)
-        .WithOne(c => c.Customer!)
+        .WithOne(c => c!.Customer!)
         .HasForeignKey<Store>(b => b.CustomerId);
 
         modelBuilder
         .Entity<Employee>()
         .HasOne(e => e.User)
-        .WithOne(e => e.Employee!)
-        .OnDelete(DeleteBehavior.NoAction);
+        .WithOne(e => e!.Employee!)
+        .OnDelete(DeleteBehavior.SetNull);
 
             base.OnModelCreating(modelBuilder);
         }

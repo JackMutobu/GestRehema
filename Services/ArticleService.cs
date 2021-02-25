@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace GestRehema.Services
 {
-    public record ArticleStock(int ArticleId,decimal BuyinPrice, int Quantity);
+    public record ArticleStock(int ArticleId,decimal BuyinPrice, double Quantity);
 
     public interface IArticleService
     {
@@ -22,7 +22,8 @@ namespace GestRehema.Services
         ArticleStock UpdateStock(ArticleStock articleStock);
         int DeleteArticle(int articleId);
         List<Article> SearchArticles(string query);
-        List<string?> GetCategories();
+        List<string> GetCategories();
+        Article ReduceStock(double qty, int articleId);
     }
 
     public class ArticleService : IArticleService
@@ -55,6 +56,10 @@ namespace GestRehema.Services
                 regArticle.UnitOfMeasure = article.UnitOfMeasure;
                 regArticle.UpdatedAt = DateTime.UtcNow;
                 regArticle.InStock = article.InStock;
+                regArticle.Category = article.Category;
+                regArticle.Conditionement = article.Conditionement;
+                regArticle.QtyPerConditionement = article.QtyPerConditionement;
+                regArticle.BuyingPrice = article.BuyingPrice;
 
                 _dbContext.Articles.Update(regArticle);
                 _dbContext.SaveChanges();
@@ -107,10 +112,10 @@ namespace GestRehema.Services
             var article = _dbContext.Articles.SingleOrDefault(x => x.Id == articleStock.ArticleId);
             if (article != null)
             {
-                var currentStockValue = article.InStock * article.BuyingPrice;
-                var newStockValue = articleStock.Quantity * articleStock.BuyinPrice;
+                var currentStockValue = (decimal)article.InStock * article.BuyingPrice;
+                var newStockValue = (decimal)articleStock.Quantity * articleStock.BuyinPrice;
 
-                article.BuyingPrice = (currentStockValue + newStockValue) / article.InStock + articleStock.Quantity;
+                article.BuyingPrice = (currentStockValue + newStockValue) / (decimal)article.InStock + (decimal)articleStock.Quantity;
 
                 _dbContext.Articles.Update(article);
                 _dbContext.SaveChanges();
@@ -120,6 +125,20 @@ namespace GestRehema.Services
 
             throw new Exception("Article inconnu");
 
+        }
+
+        public Article ReduceStock(double qty, int articleId)
+        {
+            var article = _dbContext.Articles.SingleOrDefault(x => x.Id == articleId);
+            if(article != null)
+            {
+                article.InStock -= qty;
+                article.UpdatedAt = DateTime.UtcNow;
+                _dbContext.Articles.Update(article);
+                _dbContext.SaveChanges();
+                return _dbContext.Articles.Single(x => x.Id == articleId);
+            }
+            throw new Exception("Article inconnu");
         }
 
         public Article? GetArticle(int articleId)
@@ -138,7 +157,7 @@ namespace GestRehema.Services
            => _dbContext.Articles.Include(x => x.Sales).Skip(skip).Take(take)
             .ToList();
 
-        public List<string?> GetCategories()
+        public List<string> GetCategories()
            => _dbContext.Articles.Select(x => x.Category)
             .ToList()
             .DistinctBy(x => x)

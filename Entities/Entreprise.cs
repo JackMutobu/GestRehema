@@ -28,7 +28,22 @@ namespace GestRehema.Entities
 
         public string Date => DateDuJour.ToString("dd/MM/yyyy");
 
+        public string Slogan { get; set; } = null!;
+
+        public string RCCM { get; set; } = null!;
+
+        public string IDNAT { get; set; } = null!;
+
+        public string PoBox { get; set; } = null!;
+
+        public string Contact { get; set; } = null!;
+
+        public string Location { get; set; } = null!;
+
         public ICollection<Employee> Employees { get; set; }
+
+        public int WalletId { get; set; }
+        public Wallet? Wallet { get; set; }
 
     }
 }

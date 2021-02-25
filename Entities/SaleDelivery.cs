@@ -11,7 +11,7 @@ namespace GestRehema.Entities
 
         public int ArticleId { get; set; }
         public Article? Article { get; set; }
-        public int DeliveredQuantity { get; set; }
+        public double DeliveredQuantity { get; set; }
 
         public DateTime Date { get; set; }
     }

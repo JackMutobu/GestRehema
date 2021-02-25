@@ -14,7 +14,7 @@ namespace GestRehema.ViewModels
     {
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = null!;
 
-        private readonly IValidator validator;
+        protected readonly IValidator validator;
         private IEnumerable<ValidationFailure> Errors;
         private bool _hasErrors;
         private bool _isValid;

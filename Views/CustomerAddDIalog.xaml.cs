@@ -22,28 +22,35 @@ namespace GestRehema.Views
             InitializeComponent();
             DataContext = viewModel;
             _viewModel = viewModel;
-            ImgItem.Source = new BitmapImage(new Uri("/Assets/Placeholder/profile.png",UriKind.Relative));
 
             ImgItem.MouseDown += ImgItem_MouseDown;
         }
 
         private void ImgItem_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
+            try
             {
-                Uri fileUri = new Uri(openFileDialog.FileName);
-                var image = new BitmapImage(fileUri);
-                var fileService = Locator.Current.GetService<IFileService>();
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    Uri fileUri = new Uri(openFileDialog.FileName);
+                    var image = new BitmapImage(fileUri);
+                    var fileService = Locator.Current.GetService<IFileService>();
 
-                var imageUrl = fileService.SaveImage(image.ToBitmap(), $"ProfileImages/{fileUri.AbsolutePath.Split("/").Last()}");
+                    var imageUrl = fileService.SaveImage(image.ToBitmap(), $"ProfileImages/{fileUri.AbsolutePath.Split("/").Last()}");
 
-                var imagePath = $"{Environment.CurrentDirectory.Replace("\\", "/")}{imageUrl}";
-                _viewModel.ImageUrl = imagePath;
+                    var imagePath = $"{Environment.CurrentDirectory.Replace("\\", "/")}{imageUrl}";
+                    _viewModel.ImageUrl = imagePath;
 
 
 
+                }
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            
         }
     }
 }

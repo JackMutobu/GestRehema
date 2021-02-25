@@ -46,7 +46,7 @@
                 </Button>
                 </ui:SimpleStackPanel>
         </Grid>
-        <TextBlock x:Name="TxtError" Grid.Row="1"  Margin="0,10"  Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" />
+        <TextBlock x:Name="TxtError" Grid.Row="1"  Margin="0,10"  Visibility="Collapsed" Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" />
         <ui:ProgressBar  x:Name="ProgIndicator" IsIndeterminate="True" Grid.Row="1"/>
         <DataGrid Grid.Row="2"
                 x:Name="DtGridArticle"

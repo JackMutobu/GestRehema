@@ -18,11 +18,21 @@ namespace GestRehema.Entities
 
         public DateTime? UpdatedAt { get; set; }
 
+
+        public DateTime DateOperation { get; set; }
+
+        public string ShortDateOperation => DateOperation.ToShortDateString();
+
+
+
         public int CustomerId { get; set; }
         public Customer? Customer { get; set; }
 
-        //public int EmployeeId { get; set; }
-        //public Employee Employee { get; set; }
+        public string PayementStatus { get; set; } = SalePayementStatus.AwaitingPayement;
+
+        public string DeliveryStatus { get; set; } = SaleDeliveryStatus.AwaitingDelivery;
+
+        public int? SellerId { get; set; }
 
         public ICollection<SaleArticle> ArticleSold { get; set; }
 

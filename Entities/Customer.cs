@@ -26,7 +26,8 @@ namespace GestRehema.Entities
 
         public Store? Store { get; set; }
 
-
+        public int WalletId { get; set; }
+        public Wallet? Wallet { get; set; }
 
     }
 }

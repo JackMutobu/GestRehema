@@ -9,7 +9,7 @@ namespace GestRehema.Entities
     {
         public Employee()
         {
-            //Sales = new Collection<Sale>();
+            Sales = new Collection<Sale>();
         }
         public int Id { get; set; }
 
@@ -27,6 +27,6 @@ namespace GestRehema.Entities
 
         public User? User { get; set; }
 
-        //public ICollection<Sale> Sales { get; set; }
+        public ICollection<Sale> Sales { get; set; }
     }
 }

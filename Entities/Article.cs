@@ -29,18 +29,18 @@ namespace GestRehema.Entities
 
         public decimal BuyingPrice { get; set; } 
 
-        public int InStock { get; set; }
+        public double InStock { get; set; }
 
-        public string? Category { get; set; }
+        public string Category { get; set; } = null!;
 
-        public string? Conditionement { get; set; }
+        public string Conditionement { get; set; } = null!;
 
-        public int QtyPerConditionement { get; set; }
+        public double QtyPerConditionement { get; set; }
 
-        public int AwaitingDeliveryToCompany { get; set; }
+        public double AwaitingDeliveryToCompany { get; set; }
         public DateTime? LastAwaitingDeliveryToCompanyUpdate { get; set; }
 
-        public int AwaitingDeliveryToCustomers { get; set; }
+        public double AwaitingDeliveryToCustomers { get; set; }
         public DateTime? LastAwaitingDeliveryToCustomersUpdate { get; set; }
 
         public ICollection<SaleArticle> Sales { get; set; }

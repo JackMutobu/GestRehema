@@ -1,0 +1,63 @@
+﻿<ui:ContentDialog x:Class="GestRehema.Views.SaleDeliveryDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+              xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:local="clr-namespace:GestRehema.Views"
+             mc:Ignorable="d" 
+             Title="Livraison"
+             PrimaryButtonText="Valider"
+                  CloseButtonText="Annuler"
+                  DefaultButton="Primary"
+                  PrimaryButtonCommand="{Binding Deliver}">
+    <Grid DataContext="{Binding DeliveryModel,Mode=OneWay}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBox x:Name="TxtQtyInUnitOfMeasure" Text="{Binding QtyInUnitOfMeasure,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ui:ControlHelper.Header="Quantité en Unité de mesure" ui:ControlHelper.PlaceholderText="20" Margin="0,5"/>
+        <TextBox x:Name="TxtQtyInConditionement" Grid.Row="1" Text="{Binding QtyInConditionement,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ui:ControlHelper.Header="Quantité en conditionement" ui:ControlHelper.PlaceholderText="20" Margin="0,5"/>
+        <Grid Grid.Row="4" Margin="0,10"  Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Quantité à livrer" FontSize="16" Margin="2,5"/>
+            <TextBlock HorizontalAlignment="Right" FontSize="16" Margin="2,5">
+                <Run FontWeight="SemiBold" Text="{Binding TotalQtyInConditionement,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding Article.Conditionement}" />
+                <LineBreak/>
+                <Run FontWeight="SemiBold" Text="{Binding TotalQtyInUnitOfMeasure,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding Article.UnitOfMeasure}" />
+            </TextBlock>
+
+            <TextBlock Text="Quantité livré" Grid.Row="1" FontSize="16" Margin="2,5"/>
+            <TextBlock HorizontalAlignment="Right" Grid.Row="1" FontSize="16" Margin="2,5">
+                <Run FontWeight="SemiBold" Text="{Binding QtyInConditionement,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding Article.Conditionement}" />
+                <LineBreak/>
+                <Run FontWeight="SemiBold" Text="{Binding QtyInUnitOfMeasure,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding Article.UnitOfMeasure}" />
+            </TextBlock>
+
+            <TextBlock Text="Reste" Grid.Row="2" FontSize="16" Margin="2,5"/>
+            <TextBlock HorizontalAlignment="Right" Grid.Row="2" FontSize="16" Margin="2,5">
+                <Run FontWeight="SemiBold" Text="{Binding RemainingConditionement,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding Article.Conditionement}" />
+                <LineBreak/>
+                <Run FontWeight="SemiBold" Text="{Binding RemainingQtyUnitOfMeasure,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding Article.UnitOfMeasure}" />
+            </TextBlock>
+        </Grid>
+    </Grid>
+</ui:ContentDialog>

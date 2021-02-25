@@ -29,23 +29,6 @@ namespace GestRehema.Views
 
                 this.OneWayBind(ViewModel, vm => vm.Articles, v => v.DtGridArticle.ItemsSource);
 
-                this.WhenAnyValue(x => x.ViewModel!.Errors)
-                .SubscribeOn(RxApp.MainThreadScheduler)
-                .Subscribe(value =>
-                {
-                    TxtError.Visibility = value?.ToVisibility() ?? System.Windows.Visibility.Collapsed;
-                    TxtError.Text = value;
-                });
-
-                //this.ViewModel
-                //.LoadArticles
-                //.Subscribe(articles =>
-                //{
-                //    DtGridArticle.ItemsSource = articles;
-                //    DtGridArticle.Items.Refresh();
-                //});
-
-
                 this.ViewModel.SelectForUpdate
                  .SubscribeOn(RxApp.MainThreadScheduler)
                  .Subscribe(async x => await ShowAddDialog());
@@ -65,6 +48,11 @@ namespace GestRehema.Views
                .Events().Click
                .Select(x => new LoadParameter(ViewModel.SearchQuery, ViewModel.CurrentPage, ViewModel.ItemPerPage))
                .InvokeCommand(ViewModel.LoadArticles);
+
+                this.BtnRefresh
+                   .Events().Click
+                   .Throttle(TimeSpan.FromMilliseconds(500))
+                   .Subscribe(x => RefreshBindings());
 
             });
 
@@ -104,6 +92,15 @@ namespace GestRehema.Views
             {
                 ViewModel!.Errors = ex.Message;
             }
+        }
+
+        private void RefreshBindings()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                DtGridArticle.ItemsSource = null;
+                DtGridArticle.ItemsSource = ViewModel!.Articles;
+            });
         }
 
     }

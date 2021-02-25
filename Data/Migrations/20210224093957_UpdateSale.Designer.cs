@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestRehema.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210222073743_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20210224093957_UpdateSale")]
+    partial class UpdateSale
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,19 +28,21 @@ namespace GestRehema.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AwaitingDeliveryToCompany")
-                        .HasColumnType("int");
+                    b.Property<double>("AwaitingDeliveryToCompany")
+                        .HasColumnType("float");
 
-                    b.Property<int>("AwaitingDeliveryToCustomers")
-                        .HasColumnType("int");
+                    b.Property<double>("AwaitingDeliveryToCustomers")
+                        .HasColumnType("float");
 
                     b.Property<decimal>("BuyingPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Category")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Conditionement")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -62,8 +64,8 @@ namespace GestRehema.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("QtyPerConditionement")
-                        .HasColumnType("int");
+                    b.Property<double>("QtyPerConditionement")
+                        .HasColumnType("float");
 
                     b.Property<decimal>("SellingPrice")
                         .HasColumnType("decimal(18,2)");
@@ -116,7 +118,13 @@ namespace GestRehema.Data.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("WalletId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WalletId")
+                        .IsUnique();
 
                     b.ToTable("Customers");
                 });
@@ -190,7 +198,7 @@ namespace GestRehema.Data.Migrations
                             Position = "Admin",
                             Postnom = "Informatique",
                             Prenom = "Rehema",
-                            UserId = new Guid("7a351b99-7c24-4640-acb6-d6b210410752")
+                            UserId = new Guid("a2620c6b-7a7e-4326-97f3-ad3319c2887f")
                         });
                 });
 
@@ -223,7 +231,13 @@ namespace GestRehema.Data.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("WalletId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WalletId")
+                        .IsUnique();
 
                     b.ToTable("Entreprises");
 
@@ -231,11 +245,12 @@ namespace GestRehema.Data.Migrations
                         new
                         {
                             Id = -1,
-                            CreatedAt = new DateTime(2021, 2, 22, 7, 37, 40, 651, DateTimeKind.Utc).AddTicks(7989),
-                            DateDuJour = new DateTime(2021, 2, 22, 7, 37, 40, 651, DateTimeKind.Utc).AddTicks(5981),
+                            CreatedAt = new DateTime(2021, 2, 24, 9, 39, 55, 150, DateTimeKind.Utc).AddTicks(4711),
+                            DateDuJour = new DateTime(2021, 2, 24, 9, 39, 55, 150, DateTimeKind.Utc).AddTicks(2113),
                             Description = "Votre besoin en construction est assuré",
                             Name = "Ets Rehema",
-                            TauxDuJour = 2000m
+                            TauxDuJour = 2000m,
+                            WalletId = -1
                         });
                 });
 
@@ -298,7 +313,12 @@ namespace GestRehema.Data.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("WalletId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WalletId");
 
                     b.ToTable("Payement");
                 });
@@ -316,12 +336,27 @@ namespace GestRehema.Data.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("DateOperation")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SellerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("EmployeeId");
 
                     b.ToTable("Sales");
                 });
@@ -337,8 +372,8 @@ namespace GestRehema.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                    b.Property<double>("Quantity")
+                        .HasColumnType("float");
 
                     b.Property<decimal>("UnitBuyingPrice")
                         .HasColumnType("decimal(18,2)");
@@ -369,8 +404,8 @@ namespace GestRehema.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DeliveredQuantity")
-                        .HasColumnType("int");
+                    b.Property<double>("DeliveredQuantity")
+                        .HasColumnType("float");
 
                     b.Property<int>("SaleId")
                         .HasColumnType("int");
@@ -471,13 +506,93 @@ namespace GestRehema.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7a351b99-7c24-4640-acb6-d6b210410752"),
+                            Id = new Guid("a2620c6b-7a7e-4326-97f3-ad3319c2887f"),
                             AccessLevel = "all",
-                            CreatedAt = new DateTime(2021, 2, 22, 7, 37, 40, 653, DateTimeKind.Utc).AddTicks(7248),
-                            Password = "10000.URw5zOV0KRpQqV6AU81PjQ==.9v/xZF24D3DWkki7Xy0MN3rk8dqkkzAO6a/Zb8/VUbs=",
+                            CreatedAt = new DateTime(2021, 2, 24, 9, 39, 55, 151, DateTimeKind.Utc).AddTicks(7463),
+                            Password = "10000.Vq693Y76XeaMBR/R9hz8Tg==.KpPPgrDW68wz9nxUN2mn/BF9X3c2KcgBiHErLCh1y2Y=",
                             Role = "SuperAdmin",
                             Username = "admin@rehema.com"
                         });
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.Wallet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("AmountInDebt")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("AmountInExcess")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("AmountOwned")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Wallets");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            AmountInDebt = 0m,
+                            AmountInExcess = 0m,
+                            AmountOwned = 0m,
+                            CreatedAt = new DateTime(2021, 2, 24, 9, 39, 55, 148, DateTimeKind.Utc).AddTicks(1443)
+                        });
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.WalletHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("AmountDebtWalletId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AmountExcessWalletId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AmountDebtWalletId");
+
+                    b.HasIndex("AmountExcessWalletId");
+
+                    b.ToTable("WalletHistories");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.Customer", b =>
+                {
+                    b.HasOne("GestRehema.Entities.Wallet", "Wallet")
+                        .WithOne("Customer")
+                        .HasForeignKey("GestRehema.Entities.Customer", "WalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("GestRehema.Entities.Employee", b =>
@@ -491,11 +606,22 @@ namespace GestRehema.Data.Migrations
                     b.HasOne("GestRehema.Entities.User", "User")
                         .WithOne("Employee")
                         .HasForeignKey("GestRehema.Entities.Employee", "UserId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Entreprise");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.Entreprise", b =>
+                {
+                    b.HasOne("GestRehema.Entities.Wallet", "Wallet")
+                        .WithOne("Entreprise")
+                        .HasForeignKey("GestRehema.Entities.Entreprise", "WalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("GestRehema.Entities.Organization", b =>
@@ -509,6 +635,15 @@ namespace GestRehema.Data.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("GestRehema.Entities.Payement", b =>
+                {
+                    b.HasOne("GestRehema.Entities.Wallet", "Wallet")
+                        .WithMany()
+                        .HasForeignKey("WalletId");
+
+                    b.Navigation("Wallet");
+                });
+
             modelBuilder.Entity("GestRehema.Entities.Sale", b =>
                 {
                     b.HasOne("GestRehema.Entities.Customer", "Customer")
@@ -516,6 +651,10 @@ namespace GestRehema.Data.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("GestRehema.Entities.Employee", null)
+                        .WithMany("Sales")
+                        .HasForeignKey("EmployeeId");
 
                     b.Navigation("Customer");
                 });
@@ -588,6 +727,21 @@ namespace GestRehema.Data.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("GestRehema.Entities.WalletHistory", b =>
+                {
+                    b.HasOne("GestRehema.Entities.Wallet", "AmountDebtWallet")
+                        .WithMany()
+                        .HasForeignKey("AmountDebtWalletId");
+
+                    b.HasOne("GestRehema.Entities.Wallet", "AmountExcessWallet")
+                        .WithMany()
+                        .HasForeignKey("AmountExcessWalletId");
+
+                    b.Navigation("AmountDebtWallet");
+
+                    b.Navigation("AmountExcessWallet");
+                });
+
             modelBuilder.Entity("GestRehema.Entities.Article", b =>
                 {
                     b.Navigation("Sales");
@@ -598,6 +752,11 @@ namespace GestRehema.Data.Migrations
                     b.Navigation("Organization");
 
                     b.Navigation("Store");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.Employee", b =>
+                {
+                    b.Navigation("Sales");
                 });
 
             modelBuilder.Entity("GestRehema.Entities.Entreprise", b =>
@@ -622,6 +781,13 @@ namespace GestRehema.Data.Migrations
             modelBuilder.Entity("GestRehema.Entities.User", b =>
                 {
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.Wallet", b =>
+                {
+                    b.Navigation("Customer");
+
+                    b.Navigation("Entreprise");
                 });
 #pragma warning restore 612, 618
         }

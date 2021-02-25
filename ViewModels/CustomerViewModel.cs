@@ -5,7 +5,6 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System;
@@ -13,7 +12,6 @@ using DynamicData;
 using System.Reactive;
 using System.Linq;
 using DynamicData.Binding;
-using GestRehema.Events;
 
 namespace GestRehema.ViewModels
 {
@@ -29,6 +27,7 @@ namespace GestRehema.ViewModels
             _navigationRootViewModel = navigationRootViewModel ?? Locator.Current.GetService<NavigationRootViewModel>();
             Model = new Customer();
             _customerService = Locator.Current.GetService<ICustomerService>();
+            ImageUrl = "/Assets/Placeholder/profile.png";
 
             _customers.Connect()
             .ObserveOnDispatcher()
@@ -63,7 +62,7 @@ namespace GestRehema.ViewModels
 
             SaveCustomer = ReactiveCommand.CreateFromTask(() =>
             {
-                Model.ImageUrl = ImageUrl;
+                Model.ImageUrl = ImageUrl == "/Assets/Placeholder/profile.png" ? "" : ImageUrl;
                 return Task.Run(() => _customerService.AddOrUpdateCustomer(Model));
             }, isValid);
             SaveCustomer
@@ -137,7 +136,7 @@ namespace GestRehema.ViewModels
             NumTelephone = null;
             Email = null;
             CustomerType = CustomerTypes.First();
-            ImageUrl = "";
+            ImageUrl = "/Assets/Placeholder/profile.png";
         }
 
         public Customer Model { get; set; }
@@ -164,7 +163,7 @@ namespace GestRehema.ViewModels
         public string? CustomerType { get; set; }
 
         [Reactive]
-        public string? ImageUrl { get; set; }
+        public string ImageUrl { get; set; }
 
         [Reactive]
         public string? SearchQuery { get; set; }

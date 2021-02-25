@@ -9,7 +9,6 @@ using System.Reactive.Linq;
 using GestRehema.Services;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using DynamicData;
 using DynamicData.Binding;
@@ -31,7 +30,7 @@ namespace GestRehema.ViewModels
             _articleService = Locator.Current.GetService<IArticleService>();
             Model = new Article();
             ImageUrl = "/Assets/Placeholder/product.jpg";
-            Categories = new List<string?>();
+            Categories = new List<string>();
             _items.Connect()
             .ObserveOnDispatcher()
             .Bind(_targetCollectionItems)
@@ -55,6 +54,20 @@ namespace GestRehema.ViewModels
                .Subscribe(x => Errors = x);
             SaveArticle.IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
+            SaveArticle
+              .Subscribe(x =>
+              {
+                  InitializeFields();
+
+                  if (!_items.Items.Any(y => y.Id == x.Id))
+                      _items.Insert(0, x);
+                  else
+                  {
+                      var updatedItem = _items.Items.Single(y => y.Id == x.Id);
+                      int index = _items.Items.IndexOf(updatedItem);
+                      _items.ReplaceAt(index, x);
+                  }
+              });
 
 
             LoadArticles = ReactiveCommand.CreateFromTask<LoadParameter, List<Article>>
@@ -80,9 +93,6 @@ namespace GestRehema.ViewModels
               .Subscribe(x => Errors = x);
             LoadArticles.IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
-            SaveArticle
-                .Select(x => new LoadParameter(SearchQuery, CurrentPage, ItemPerPage))
-                .InvokeCommand(LoadArticles);
 
             SelectForUpdate = ReactiveCommand.Create<int, Article>(id => Articles.Single(x => x.Id == id));
             SelectForUpdate.ThrownExceptions
@@ -134,18 +144,16 @@ namespace GestRehema.ViewModels
                 .InvokeCommand(LoadArticles);
 
 
-            //this.WhenAnyValue(x => x.SearchQuery)
-            //    .Select(term => term?.Trim())
-            //    .DistinctUntilChanged()
-            //    .Select(x => new LoadParameter(x,CurrentPage,ItemPerPage))
-            //    .InvokeCommand(LoadArticles);
-
             LoadCategories = ReactiveCommand.CreateFromTask(() => Task.Run(() => _articleService.GetCategories()));
             LoadCategories.ThrownExceptions
             .Select(x => x.Message)
             .Subscribe(x => Errors = x);
             LoadCategories
                 .Subscribe(categories => Categories = categories);
+
+            SaveArticle
+                .Select(_ => Unit.Default)
+                .InvokeCommand(LoadCategories);
 
 
             LoadArticles.Execute(new LoadParameter(SearchQuery, CurrentPage, ItemPerPage))
@@ -163,6 +171,10 @@ namespace GestRehema.ViewModels
             SellingPrice = null;
             BuyingPrice = null;
             InStock = null;
+            ImageUrl = "/Assets/Placeholder/product.jpg";
+            QtyPerConditionement = null;
+            Conditionement = null;
+            Category = null;
         }
 
         public int CurrentPage { get; set; } = 0;
@@ -175,7 +187,7 @@ namespace GestRehema.ViewModels
         public IObservableCollection<Article> Articles => _targetCollectionItems;
 
         [Reactive]
-        public List<string?> Categories { get; set; }
+        public List<string> Categories { get; set; }
 
         [Reactive]
         public string ImageUrl { get; set; }
@@ -196,7 +208,7 @@ namespace GestRehema.ViewModels
         public decimal? BuyingPrice { get; set; }
 
         [Reactive]
-        public int? InStock { get; set; }
+        public double? InStock { get; set; }
 
         [Reactive]
         public string? SearchQuery { get; set; }
@@ -208,7 +220,7 @@ namespace GestRehema.ViewModels
         public string? Conditionement { get; set; }
 
         [Reactive]
-        public int? QtyPerConditionement { get; set; }
+        public double? QtyPerConditionement { get; set; }
 
 
 
@@ -228,7 +240,7 @@ namespace GestRehema.ViewModels
 
         public ReactiveCommand<LoadParameter, List<Article>> LoadArticles { get; }
 
-        public ReactiveCommand<Unit, List<string?>> LoadCategories { get; }
+        public ReactiveCommand<Unit, List<string>> LoadCategories { get; }
 
 
         private void ValidateModel()
