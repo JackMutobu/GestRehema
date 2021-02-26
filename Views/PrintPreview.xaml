@@ -4,9 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GestRehema.Views"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
         mc:Ignorable="d"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
         Title="PrintPreview" Height="450" Width="800">
-    <Grid>
-        <DocumentViewer x:Name="PreviewD" />
+    <Grid x:Name="BillGrid">
+        <!--<DocumentViewer x:Name="PreviewD" />-->
     </Grid>
 </Window>

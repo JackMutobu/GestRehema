@@ -1,17 +1,7 @@
-﻿using System;
+﻿using GestRehema.Entities;
+using GestRehema.ViewModels;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace GestRehema.Views
 {
@@ -20,9 +10,29 @@ namespace GestRehema.Views
     /// </summary>
     public partial class BillView : UserControl
     {
-        public BillView()
+        public BillView(Sale sale,Entreprise entreprise, Customer customer, List<SaleArticleItem> saleArticles, decimal cartSubTotal,decimal debt)
         {
+            Entreprise = entreprise;
+            Customer = customer;
+            Sale = sale;
+            SaleArticles = saleArticles;
+            CartSubTotal = cartSubTotal;
+            Debt = debt;
             InitializeComponent();
+            DataContext = this;
+
         }
+
+        public Entreprise Entreprise { get; }
+
+        public Customer Customer { get; }
+
+        public Sale Sale { get; }
+
+        public decimal CartSubTotal { get; }
+
+        public decimal Debt { get; }
+
+        public List<SaleArticleItem> SaleArticles { get; }
     }
 }

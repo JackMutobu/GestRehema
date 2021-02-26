@@ -6,8 +6,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GestRehema.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="1200" d:DesignWidth="996" Background="White">
-    <Border Padding="20,10">
+             
+             d:DesignHeight="1200" d:DesignWidth="996" Foreground="Black" Background="White">
+    <Border Padding="20,10" >
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -19,152 +20,135 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock Text="{Binding Entreprise.Name,FallbackValue=Ets Reheme}" FontWeight="SemiBold" FontSize="20"/>
             <TextBlock Grid.Column="1" HorizontalAlignment="Right" Text="{Binding Entreprise.Slogan,FallbackValue=Chez Florence}"  FontSize="20"/>
             <ui:SimpleStackPanel Grid.Row="1" Margin="0,10" Spacing="5">
-                <TextBlock Text="{Binding Entreprise.Location,FallbackValue=Bunia}" FontWeight="Light" FontSize="16"/>
-                <TextBlock Text="{Binding Entreprise.PoBox,FallbackValue=76}" FontWeight="Light" FontSize="16"/>
-                <TextBlock Text="{Binding Entreprise.IDNAT,FallbackValue=493-N50888J}" FontWeight="Light" FontSize="16"/>
-                <TextBlock Text="{Binding Entreprise.RCCM,FallbackValue=BIA/RCCM/19-A-1320265}" FontWeight="Light" FontSize="16"/>
-                <TextBlock Text="{Binding Entreprise.Contact,FallbackValue=+243971871546}" FontWeight="Light" FontSize="16"/>
+                <TextBlock FontSize="16">
+                     <Run Text="Ville  "  />
+                     <Run Text="{Binding Entreprise.Location,FallbackValue=Bunia}" FontWeight="Light"/>
+                </TextBlock>
+                <TextBlock FontSize="16">
+                     <Run Text="Boite Postal "  />
+                     <Run Text="{Binding Entreprise.PoBox,FallbackValue=76}" FontWeight="Light"/>
+                </TextBlock>
+                <TextBlock FontSize="16">
+                     <Run Text="IdNat "  />
+                     <Run Text="{Binding Entreprise.IDNAT,FallbackValue=493-N50888J}" FontWeight="Light"/>
+                </TextBlock>
+                <TextBlock FontSize="16">
+                     <Run Text="RCCM "  />
+                     <Run Text="{Binding Entreprise.RCCM,FallbackValue=BIA/RCCM/19-A-1320265}" FontWeight="Light"/>
+                </TextBlock>
+                <TextBlock FontSize="16">
+                     <Run Text="Contact(s) "  />
+                     <Run Text="{Binding Entreprise.Contact,FallbackValue=+243971871546}" FontWeight="Light"/>
+                </TextBlock>
             </ui:SimpleStackPanel>
             <ui:SimpleStackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Margin="0,10" Spacing="5">
                 <TextBlock  HorizontalAlignment="Right"  FontSize="16">
                     <Run Text="Facture No  "  />
-                    <Run Text="{Binding Entreprise.Location,FallbackValue=201}" FontWeight="Light"/>
+                    <Run Text="{Binding Sale.Id,Mode=OneWay,FallbackValue=201}" FontWeight="Light"/>
                 </TextBlock>
                 <TextBlock  HorizontalAlignment="Right"  FontSize="16">
                     <Run Text="Date de facturation"  />
-                    <Run Text="{Binding Entreprise.Location,FallbackValue=25/11/2021}" FontWeight="Light"/>
+                    <Run Text="{Binding Sale.ShortDateOperation,Mode=OneWay,FallbackValue=25/11/2021}" FontWeight="Light"/>
                 </TextBlock>
 
                 <TextBlock  HorizontalAlignment="Right"  FontSize="16">
                     <Run Text="Dernière mise à jour"  />
-                    <Run Text="{Binding Entreprise.Location,FallbackValue=25/11/2021}" FontWeight="Light"/>
+                    <Run Text="{Binding Sale.ShortUpdateAt,Mode=OneWay,FallbackValue=25/11/2021}" FontWeight="Light"/>
                 </TextBlock>
             </ui:SimpleStackPanel>
 
             <ui:SimpleStackPanel Grid.Row="2" Margin="0,30,0,20">
                 <TextBlock Text="Facture pour" FontSize="20"/>
-                <TextBlock Text="{Binding Customer.Name,FallbackValue=Jack Mutobu}" Margin="10,0" FontWeight="Light" FontSize="16"/>
-                <TextBlock Text="{Binding Customer.NumTelephone,FallbackValue=0997186014}" Margin="10,0" FontWeight="Light" FontSize="16"/>
+                <TextBlock Text="{Binding Customer.Name,Mode=OneWay,FallbackValue=Jack Mutobu}" Margin="10,0" FontWeight="Light" FontSize="16"/>
+                <TextBlock Text="{Binding Customer.NumTelephone,Mode=OneWay,FallbackValue=0997186014}" Margin="10,0" FontWeight="Light" FontSize="16"/>
             </ui:SimpleStackPanel>
-            <ui:SimpleStackPanel Grid.Row="3" Margin="0,20" Grid.ColumnSpan="2">
-                <Border BorderThickness="1,0.5" BorderBrush="Gray" Padding="0,8">
-                    <Grid >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Margin="10,5" VerticalAlignment="Center" Text="{Binding Article.Id,FallbackValue=02}" FontSize="14"/>
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center" FontWeight="SemiBold"  Margin="10,5" Text="{Binding Article.Name,FallbackValue=Lorem ipsum dolor sit ametconsectetur adipiscing elit}" FontSize="14"/>
-                        <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="10,5" Text="{Binding Article.UnitOfMeasure,FallbackValue=kg}" FontSize="14"/>
-                        <TextBlock Grid.Column="3" VerticalAlignment="Center" FontWeight="SemiBold" Margin="10,5" Text="{Binding QtyInUnitOfMeasure,FallbackValue=02}" FontSize="14"/>
-                        <TextBlock Grid.Column="4" VerticalAlignment="Center" FontWeight="SemiBold" Margin="10,5" Text="{Binding RemainingQty,FallbackValue=0}" FontSize="14"/>
-                        <TextBlock Grid.Column="5" VerticalAlignment="Center"  Margin="10,5" FontSize="14">
-                            <Run  Text="{Binding UnitSellingPrice,FallbackValue=58}"/>
+            <Border BorderThickness="1,0.5" Grid.Row="3" Margin="0,20,0,0" Grid.ColumnSpan="2" BorderBrush="Gray" Padding="0,5">
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Margin="10,5"  VerticalAlignment="Center" Text="Code" FontWeight="SemiBold" FontSize="14"/>
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" FontWeight="SemiBold"  Margin="10,5" Text="Désignation" FontSize="14"/>
+                    <TextBlock Grid.Column="2" VerticalAlignment="Center" FontWeight="SemiBold" Margin="10,5"  FontSize="14">
+                        <Run Text="Unité"/>
+                        <LineBreak/>
+                        <Run Text="de mesure"/>
+                    </TextBlock>
+                    <TextBlock Grid.Column="3" VerticalAlignment="Center" FontWeight="SemiBold" Margin="10,5" Text="Quantité" FontSize="14"/>
+                    <TextBlock Grid.Column="4" VerticalAlignment="Center" FontWeight="SemiBold" Margin="10,5" Text="Manquant" FontSize="14"/>
+                    <TextBlock Grid.Column="5" VerticalAlignment="Center" FontWeight="SemiBold"  Margin="10,5" FontSize="14">
+                            <Run  Text="Prix"/>
+                            <LineBreak/>
+                            <Run  Text="Unitaire"/>
+                    </TextBlock>
+                    <TextBlock Grid.Column="6"  VerticalAlignment="Center" FontWeight="SemiBold"  Margin="10,5" FontSize="14">
+                            <Run  Text="Prix"/>
+                            <LineBreak/> 
+                            <Run  Text="Total"/>
+                    </TextBlock>
+                </Grid>
+            </Border>
+            <ui:ListView x:Name="ListArticles" ItemsSource="{Binding SaleArticles}" Grid.Row="4" Margin="0,0,0,20" Grid.ColumnSpan="2">
+                <ui:ListView.ItemContainerStyle>
+                    <Style TargetType="ui:ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Foreground" Value="Black"/>
+                    </Style>
+                </ui:ListView.ItemContainerStyle>
+                <ui:ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderThickness="1,0.5" BorderBrush="Gray" Padding="0,5">
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="100"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Margin="10,5" VerticalAlignment="Center" Text="{Binding Article.Id,FallbackValue=02}" FontSize="14"/>
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center"   Margin="10,5" Text="{Binding Article.Name,FallbackValue=Lorem ipsum dolor sit ametconsectetur adipiscing elit}" FontSize="14"/>
+                                <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="10,5" Text="{Binding Article.UnitOfMeasure,FallbackValue=kg}" FontSize="14"/>
+                                <TextBlock Grid.Column="3" VerticalAlignment="Center"  Margin="10,5" Text="{Binding QtyInUnitOfMeasure,Mode=OneWay,FallbackValue=02}" FontSize="14"/>
+                                <TextBlock Grid.Column="4" VerticalAlignment="Center"  Margin="10,5" Text="{Binding RemainingQty,Mode=OneWay,FallbackValue=0}" FontSize="14"/>
+                                <TextBlock Grid.Column="5" VerticalAlignment="Center"  Margin="10,5" FontSize="14">
+                            <Run  Text="{Binding UnitSellingPrice,Mode=OneWay,FallbackValue=58}"/>
                             <Run  Text="$"/>
-                        </TextBlock>
-                        <TextBlock Grid.Column="6" VerticalAlignment="Center" FontWeight="SemiBold"  Margin="10,5" FontSize="14">
-                            <Run  Text="{Binding TotalAmount,FallbackValue=58}"/>
+                                </TextBlock>
+                                <TextBlock Grid.Column="6"  VerticalAlignment="Center"   Margin="10,5" FontSize="14">
+                            <Run  Text="{Binding TotalAmount,Mode=OneWay,FallbackValue=58}"/>
                             <Run  Text="$"/>
-                        </TextBlock>
-                    </Grid>
-                </Border>
-                <Border BorderThickness="1,0.5" BorderBrush="Gray" Padding="0,8">
-                    <Grid >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Margin="10,5" VerticalAlignment="Center" Text="{Binding Article.Id,FallbackValue=02}" FontSize="14"/>
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center" FontWeight="SemiBold"  Margin="10,5" Text="{Binding Article.Name,FallbackValue=Lorem ipsum dolor sit ametconsectetur adipiscing elit}" FontSize="14"/>
-                        <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="10,5" Text="{Binding Article.UnitOfMeasure,FallbackValue=kg}" FontSize="14"/>
-                        <TextBlock Grid.Column="3" VerticalAlignment="Center" FontWeight="SemiBold" Margin="10,5" Text="{Binding QtyInUnitOfMeasure,FallbackValue=02}" FontSize="14"/>
-                        <TextBlock Grid.Column="4" VerticalAlignment="Center" FontWeight="SemiBold" Margin="10,5" Text="{Binding RemainingQty,FallbackValue=0}" FontSize="14"/>
-                        <TextBlock Grid.Column="5" VerticalAlignment="Center"  Margin="10,5" FontSize="14">
-                            <Run  Text="{Binding UnitSellingPrice,FallbackValue=58}"/>
-                            <Run  Text="$"/>
-                        </TextBlock>
-                        <TextBlock Grid.Column="6" VerticalAlignment="Center" FontWeight="SemiBold"  Margin="10,5" FontSize="14">
-                            <Run  Text="{Binding TotalAmount,FallbackValue=58}"/>
-                            <Run  Text="$"/>
-                        </TextBlock>
-                    </Grid>
-                </Border>
-                <Border BorderThickness="1,0.5" BorderBrush="Gray" Padding="0,8">
-                    <Grid >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Margin="10,5" VerticalAlignment="Center" Text="{Binding Article.Id,FallbackValue=02}" FontSize="14"/>
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center" FontWeight="SemiBold"  Margin="10,5" Text="{Binding Article.Name,FallbackValue=Lorem ipsum dolor sit ametconsectetur adipiscing elit}" FontSize="14"/>
-                        <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="10,5" Text="{Binding Article.UnitOfMeasure,FallbackValue=kg}" FontSize="14"/>
-                        <TextBlock Grid.Column="3" VerticalAlignment="Center" FontWeight="SemiBold" Margin="10,5" Text="{Binding QtyInUnitOfMeasure,FallbackValue=02}" FontSize="14"/>
-                        <TextBlock Grid.Column="4" VerticalAlignment="Center" FontWeight="SemiBold" Margin="10,5" Text="{Binding RemainingQty,FallbackValue=0}" FontSize="14"/>
-                        <TextBlock Grid.Column="5" VerticalAlignment="Center"  Margin="10,5" FontSize="14">
-                            <Run  Text="{Binding UnitSellingPrice,FallbackValue=58}"/>
-                            <Run  Text="$"/>
-                        </TextBlock>
-                        <TextBlock Grid.Column="6" VerticalAlignment="Center" FontWeight="SemiBold"  Margin="10,5" FontSize="14">
-                            <Run  Text="{Binding TotalAmount,FallbackValue=58}"/>
-                            <Run  Text="$"/>
-                        </TextBlock>
-                    </Grid>
-                </Border>
-                <Border BorderThickness="1,0.5" BorderBrush="Gray" Padding="0,8">
-                    <Grid >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Margin="10,5" VerticalAlignment="Center" Text="{Binding Article.Id,FallbackValue=02}" FontSize="14"/>
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center" FontWeight="SemiBold"  Margin="10,5" Text="{Binding Article.Name,FallbackValue=Lorem ipsum dolor sit ametconsectetur adipiscing elit}" FontSize="14"/>
-                        <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="10,5" Text="{Binding Article.UnitOfMeasure,FallbackValue=kg}" FontSize="14"/>
-                        <TextBlock Grid.Column="3" VerticalAlignment="Center" FontWeight="SemiBold" Margin="10,5" Text="{Binding QtyInUnitOfMeasure,FallbackValue=02}" FontSize="14"/>
-                        <TextBlock Grid.Column="4" VerticalAlignment="Center" FontWeight="SemiBold" Margin="10,5" Text="{Binding RemainingQty,FallbackValue=0}" FontSize="14"/>
-                        <TextBlock Grid.Column="5" VerticalAlignment="Center"  Margin="10,5" FontSize="14">
-                            <Run  Text="{Binding UnitSellingPrice,FallbackValue=58}"/>
-                            <Run  Text="$"/>
-                        </TextBlock>
-                        <TextBlock Grid.Column="6" VerticalAlignment="Center" FontWeight="SemiBold"  Margin="10,5" FontSize="14">
-                            <Run  Text="{Binding TotalAmount,FallbackValue=58}"/>
-                            <Run  Text="$"/>
-                        </TextBlock>
-                    </Grid>
-                </Border>
-            </ui:SimpleStackPanel>
-            <ui:SimpleStackPanel Grid.Row="4" Grid.Column="1">
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ui:ListView.ItemTemplate>
+            </ui:ListView>
+
+            <ui:SimpleStackPanel Grid.Row="5" Grid.Column="1">
                 <TextBlock  HorizontalAlignment="Right"  FontSize="16">
                     <Run Text="Total  "  />
-                    <Run  Text="{Binding CartSubTotal,FallbackValue=201}" FontWeight="SemiBold"/>
+                    <Run  Text="{Binding CartSubTotal,Mode=OneWay,FallbackValue=201}" FontWeight="SemiBold"/>
                     <Run  Text="$" FontWeight="SemiBold"/>
                 </TextBlock>
                 <TextBlock  HorizontalAlignment="Right"  FontSize="16">
                     <Run Text="Dette  "  />
-                     <Run  Text="{Binding Debt,FallbackValue=201}" FontWeight="SemiBold"/>
+                     <Run  Text="{Binding Debt,Mode=OneWay,FallbackValue=201}" FontWeight="SemiBold"/>
                     <Run  Text="$" FontWeight="SemiBold"/>
                 </TextBlock>
             </ui:SimpleStackPanel>

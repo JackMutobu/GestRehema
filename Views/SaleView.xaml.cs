@@ -135,14 +135,22 @@ namespace GestRehema.Views
                 {
                     PrintDialog printDialog = new PrintDialog();
                     printDialog.PrintTicket.PageMediaSize = new PageMediaSize(PageMediaSizeName.ISOA4);
-                    if(printDialog.ShowDialog() == true)
-                    {
-                        PrintCapabilities capabilities = printDialog.PrintQueue
+                    PrintCapabilities capabilities = printDialog.PrintQueue
                         .GetPrintCapabilities(printDialog.PrintTicket);
 
-                        BillView billView = new BillView();
-                        printDialog.PrintVisual(billView, "Imprimer facture");
-                    }
+                    BillView billView = new BillView(ViewModel!.SelectedSale!, ViewModel.Entreprise, ViewModel!.SelectedSale!.Customer!, ViewModel.SaleArticles.ToList(), ViewModel.TotalToPay, ViewModel.Debt);
+                    printDialog.PrintVisual(billView, $"Imprimer facture {ViewModel!.SelectedSale!.Id}");
+                });
+
+                this.BtnPrint
+                .Events().MouseRightButtonDown
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                {
+                    BillView billView = new BillView(ViewModel!.SelectedSale!, ViewModel.Entreprise, ViewModel!.SelectedSale!.Customer!, ViewModel.SaleArticles.ToList(), ViewModel.TotalToPay, ViewModel.Debt);
+                    var printPreview = new PrintPreview(billView);
+                    printPreview.ShowDialog();
+
                 });
 
             });

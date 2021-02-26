@@ -11,7 +11,14 @@ namespace GestRehema.Views
         public PrintPreview(FixedDocumentSequence document)
         {
             InitializeComponent();
-            PreviewD.Document = document;
+            //PreviewD.Document = document;
+        }
+
+        public PrintPreview(BillView billView)
+        {
+            InitializeComponent();
+            this.Content = billView;
+            this.Height = System.Windows.SystemParameters.FullPrimaryScreenHeight;
         }
     }
 }

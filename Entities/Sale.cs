@@ -23,6 +23,8 @@ namespace GestRehema.Entities
 
         public string ShortDateOperation => DateOperation.ToShortDateString();
 
+        public string ShortUpdateAt => UpdatedAt.GetValueOrDefault().ToShortDateString();
+
 
 
         public int CustomerId { get; set; }
