@@ -24,6 +24,13 @@ namespace GestRehema.ViewModels
 
             Router = new RoutingState();
 
+            this.WhenAnyValue(x => x.TauxDuJour)
+                .Subscribe(x =>
+                {
+                    if (x <= 0)
+                        TauxDuJour = 2000;
+                });
+
             UpdateEntreprise = ReactiveCommand.CreateFromTask(() =>
             {
                 Entreprise.TauxDuJour = TauxDuJour;

@@ -88,6 +88,11 @@ namespace GestRehema.Views
                 .Pay
                 .Subscribe(_ => this.Close());
 
+                this.ViewModel.WhenAnyValue(x => x.SelectedSaleCartItem)
+                    .Where(x => x != null)
+                    .SelectMany(x => ShowSaleUnitPirceDialog().ToObservable())
+                    .Subscribe();
+
             });
         }
 
@@ -114,6 +119,12 @@ namespace GestRehema.Views
         {
             var payementDialog = new SalePayementDialog(ViewModel!);
             await payementDialog.ShowAsync();
+        }
+
+        private async Task ShowSaleUnitPirceDialog()
+        {
+            var dialog = new SaleUnitSellingPriceDialog(ViewModel!);
+            await dialog.ShowAsync();
         }
     }
 }

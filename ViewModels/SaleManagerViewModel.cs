@@ -257,6 +257,8 @@ namespace GestRehema.ViewModels
                 .IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
 
+            UpdateSellingPrice = ReactiveCommand.Create(() => SelectedSaleCartItem);
+
         }
 
         public SaleViewModel SaleViewModel { get; }
@@ -265,6 +267,9 @@ namespace GestRehema.ViewModels
 
         [Reactive]
         public SalePayementModel? PayementModel { get; set; }
+
+        [Reactive]
+        public SaleCartItem? SelectedSaleCartItem { get; set; }
 
         public IObservableCollection<Customer> Customers => _targetCollectionCustomers;
         public IObservableCollection<Article> Articles => _targetCollectionArticles;
@@ -279,6 +284,8 @@ namespace GestRehema.ViewModels
         public ReactiveCommand<int, List<SaleCartItem>> RemoveFromCart { get; }
 
         public ReactiveCommand<List<SaleCartItem>, decimal> CalculateCartSubTotal { get; }
+
+        public ReactiveCommand<Unit, SaleCartItem?> UpdateSellingPrice { get; }
 
         public ReactiveCommand<Sale, string> Validate { get; }
 

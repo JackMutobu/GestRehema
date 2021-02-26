@@ -15,6 +15,8 @@ namespace GestRehema
             var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
 
             _appBootstrapper = new AppBootstrapper(connectionString);
+
+            FrameworkCompatibilityPreferences.KeepTextBoxDisplaySynchronizedWithTextProperty = false;
         }
     }
 }
