@@ -10,6 +10,7 @@ namespace GestRehema.Entities
         public Sale? Sale {get;set;}
 
         public decimal AmountPaid { get; set; }
+
         public int PayementId { get; set; }
         public Payement? Payement { get; set; }
 

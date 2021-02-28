@@ -106,7 +106,7 @@ namespace GestRehema.Views
 
                 this.ViewModel
                 .AddPayement
-                .SelectMany(_ => ShowPayementDialog().ToObservable())
+                .SelectMany(x => ShowPayementDialog(x).ToObservable())
                 .Subscribe();
 
                 this.ViewModel
@@ -176,9 +176,9 @@ namespace GestRehema.Views
             });
         }
 
-        private async Task ShowPayementDialog()
+        private async Task ShowPayementDialog(SalePayementModel salePayementModel)
         {
-            var payementDialog = new SalePayementDialog(ViewModel!);
+            var payementDialog = new SalePayementDialog(salePayementModel);
             await payementDialog.ShowAsync();
         }
 

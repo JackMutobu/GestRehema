@@ -222,14 +222,14 @@
                                                     <TextBlock Text="Livré" FontSize="14" HorizontalAlignment="Right"/>
                                                     <TextBlock HorizontalAlignment="Right"  FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
                                         <Run Text="{Binding DeliverdQtyInUnitOfMeasure,FallbackValue=20,Mode=OneWay}"/>
-                                        <Run Text="kg"/>
+                                        <Run Text="{Binding Article.UnitOfMeasure,FallbackValue=kg}"/>
                                                     </TextBlock>
                                                 </ui:SimpleStackPanel>
                                                 <ui:SimpleStackPanel >
                                                     <TextBlock Text="En attente" FontSize="14" HorizontalAlignment="Right"/>
                                                     <TextBlock HorizontalAlignment="Right"  FontWeight="SemiBold" FontSize="14" >
                                         <Run Text="{Binding AwaitingDeliveryInUnitOfMeasure,FallbackValue=200,Mode=OneWay}"/>
-                                        <Run Text="kg"/>
+                                        <Run Text="{Binding Article.UnitOfMeasure,FallbackValue=kg}"/>
                                                     </TextBlock>
                                                 </ui:SimpleStackPanel>
                                             </ui:SimpleStackPanel>

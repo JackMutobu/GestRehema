@@ -4,14 +4,16 @@ using GestRehema.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GestRehema.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210228174146_UpdateTotalPaid")]
+    partial class UpdateTotalPaid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,7 +198,7 @@ namespace GestRehema.Data.Migrations
                             Position = "Admin",
                             Postnom = "Informatique",
                             Prenom = "Rehema",
-                            UserId = new Guid("0c3cd029-4614-4bb6-83ef-c4fe2aaf5140")
+                            UserId = new Guid("800668c2-e14f-4b03-82c6-d89b2674ad2c")
                         });
                 });
 
@@ -268,8 +270,8 @@ namespace GestRehema.Data.Migrations
                         {
                             Id = -1,
                             Contact = "+243971871546\r\n+243822903906\r\n+243819521649",
-                            CreatedAt = new DateTime(2021, 2, 28, 18, 12, 33, 113, DateTimeKind.Utc).AddTicks(1305),
-                            DateDuJour = new DateTime(2021, 2, 28, 18, 12, 33, 112, DateTimeKind.Utc).AddTicks(3640),
+                            CreatedAt = new DateTime(2021, 2, 28, 17, 41, 29, 687, DateTimeKind.Utc).AddTicks(5574),
+                            DateDuJour = new DateTime(2021, 2, 28, 17, 41, 29, 687, DateTimeKind.Utc).AddTicks(2892),
                             Description = "Votre besoin en construction est assuré",
                             IDNAT = "493-N50888J",
                             Location = "Bunia",
@@ -536,10 +538,10 @@ namespace GestRehema.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("0c3cd029-4614-4bb6-83ef-c4fe2aaf5140"),
+                            Id = new Guid("800668c2-e14f-4b03-82c6-d89b2674ad2c"),
                             AccessLevel = "all",
-                            CreatedAt = new DateTime(2021, 2, 28, 18, 12, 33, 115, DateTimeKind.Utc).AddTicks(3928),
-                            Password = "10000.DeHFkIiSC5aYLw/9GTDgwQ==.vo58pf7K0kTzZ6aF153w3j0/7zYy6Sa3HAsTPmGtHtA=",
+                            CreatedAt = new DateTime(2021, 2, 28, 17, 41, 29, 689, DateTimeKind.Utc).AddTicks(120),
+                            Password = "10000.Pq5InwEkJb/hQ0AVTVbIfg==.t1fnLy3f9cMnydgq+p2hRZuKYvJ1jSTMj/ujuzZsi9I=",
                             Role = "SuperAdmin",
                             Username = "admin@rehema.com"
                         });
@@ -578,7 +580,7 @@ namespace GestRehema.Data.Migrations
                             AmountInDebt = 0m,
                             AmountInExcess = 0m,
                             AmountOwned = 0m,
-                            CreatedAt = new DateTime(2021, 2, 28, 18, 12, 33, 110, DateTimeKind.Utc).AddTicks(3724)
+                            CreatedAt = new DateTime(2021, 2, 28, 17, 41, 29, 685, DateTimeKind.Utc).AddTicks(7202)
                         });
                 });
 
@@ -614,7 +616,9 @@ namespace GestRehema.Data.Migrations
 
                     b.HasIndex("AmountExcessWalletId");
 
-                    b.HasIndex("PayementId");
+                    b.HasIndex("PayementId")
+                        .IsUnique()
+                        .HasFilter("[PayementId] IS NOT NULL");
 
                     b.ToTable("WalletHistories");
                 });
@@ -764,8 +768,8 @@ namespace GestRehema.Data.Migrations
                         .HasForeignKey("AmountExcessWalletId");
 
                     b.HasOne("GestRehema.Entities.Payement", "Payement")
-                        .WithMany("WalletHistory")
-                        .HasForeignKey("PayementId");
+                        .WithOne("WalletHistory")
+                        .HasForeignKey("GestRehema.Entities.WalletHistory", "PayementId");
 
                     b.Navigation("AmountDebtWallet");
 

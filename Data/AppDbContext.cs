@@ -35,6 +35,8 @@ namespace GestRehema.Data
 
         public DbSet<WalletHistory> WalletHistories { get; set; } = null!;
 
+        public DbSet<Payement> Payements { get; set; } = null!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -15,18 +15,22 @@ using DynamicData.Binding;
 
 namespace GestRehema.ViewModels
 {
+    public record LoadCustomerParameter(string? SearchQuery, int Skip=0, int Take=100, string? CustomerType = null);
     public class CustomerViewModel : ViewModelBaseWithValidation, IRoutableViewModel
     {
         private readonly NavigationRootViewModel _navigationRootViewModel;
         private ICustomerService _customerService;
+        private readonly IWalletService _walletService;
         private SourceList<Customer> _customers { get; } = new SourceList<Customer>();
         private readonly IObservableCollection<Customer> _targetCollectionCustomers = new ObservableCollectionExtended<Customer>();
+
 
         public CustomerViewModel(NavigationRootViewModel navigationRootViewModel = null!) : base(new CustomerValidation())
         {
             _navigationRootViewModel = navigationRootViewModel ?? Locator.Current.GetService<NavigationRootViewModel>();
             Model = new Customer();
             _customerService = Locator.Current.GetService<ICustomerService>();
+            _walletService = Locator.Current.GetService<IWalletService>();
             ImageUrl = "/Assets/Placeholder/profile.png";
 
             _customers.Connect()
@@ -40,7 +44,7 @@ namespace GestRehema.ViewModels
                 .Subscribe(x => Errors = x);
             ValidateModel();
 
-            LoadCustomers = ReactiveCommand.CreateFromTask<LoadParameter, List<Customer>>
+            LoadCustomers = ReactiveCommand.CreateFromTask<LoadCustomerParameter, List<Customer>>
                (p =>
                {
                    CurrentPage = p.Skip;
@@ -122,10 +126,39 @@ namespace GestRehema.ViewModels
             Delete.IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
             Delete
-                .Select(_ => new LoadParameter(SearchQuery, CurrentPage, ItemPerPage))
+                .Select(_ => new LoadCustomerParameter(SearchQuery, CurrentPage, ItemPerPage,SelectedCustomerType))
                 .InvokeCommand(LoadCustomers);
 
-            LoadCustomers.Execute(new LoadParameter(SearchQuery, CurrentPage, ItemPerPage)).Subscribe();
+            this.WhenAnyValue(x => x.SelectedCustomerType)
+                .Select(x => new LoadCustomerParameter(SearchQuery, CurrentPage, ItemPerPage, x))
+                .InvokeCommand(LoadCustomers);
+
+            LoadCustomers
+                .Select(x => x.FirstOrDefault())
+                .Subscribe(x => SelectedCustomer = x);
+
+            this.WhenAnyValue(x => x.SelectedCustomer)
+                .Where(x => x != null)
+                .Select(x => _customerService.GetWallet(x!.Id))
+                .Subscribe(x => CustomerWallet = x);
+
+            this.WhenAnyValue(x => x.SelectedCustomer)
+               .Where(x => x != null)
+               .Subscribe(x => PayementModel = new CustomerPayementModel(x!, Entreprise));
+
+            Pay = ReactiveCommand.CreateFromTask<Unit, Wallet>(_ => Task.Run(() => _walletService.AddExcess(CustomerWallet!.Id,Entreprise.WalletId,PayementModel!.TotalPaid)));
+            Pay.ThrownExceptions
+            .Select(x => x.Message)
+            .Subscribe(x => Errors = x);
+
+            Pay.IsExecuting
+                .ToPropertyEx(this, x => x.IsBusy);
+
+            Pay
+                .Subscribe(x => CustomerWallet = x);
+
+
+
         }
 
         private void InitializeFields()
@@ -163,18 +196,33 @@ namespace GestRehema.ViewModels
         public string? CustomerType { get; set; }
 
         [Reactive]
+        public string? SelectedCustomerType { get; set; }
+
+        [Reactive]
         public string ImageUrl { get; set; }
 
         [Reactive]
         public string? SearchQuery { get; set; }
 
+        [Reactive]
+        public Customer? SelectedCustomer { get; set; }
+
+        [Reactive]
+        public Wallet? CustomerWallet { get; private set; }
+
+        [Reactive]
+        public CustomerPayementModel PayementModel { get; private set; }
+
+
         public List<string> CustomerTypes { get; } = new List<string> { "Journalier", "Organization(ONG)", "Autre magasin" };
+
+        public List<string> SelectCustomerTypes { get; } = new List<string> { "Tous","Journalier", "Organization(ONG)", "Autre magasin" };
 
         public string? UrlPathSegment => nameof(CustomerViewModel);
 
         public IScreen HostScreen => _navigationRootViewModel;
 
-        public ReactiveCommand<LoadParameter,List<Customer>> LoadCustomers { get; }
+        public ReactiveCommand<LoadCustomerParameter,List<Customer>> LoadCustomers { get; }
 
         public ReactiveCommand<Unit,Customer> SaveCustomer { get; }
 
@@ -184,12 +232,17 @@ namespace GestRehema.ViewModels
 
         public ReactiveCommand<int, int> Delete { get; }
 
-        private List<Customer> LoadingCustomers(LoadParameter parameter)
-        => string.IsNullOrEmpty(parameter.SearchQuery) switch
+        public ReactiveCommand<Unit, Wallet> Pay { get; }
+
+        private List<Customer> LoadingCustomers(LoadCustomerParameter parameter)
         {
-            true => _customerService.GetCustomers(parameter.Skip, parameter.Take),
-            _ => _customerService.SearchCustomers(parameter.SearchQuery!)
-        };
+            string? customerType = parameter.CustomerType == "Tous" ? null : parameter.CustomerType;
+            return string.IsNullOrEmpty(parameter.SearchQuery) switch
+            {
+                true => _customerService.GetCustomers(parameter.Skip, parameter.Take, customerType),
+                _ => _customerService.SearchCustomers(parameter.SearchQuery!, customerType)
+            };
+        }
 
         public ReactiveCommand<ValidationParameter<Customer>, string> Validate { get; }
 

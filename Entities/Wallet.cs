@@ -16,7 +16,7 @@ namespace GestRehema.Entities
 
         public decimal AmountOwned { get; set; }
 
-        public decimal Balance => AmountOwned + AmountInExcess - AmountInDebt;
+        public decimal Balance => (AmountOwned + AmountInExcess) >= AmountInDebt ? AmountOwned + AmountInExcess - AmountInDebt : 0;
 
         public Customer? Customer { get; set; }
 

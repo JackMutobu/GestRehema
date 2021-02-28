@@ -29,6 +29,7 @@ namespace GestRehema.Views
             InitializeComponent();
             ViewModel = Locator.Current.GetService<SaleManagerViewModel>() ?? new SaleManagerViewModel(saleViewModel);
             DataContext = ViewModel;
+            this.Height = System.Windows.SystemParameters.FullPrimaryScreenHeight;
 
             this.WhenActivated(disposables =>
             {
@@ -70,9 +71,9 @@ namespace GestRehema.Views
                .DisposeWith(disposables);
 
                 this.ViewModel
-                .Validate
-                .Where(x => string.IsNullOrEmpty(x))
-                .SelectMany(_ => ShowPayementDialog().ToObservable())
+                .AddPayement
+                .Where(x => x != null)
+                .SelectMany(x => ShowPayementDialog(x).ToObservable())
                 .Subscribe();
 
                 this.WhenAnyValue(x => x.ViewModel!.Errors)
@@ -115,9 +116,9 @@ namespace GestRehema.Views
             }
         }
 
-        private async Task ShowPayementDialog()
+        private async Task ShowPayementDialog(SalePayementModel salePayementModel)
         {
-            var payementDialog = new SalePayementDialog(ViewModel!);
+            var payementDialog = new SalePayementDialog(salePayementModel);
             await payementDialog.ShowAsync();
         }
 

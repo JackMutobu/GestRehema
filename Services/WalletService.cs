@@ -8,9 +8,9 @@ namespace GestRehema.Services
 {
     public interface IWalletService
     {
-        Wallet AddDebt(int walletId, int entrepriseWalletId, decimal amount);
-        Wallet AddExcess(int walletId, int entrepriseWalletId, decimal amount);
-        Wallet AddToEntreprise(int entrepriseWalletId, decimal amount);
+        Wallet AddDebt(int walletId, int entrepriseWalletId, decimal amount, int? payementId = null);
+        Wallet AddExcess(int walletId, int entrepriseWalletId, decimal amount, int? payementId = null);
+        Wallet AddToEntreprise(int entrepriseWalletId, decimal amount, int? payementId = null);
     }
 
     public class WalletService : IWalletService
@@ -22,7 +22,7 @@ namespace GestRehema.Services
             _dbContext = Locator.Current.GetService<AppDbContext>();
         }
 
-        public Wallet AddDebt(int walletId, int entrepriseWalletId, decimal amount)
+        public Wallet AddDebt(int walletId, int entrepriseWalletId, decimal amount, int? payementId = null)
         {
             if (walletId == entrepriseWalletId)
                 throw new ArgumentException("Comptes virtuels invalides");
@@ -41,8 +41,12 @@ namespace GestRehema.Services
                 Description = $"Ajout d'une dette au compte {walletId}",
                 Amount = amount,
                 AmountDebtWalletId = walletId,
-                AmountExcessWalletId = entrepriseWalletId
+                AmountExcessWalletId = entrepriseWalletId,
+                PayementId = payementId
             };
+
+            entrepriseWallet = RegularizeWallet(entrepriseWallet, true);
+            wallet = RegularizeWallet(wallet);
 
             _dbContext.Wallets.Update(wallet);
             _dbContext.Wallets.Update(entrepriseWallet);
@@ -52,7 +56,7 @@ namespace GestRehema.Services
             return wallet;
         }
 
-        public Wallet AddExcess(int walletId, int entrepriseWalletId, decimal amount)
+        public Wallet AddExcess(int walletId, int entrepriseWalletId, decimal amount, int? payementId = null)
         {
             if (walletId == entrepriseWalletId)
                 throw new ArgumentException("Comptes virtuels invalides");
@@ -71,8 +75,12 @@ namespace GestRehema.Services
                 Description = $"Ajout d'une dette au compte {entrepriseWalletId}",
                 Amount = amount,
                 AmountDebtWalletId = walletId,
-                AmountExcessWalletId = entrepriseWalletId
+                AmountExcessWalletId = entrepriseWalletId,
+                PayementId = payementId
             };
+
+            entrepriseWallet = RegularizeWallet(entrepriseWallet, true);
+            wallet = RegularizeWallet(wallet);
 
             _dbContext.Wallets.Update(wallet);
             _dbContext.Wallets.Update(entrepriseWallet);
@@ -82,7 +90,7 @@ namespace GestRehema.Services
             return wallet;
         }
 
-        public Wallet AddToEntreprise(int entrepriseWalletId, decimal amount)
+        public Wallet AddToEntreprise(int entrepriseWalletId, decimal amount, int? payementId = null)
         {
             if (amount <= 0)
                 throw new ArgumentException("Le montant doit etre supérieur à 0");
@@ -97,7 +105,8 @@ namespace GestRehema.Services
                 Description = $"Ajout de {amount}$ à la caisse",
                 Amount = amount,
                 AmountDebtWalletId = entrepriseWalletId,
-                AmountExcessWalletId = entrepriseWalletId
+                AmountExcessWalletId = entrepriseWalletId,
+                PayementId = payementId
             };
 
             _dbContext.Wallets.Update(entrepriseWallet);
@@ -106,5 +115,24 @@ namespace GestRehema.Services
 
             return entrepriseWallet;
         }
+
+        private Wallet RegularizeWallet(Wallet wallet, bool isEntrerpise = false)
+        {
+            var balance = (wallet.AmountInExcess - wallet.AmountInDebt) + wallet.AmountOwned;
+            if (balance >= 0)
+            {
+                wallet.AmountInExcess = isEntrerpise ? 0 : balance;
+                wallet.AmountInDebt = 0;
+                wallet.AmountOwned = isEntrerpise ? balance : 0;
+            }
+            else
+            {
+                wallet.AmountInDebt = balance * -1;
+                wallet.AmountInExcess = 0;
+                wallet.AmountOwned = 0;
+            }
+            return wallet;
+        }
+
     }
 }

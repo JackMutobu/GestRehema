@@ -8,7 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Threading.Tasks;
 using System.Reactive.Threading.Tasks;
 using System.Windows.Controls;
-using GestRehema.Events;
+using GestRehema.Entities;
 
 namespace GestRehema.Views
 {
@@ -54,18 +54,51 @@ namespace GestRehema.Views
                 this.TxtSearch
                 .Events().TextChanged
                 .Select(x => x.Source as TextBox)
-                .Select(x => new LoadParameter(x!.Text, ViewModel.CurrentPage, ViewModel.ItemPerPage))
+                .Select(x => new LoadCustomerParameter(x!.Text, ViewModel.CurrentPage, ViewModel.ItemPerPage, ViewModel.SelectedCustomerType))
                 .InvokeCommand(ViewModel.LoadCustomers);
 
                 this.BtnRefresh
                 .Events().Click
-                .Select(x => new LoadParameter(ViewModel.SearchQuery, ViewModel.CurrentPage, ViewModel.ItemPerPage))
+                .Select(x => new LoadCustomerParameter(ViewModel.SearchQuery, ViewModel.CurrentPage, ViewModel.ItemPerPage,ViewModel.SelectedCustomerType))
                 .InvokeCommand(ViewModel.LoadCustomers);
 
                 this.BtnRefresh
                   .Events().Click
                   .Throttle(TimeSpan.FromMilliseconds(500))
                   .Subscribe(x => RefreshBindings());
+
+                this.ComboCustomers
+                .Events().SelectionChanged
+                .Where(x => x.AddedItems.Count > 0)
+                .Select(x => x.AddedItems[0] as string)
+                .Subscribe(x => ViewModel.SelectedCustomerType = x);
+
+                this.DtGridClient
+                   .Events().SelectionChanged
+                   .Where(x => x.AddedItems.Count > 0)
+                   .Select(x => x.AddedItems[0] as Customer)
+                   .Subscribe(x => ViewModel.SelectedCustomer = x);
+
+                this.DtGridClient
+                   .Events().SelectionChanged
+                   .Where(x => x.AddedItems.Count > 0)
+                   .Select(x => x.AddedItems[0] as Customer)
+                   .Where(x => x != null)
+                   .Throttle(TimeSpan.FromMilliseconds(200))
+                   .Subscribe(x => RefreshBindings());
+
+                this.ViewModel.SaveCustomer
+                   .Throttle(TimeSpan.FromMilliseconds(200))
+                   .Subscribe(x => RefreshBindings());
+
+                this.BtnDeposit
+                .Events().Click
+                .SubscribeOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => ShowDepositDialog().ToObservable());
+
+                this.ViewModel.Pay
+                .Throttle(TimeSpan.FromMilliseconds(100))
+                .Subscribe(_ => RefreshBindings());
 
             });
         }
@@ -74,6 +107,19 @@ namespace GestRehema.Views
             try
             {
                 CustomerAddDialog dialog = new CustomerAddDialog(ViewModel!);
+                await dialog.ShowAsync();
+            }
+            catch (Exception ex)
+            {
+                ViewModel!.Errors = ex.Message;
+            }
+        }
+
+        private async Task ShowDepositDialog()
+        {
+            try
+            {
+                var dialog = new CustomerDepositDialog(ViewModel!);
                 await dialog.ShowAsync();
             }
             catch (Exception ex)
@@ -104,6 +150,10 @@ namespace GestRehema.Views
             {
                 DtGridClient.ItemsSource = null;
                 DtGridClient.ItemsSource = ViewModel!.Customers;
+                BorderCustomer.DataContext = null;
+                BorderCustomer.DataContext = ViewModel;
+                BorderWallet.DataContext = null;
+                BorderWallet.DataContext = ViewModel;
             });
         }
     }

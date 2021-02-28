@@ -1,6 +1,7 @@
 ﻿using GestRehema.Data;
 using GestRehema.Entities;
 using GestRehema.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,9 @@ namespace GestRehema.Services
         Customer AddOrUpdateCustomer(Customer item);
         int DeleteCustomer(int itemId);
         Customer? GetCustomer(int itemId);
-        List<Customer> GetCustomers(int skip = 0, int take = 100);
-        List<Customer> SearchCustomers(string query);
+        List<Customer> GetCustomers(int skip = 0, int take = 100, string? customerType = null);
+        List<Customer> SearchCustomers(string query, string? customerType = null);
+        Wallet? GetWallet(int customerId);
     }
 
     public class CustomerService : ICustomerService
@@ -26,12 +28,14 @@ namespace GestRehema.Services
             _dbContext = Locator.Current.GetService<AppDbContext>();
         }
 
-        public List<Customer> SearchCustomers(string query)
+        public List<Customer> SearchCustomers(string query, string? customerType = null)
             => _dbContext
             .Customers
+            .Include(x => x.Wallet)
             .Where(x => x.Name.ToLower().Contains(query.ToLower())
             || x.Id.ToString().Contains(query)
-            || (!string.IsNullOrEmpty(x.NumTelephone) && x.NumTelephone.ToLower().Contains(query.ToLower())))
+            || (!string.IsNullOrEmpty(x.NumTelephone) && x.NumTelephone.ToLower().Contains(query.ToLower()))
+            && (customerType == null || x.CustomerType == customerType))
             .ToList()
             .DistinctBy(x => x.Id)
             .ToList();
@@ -78,11 +82,22 @@ namespace GestRehema.Services
         }
 
         public Customer? GetCustomer(int itemId)
-       => _dbContext.Customers.SingleOrDefault(x => x.Id == itemId);
+       => _dbContext.Customers
+            .Include(x => x.Wallet)
+            .SingleOrDefault(x => x.Id == itemId);
 
-        public List<Customer> GetCustomers(int skip = 0, int take = 100)
-            => _dbContext.Customers.Skip(skip)
+        public Wallet? GetWallet(int customerId)
+            => _dbContext.Customers
+            .Include(x => x.Wallet)
+            .SingleOrDefault(x => x.Id == customerId)?
+            .Wallet;
+
+        public List<Customer> GetCustomers(int skip = 0, int take = 100, string? customerType = null)
+            => _dbContext.Customers
+            .Include(x => x.Wallet)
+            .Skip(skip)
             .Take(take)
+            .Where(x => (customerType == null || x.CustomerType == customerType))
             .OrderByDescending(x => x.Id)
             .ToList();
     }

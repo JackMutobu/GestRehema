@@ -16,20 +16,15 @@ using System.Threading.Tasks;
 
 namespace GestRehema.ViewModels
 {
-    public class SaleViewModel : ViewModelBaseWithValidation, IRoutableViewModel
+    public class SaleViewModel : BaseSaleViewModel, IRoutableViewModel
     {
         private readonly NavigationRootViewModel _navigationRootViewModel;
-        private readonly ISaleService _saleService;
-        private readonly IWalletService _walletService;
-
         private SourceList<Sale> _sales { get; } = new SourceList<Sale>();
         private readonly IObservableCollection<Sale> _targetCollectionSales = new ObservableCollectionExtended<Sale>();
 
         public SaleViewModel(NavigationRootViewModel navigationRootViewModel = null!) : base(new SaleValidation())
         {
             _navigationRootViewModel = navigationRootViewModel ?? Locator.Current.GetService<NavigationRootViewModel>();
-            _saleService = Locator.Current.GetService<ISaleService>();
-            _walletService = Locator.Current.GetService<IWalletService>();
 
             _sales.Connect()
             .ObserveOnDispatcher()
@@ -56,12 +51,12 @@ namespace GestRehema.ViewModels
                 .ToPropertyEx(this, x => x.IsBusy);
 
             LoadSale = ReactiveCommand.CreateFromTask<int, Sale>(id => Task.Run(() => Locator.Current.GetService<ISaleService>().GetSale(id)));
-            LoadSale
-                .Subscribe(x => SelectedSale = x);
 
             LoadSale.ThrownExceptions
              .Select(x => x.Message)
              .Subscribe(x => Errors = x);
+            LoadSale
+                .Subscribe(x => SelectedSale = x);
             LoadSales
                 .Where(x => x.Count > 0)
                 .Select(x => x.First().Id)
@@ -82,7 +77,6 @@ namespace GestRehema.ViewModels
               (totAmount,totPaid) => totAmount - totPaid)
               .ToPropertyEx(this, x => x.Debt);
 
-
             LoadSale
               .Select(sale => GetSaleArticles(sale))
               .Select(x => x.Sum(x => x.Quantity) > x.Sum(x => x.DeliveredQuantity))
@@ -92,44 +86,30 @@ namespace GestRehema.ViewModels
                 .Execute(new LoadParameter(SearchQuery, CurrentPage, ItemPerPage))
                 .Subscribe();
 
-            AddPayement = ReactiveCommand.Create(() => new SalePayementModel(SelectedSale!, Entreprise.TauxDuJour, Debt));
+            Pay = ReactiveCommand.CreateFromTask<List<Payement>, Sale>(x => Task.Run(() =>
+            {
+                Sale sale = UpdateOrAddSale(x);
+                return sale;
+            }));
+            Pay
+                .ThrownExceptions
+                .Select(x => x.Message)
+                .Subscribe(x => Errors = x);
+            Pay
+                .IsExecuting
+                .ToPropertyEx(this, x => x.IsBusy);
+
+
+            AddPayement = ReactiveCommand.Create(() => new SalePayementModel(SelectedSale!, Entreprise, Locator.Current.GetService<ICustomerService>().GetWallet(SelectedSale!.Customer!.Id) ?? throw new Exception("Wallet can not be null"), Debt));
             AddPayement
                 .ToPropertyEx(this, x => x.PayementModel);
 
-            Pay = ReactiveCommand.CreateFromTask<Unit, Sale>(_ => Task.Run(() =>
-            {
-                if (PayementModel == null)
-                    throw new Exception("Veuillez procéder au paiement");
+            AddPayement
+                .SelectMany(x =>
+                x.Pay)
+                .Where(x => x.Count > 0)
+                .InvokeCommand(Pay);
 
-                var sale = PayementModel.Sale;
-                var payement = new SalePayement()
-                {
-                    AmountPaid = PayementModel.TotalPaid > PayementModel.TotalAmount ? PayementModel.TotalAmount : PayementModel.TotalPaid,
-                    Date = Entreprise.DateDuJour,
-                    SaleId = sale.Id,
-                    Payement = new Payement
-                    {
-                        AmountInCDF = PayementModel.PaidInCDF,
-                        AmountInUSD = PayementModel.PaidInUsd,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        Method = PayementModel.PayementMethod,
-                        ToCompany = true
-                    }
-                };
-
-                if (PayementModel.ExcessInUsd > 0 && PayementModel.AddExcessToCustomerWallet)
-                    _walletService.AddExcess(SelectedSale!.Customer!.WalletId, Entreprise.WalletId, PayementModel.ExcessInUsd);
-
-                if (PayementModel.Debt > 0)
-                    _walletService.AddDebt(SelectedSale!.Customer!.WalletId, Entreprise.WalletId, PayementModel.Debt);
-
-                _walletService.AddToEntreprise(Entreprise.WalletId, PayementModel.TotalAmount);
-
-                sale = _saleService.AddPayement(payement, sale.Id);
-
-                return sale;
-            }), Observable.Return(!IsBusy));
             Pay
                 .Select(x => x.Id)
                 .InvokeCommand(LoadSale);
@@ -140,13 +120,6 @@ namespace GestRehema.ViewModels
                     _sales.Remove(sale);
                     _sales.Insert(0, x);
                 });
-            Pay
-                .ThrownExceptions
-                .Select(x => x.Message)
-                .Subscribe(x => Errors = x);
-            Pay
-                .IsExecuting
-                .ToPropertyEx(this, x => x.IsBusy);
 
             AddDelivery = ReactiveCommand.Create<int,SaleDeliveryModel>(articleId => 
             {
@@ -211,9 +184,8 @@ namespace GestRehema.ViewModels
                 .IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
 
-            //PrintBill = ReactiveCommand.Create(() => );
-
         }
+
 
         public int CurrentPage { get; set; } = 0;
 
@@ -222,29 +194,26 @@ namespace GestRehema.ViewModels
         [Reactive]
         public string? SearchQuery { get; set; }
 
-        [Reactive]
-        public Sale? SelectedSale { get; set; }
-
         [ObservableAsProperty]
         public ObservableCollection<SaleArticleItem> SaleArticles { get; }
 
         [ObservableAsProperty]
         public bool CanAddDelivery { get;}
 
-        [ObservableAsProperty]
-        public decimal TotalPaid { get; }
+        [Reactive]
+        public Sale? SelectedSale { get; protected set; }
 
         [ObservableAsProperty]
-        public decimal TotalToPay { get; }
+        public decimal TotalToPay { get; protected set; }
+
+        [ObservableAsProperty]
+        public decimal TotalPaid { get; }
 
         [ObservableAsProperty]
         public decimal Debt { get; }
 
         [ObservableAsProperty]
-        public SalePayementModel PayementModel { get; }
-
-        [ObservableAsProperty]
-        public SaleDeliveryModel DeliveryModel { get; }
+        public SaleDeliveryModel? DeliveryModel { get; }
 
 
         public IObservableCollection<Sale> Sales => _targetCollectionSales;
@@ -257,17 +226,11 @@ namespace GestRehema.ViewModels
 
         public ReactiveCommand<int, Sale> LoadSale { get; }
 
-        public ReactiveCommand<Unit, Sale> Pay { get; }
-
-        public ReactiveCommand<Unit, SalePayementModel> AddPayement { get; }
-
         public ReactiveCommand<Unit, Sale> Deliver { get; }
 
         public ReactiveCommand<int, SaleDeliveryModel> AddDelivery { get; }
 
         public ReactiveCommand<int, Sale> DeliverAll { get; }
-
-        public ReactiveCommand<Unit, Unit> PrintBill { get; }
 
         private List<Sale> LoadingSales(LoadParameter parameter)
         => string.IsNullOrEmpty(parameter.SearchQuery) switch

@@ -8,16 +8,10 @@ namespace GestRehema.Views
     /// </summary>
     public partial class SalePayementDialog : ContentDialog
     {
-        public SalePayementDialog(SaleManagerViewModel saleManagerViewModel)
+        public SalePayementDialog(BasePayementModel basePayementModel)
         {
             InitializeComponent();
-            DataContext = saleManagerViewModel;
-        }
-
-        public SalePayementDialog(SaleViewModel saleViewModel)
-        {
-            InitializeComponent();
-            DataContext = saleViewModel;
+            DataContext = basePayementModel;
         }
     }
 }

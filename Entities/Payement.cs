@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace GestRehema.Entities
 {
     public class Payement : IBaseEntity
     {
+        public Payement()
+        {
+            WalletHistory = new Collection<WalletHistory>();
+        }
         public int Id { get; set; }
 
         public DateTime CreatedAt { get; set; }
@@ -12,7 +18,7 @@ namespace GestRehema.Entities
 
         public string Method { get; set; } = null!;
 
-        public int? TransactionId { get; set; }
+        public string? TransactionId { get; set; }
 
         public string? PayementOrganization { get; set; }
 
@@ -22,13 +28,18 @@ namespace GestRehema.Entities
 
         public decimal AmountInCDF { get; set; }
 
+        public decimal TotalPaid { get; private set; }
+
         public bool ToCompany { get; set; }
 
         public SalePayement? SalePayement { get; set; }
 
-        public int? WalletId { get; set; }
+        public ICollection<WalletHistory> WalletHistory { get; set; }
 
-        public Wallet? Wallet { get; set; }
+        public void SetTotalPaid(decimal exchangeRate)
+        {
+            TotalPaid = AmountInUSD + (AmountInCDF / exchangeRate);
+        }
 
     }
 }

@@ -6,7 +6,7 @@
               xmlns:ui="http://schemas.modernwpf.com/2019"
              xmlns:local="clr-namespace:GestRehema.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Background="{DynamicResource AppContentBackgroundBrush}">
+             d:DesignHeight="850" d:DesignWidth="1200" Background="{DynamicResource AppContentBackgroundBrush}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -19,12 +19,14 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ui:SimpleStackPanel VerticalAlignment="Center">
+            <ui:SimpleStackPanel VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Left" Orientation="Horizontal" Spacing="10">
                 <TextBox 
                         x:Name="TxtSearch"
                         ui:ControlHelper.PlaceholderText="Rechercher un client par NOM ou ID"
                         MinWidth="350"
                         HorizontalAlignment="Left" />
+                <TextBlock Text="Voir les clients:" VerticalAlignment="Center" FontSize="16"/>
+                <ComboBox x:Name="ComboCustomers" SelectedIndex="0" ItemsSource="{Binding SelectCustomerTypes}"  MinWidth="150" />
             </ui:SimpleStackPanel>
 
             <ui:SimpleStackPanel Spacing="10" Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center">
@@ -45,11 +47,16 @@
                     </ui:SimpleStackPanel>
                 </Button>
             </ui:SimpleStackPanel>
-            
+
         </Grid>
         <TextBlock x:Name="TxtError" Grid.Row="1"  Margin="0,10" Visibility="Collapsed" Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" />
         <ui:ProgressBar  x:Name="ProgIndicator" IsIndeterminate="True" Grid.Row="1"/>
-        <DataGrid Grid.Row="2"
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <DataGrid 
                 x:Name="DtGridClient"
                 AutoGenerateColumns="False"
                 HeadersVisibility="Column"
@@ -57,79 +64,409 @@
                 GridLinesVisibility="Horizontal"
                 VirtualizingPanel.VirtualizationMode="Recycling"
                 VirtualizingPanel.IsVirtualizingWhenGrouping="True">
-            <DataGrid.Resources>
-                <ResourceDictionary>
-                    <Style x:Key="{x:Type DataGridCell}" TargetType="{x:Type DataGridCell}">
-                        <Setter Property="BorderBrush" Value="{x:Null}" />
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="BorderBrush" Value="{x:Null}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                    <Style TargetType="{x:Type DataGridRow}">
-                        <Setter Property="BorderBrush" Value="{x:Null}" />
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="BorderBrush" Value="{x:Null}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ResourceDictionary>
-            </DataGrid.Resources>
-            <DataGrid.Columns>
+                <DataGrid.Resources>
+                    <ResourceDictionary>
+                        <Style x:Key="{x:Type DataGridCell}" TargetType="{x:Type DataGridCell}">
+                            <Setter Property="BorderBrush" Value="{x:Null}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderBrush" Value="{x:Null}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                        <Style TargetType="{x:Type DataGridRow}">
+                            <Setter Property="BorderBrush" Value="{x:Null}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderBrush" Value="{x:Null}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ResourceDictionary>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
 
-                <DataGridTextColumn 
+                    <DataGridTextColumn 
                         Header="ID"
                         IsReadOnly="True"
-                        Width="80"
+                        Width="60"
                         Binding="{Binding Id}" />
-                <DataGridTemplateColumn Header="Image">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ui:PersonPicture Height="80" Margin="0,5" DisplayName="{Binding Name}" ProfilePicture="{Binding ImageUrl}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn
+                    <DataGridTemplateColumn Header="Image">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ui:PersonPicture Height="60" Margin="0,5" DisplayName="{Binding Name}" ProfilePicture="{Binding ImageUrl}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn
                         Header="Noms"
-                        Width="320"
+                        Width="200"
+                         IsReadOnly="True"
                         Binding="{Binding Name}" />
-                <DataGridTextColumn
-                        Header="Numéro de Téléphone"
+                    <DataGridTextColumn
+                        Header="Num Téléphone"
                         IsReadOnly="True"
                         Binding="{Binding NumTelephone}" />
-                <DataGridTextColumn
-                        Header="Email"
-                        IsReadOnly="True"
-                        Binding="{Binding Email}" />
-                <DataGridTextColumn
-                        Header="Adresse"
-                        Binding="{Binding Adresse}" />
-                <DataGridTextColumn
-                        Header="Type de client"
+                    <DataGridTextColumn
+                        Header="Client"
                         IsReadOnly="True"
                         Binding="{Binding CustomerType}" />
-                <DataGridTemplateColumn Header="Action" Width="100" IsReadOnly="True" >
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ui:SimpleStackPanel Spacing="10" Orientation="Horizontal" VerticalAlignment="Center">
-                                <Button  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:CustomerViewBase}}, Path= DataContext.SelectForUpdate}" CommandParameter="{Binding Id}" ToolTip="Modifier">
-                                    <Viewbox Height="25">
-                                        <Path  Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}" Data="M46.6,3.4C45.6,2.4 44.4,2 43.2,2 42,2 40.7,2.5 39.8,3.4 39.8,3.4 39.7,3.5 39.6,3.6 39.6,3.6 39.6,3.6 39.6,3.6L4.3,38.8C4.2,38.9,4.1,39.1,4,39.2L2,46.7C1.9,47 2,47.4 2.3,47.7 2.5,47.9 2.7,48 3,48 3.1,48 3.2,48 3.3,48L10.8,46C11,46,11.1,45.9,11.2,45.7L46.4,10.5C46.4,10.5 46.4,10.5 46.4,10.5 46.5,10.4 46.6,10.3 46.6,10.3 48.5,8.4 48.5,5.3 46.6,3.4z M45.2,4.8C46.3,5.9 46.3,7.7 45.2,8.9 44.9,9.2 44.6,9.5 44.3,9.8L40.2,5.7C40.7,5.2 41.1,4.8 41.1,4.8 41.6,4.3 42.4,4 43.1,4 43.9,4 44.6,4.3 45.2,4.8z M5.6,41.2L8.8,44.4 4.4,45.6 5.6,41.2z" />
-                                    </Viewbox>
-                                </Button>
-                                <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:CustomerViewBase}}, Path= DataContext.SelectForDelete}" CommandParameter="{Binding Id}"   ToolTip="Supprimer">
-                                    <Viewbox Height="25">
-                                        <Path  Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}" Data="M4.9902344,3.9902344A1.0001,1.0001,0,0,0,4.2929688,5.7070312L10.585938,12 4.2929688,18.292969A1.0001,1.0001,0,1,0,5.7070312,19.707031L12,13.414062 18.292969,19.707031A1.0001,1.0001,0,1,0,19.707031,18.292969L13.414062,12 19.707031,5.7070312A1.0001,1.0001,0,0,0,18.980469,3.9902344A1.0001,1.0001,0,0,0,18.292969,4.2929688L12,10.585938 5.7070312,4.2929688A1.0001,1.0001,0,0,0,4.9902344,3.9902344z" />
-                                    </Viewbox>
-                                </Button>
-                            </ui:SimpleStackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
 
-            </DataGrid.Columns>
-        </DataGrid>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Grid  Grid.Column="1" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Border x:Name="BorderCustomer"  CornerRadius="2" VerticalAlignment="Stretch"  Margin="2.5,5" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" Padding="5" HorizontalAlignment="Stretch">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ui:PersonPicture Height="90" Margin="5" DisplayName="{Binding SelectedCustomer.Name,FallbackValue=Veuillez enregistrer un client}" ProfilePicture="{Binding SelectedCustomer.ImageUrl}"/>
+                        <ui:SimpleStackPanel DataContext="{Binding SelectedCustomer}"  Grid.Column="1" HorizontalAlignment="Right" Spacing="5">
+                            <TextBlock Text="{Binding Name,FallbackValue=Veuillez enregistrer un client}" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                            <TextBlock Text="{Binding CustomerType,FallbackValue=Type}" HorizontalAlignment="Right"  FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" FontWeight="Medium" />
+                            <TextBlock Text="{Binding Adresse,FallbackValue=Addresse}" HorizontalAlignment="Right"  FontSize="14"  FontWeight="Light" />
+                            <TextBlock Text="{Binding NumTelephone,FallbackValue=Numéro}" HorizontalAlignment="Right"  FontSize="14"  FontWeight="Light" />
+                            <TextBlock Text="{Binding Email,FallbackValue=Email}" HorizontalAlignment="Right"  FontSize="14"  FontWeight="Light" />
+                        </ui:SimpleStackPanel>
+                        <Button Command="{Binding SelectForUpdate}" CommandParameter="{Binding SelectedCustomer.Id,FallbackValue=1}"  x:Name="BtnModifyCustomer" Grid.Column="2" Margin="20,0">
+                            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                                <Viewbox Height="15">
+                                    <Path  Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}" Data="M21.980469,2C18.136719,2.085938 15.375,3.199219 13.765625,5.3125 11.949219,7.703125 11.632813,11.265625 12.796875,16.195313 12.386719,16.726563 12.011719,17.574219 12.109375,18.734375 12.402344,20.898438 13.226563,21.789063 13.898438,22.152344 14.234375,23.953125 15.21875,25.863281 16.101563,26.765625 16.105469,26.988281 16.109375,27.203125 16.113281,27.417969 16.132813,28.375 16.144531,29.203125 16.019531,30.265625 15.472656,31.671875 13.441406,32.476563 11.09375,33.40625 7.191406,34.953125 2.335938,36.878906 2,42.949219L1.945313,44 29,44C29,43,29.207031,42.691406,29,42L24.765625,42C24.265625,38.757813,22.5,35.800781,22.5,35.800781L23.234375,35.15625 25.21875,37.625C25.410156,37.859375 25.691406,38 25.992188,38 26.292969,38.003906 26.582031,37.867188 26.769531,37.636719L29.425781,34.421875C30.605469,35.316406,32,36.117188,33.550781,36.894531L34.449219,37.34375 35.34375,35.550781 34.449219,35.105469C32.648438,34.207031 31.144531,33.289063 30.042969,32.328125 29.976563,32.257813 29.90625,32.199219 29.828125,32.148438 29.800781,32.125 29.765625,32.101563 29.742188,32.078125 28.621094,31.027344 28.007813,29.976563 27.890625,28.738281L27.8125,27.902344C27.804688,27.527344 27.800781,27.160156 27.800781,26.753906 28.667969,25.839844 29.589844,23.925781 29.972656,22.191406 30.691406,21.851563 31.589844,20.96875 31.796875,18.683594 31.890625,17.558594 31.582031,16.730469 31.15625,16.199219 31.816406,14.128906 32.9375,9.535156 31.09375,6.488281 30.253906,5.101563 28.941406,4.230469 27.183594,3.882813 26.21875,2.664063 24.398438,2 21.980469,2z M22,4C23.890625,4,25.253906,4.476563,25.734375,5.304688L25.980469,5.722656 26.457031,5.789063C27.835938,5.984375 28.792969,6.550781 29.378906,7.523438 30.664063,9.640625 30.007813,13.5 29.058594,16.160156L28.742188,16.984375 29.535156,17.382813C29.625,17.445313 29.863281,17.789063 29.804688,18.507813 29.667969,19.988281 29.199219,20.382813 29.097656,20.402344L28.234375,20.402344 28.109375,21.261719C27.835938,23.183594,26.683594,25.15625,26.304688,25.433594L25.800781,25.71875 25.800781,26.300781C25.800781,26.898438,25.804688,27.410156,25.8125,27.933594L25.804688,27.933594 25.8125,27.992188C25.816406,28.34375,25.828125,28.753906,25.84375,29.121094L22,31.253906 18.105469,29.09375C18.125,28.503906 18.121094,27.945313 18.109375,27.378906 18.105469,27.035156 18.097656,26.679688 18.097656,26.296875L18.035156,25.734375 17.609375,25.4375C17.214844,25.167969,15.972656,23.171875,15.796875,21.304688L15.78125,20.40625 14.875,20.40625C14.730469,20.351563 14.285156,19.878906 14.09375,18.515625 14.027344,17.679688 14.453125,17.332031 14.453125,17.332031L15.046875,16.9375 14.871094,16.253906C13.707031,11.667969 13.867188,8.484375 15.359375,6.523438 16.578125,4.921875 18.820313,4.070313 22,4z M45.015625,30C44.25,30 43.484375,30.289063 42.902344,30.875 42.902344,30.875 42.726563,31.050781 42.578125,31.199219L42.574219,31.195313 31.328125,42.441406C31.203125,42.566406,31.113281,42.71875,31.066406,42.890625L30.03125,46.738281C29.941406,47.085938 30.039063,47.453125 30.292969,47.707031 30.480469,47.894531 30.738281,48 31,48 31.085938,48 31.175781,47.988281 31.261719,47.96875L35.109375,46.933594C35.28125,46.886719,35.433594,46.796875,35.558594,46.671875L46.804688,35.421875 46.800781,35.421875C46.949219,35.269531 47.125,35.09375 47.125,35.09375 48.289063,33.929688 48.292969,32.039063 47.125,30.875 46.542969,30.289063 45.777344,30 45.015625,30z M26.441406,30.921875C26.796875,31.707031,27.320313,32.417969,27.941406,33.074219L26.011719,35.417969 24.3125,33.308594C24.128906,33.035156,23.9375,32.800781,23.746094,32.597656L23.730469,32.582031 25.589844,31.550781C25.96875,31.304688,26.230469,31.105469,26.441406,30.921875z M17.773438,31.195313L20.269531,32.582031 17.988281,35.417969 16.121094,33.152344C16.84375,32.617188,17.414063,31.984375,17.773438,31.195313z M43.808594,32.792969L45.207031,34.191406 34.332031,45.070313 32.414063,45.585938 32.929688,43.667969z M14.375,34.179688L17.230469,37.636719C17.417969,37.867188 17.707031,38.003906 18.007813,38 18.308594,38 18.589844,37.859375 18.78125,37.625L20.742188,35.1875 21.5,35.800781C21.5,35.800781,19.746094,38.8125,19.242188,42L4.121094,42C4.855469,38.027344 8.398438,36.625 11.828125,35.265625 12.714844,34.914063 13.578125,34.566406 14.375,34.179688z" />
+                                </Viewbox>
+                                <TextBlock Text="Modifier"/>
+                            </ui:SimpleStackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+                <Border x:Name="BorderWallet"  Grid.Column="1" Margin="2.5,5" CornerRadius="2"  VerticalAlignment="Stretch" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" Padding="5" HorizontalAlignment="Stretch">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <ui:SimpleStackPanel  VerticalAlignment="Center" >
+                            <TextBlock Text="Balance" VerticalAlignment="Center" Margin="5" FontSize="16" />
+                            <TextBlock FontSize="16" VerticalAlignment="Center"  HorizontalAlignment="Right" FontWeight="SemiBold" >
+                                <Run  Text="{Binding CustomerWallet.Balance,Mode=OneWay}" />
+                                <Run Text="$"/>
+                            </TextBlock>
+                        </ui:SimpleStackPanel>
+                        <ui:SimpleStackPanel VerticalAlignment="Center" Grid.Column="1" Margin="5" Spacing="5">
+                            <Button x:Name="BtnDeposit" Margin="5,0" HorizontalAlignment="Right"  Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
+                                <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                                    <Viewbox Height="15">
+                                        <Path  Stroke="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Data="M13,2C10.239,2 8,4.239 8,7 8,9.419 9.718,11.435437 12,11.898438 12,11.898438 12.341,12 13,12 13.576,12 14,11.898438 14,11.898438 16.282,11.435438 18,9.419 18,7 18,4.239 15.761,2 13,2z M11,4L14.5,4 14.521484,5 12,5 12,6 13,6C14.105,6 15,6.895 15,8 15,9.105 14.105,10 13,10 11.895,10 11,9.105 11,8L12,8C12,8.552 12.448,9 13,9 13.552,9 14,8.552 14,8 14,7.448 13.552,7 13,7L11,7 11,4z M2,9L2,23.001953C2,24.093808,2.9061918,25,3.9980469,25L22.013672,25C23.098121,25,24,24.098121,24,23.013672L24,9 22,9 22,23 4,23 4,9 2,9z M12,14L12,18 10,18 13,22 16,18 14,18 14,14 12,14z" />
+                                    </Viewbox>
+                                    <TextBlock Text="Deposer"/>
+                                </ui:SimpleStackPanel>
+                            </Button>
+
+                        </ui:SimpleStackPanel>
+                        <ui:SimpleStackPanel Grid.Row="1" VerticalAlignment="Center" >
+                            <TextBlock Text="Excédent" VerticalAlignment="Center" Margin="5" FontSize="16" />
+                            <TextBlock FontSize="16" VerticalAlignment="Center"  HorizontalAlignment="Right" FontWeight="SemiBold" >
+                                <Run  Text="{Binding CustomerWallet.AmountInExcess,Mode=OneWay}" />
+                                <Run Text="$"/>
+                            </TextBlock>
+                        </ui:SimpleStackPanel>
+                        <ui:SimpleStackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="5" >
+                            <TextBlock Text="Dette" VerticalAlignment="Center" FontSize="16" />
+                            <TextBlock FontSize="16" VerticalAlignment="Center"  HorizontalAlignment="Right" FontWeight="SemiBold" >
+                                <Run  Text="{Binding CustomerWallet.AmountInDebt,Mode=OneWay}" />
+                                <Run Text="$"/>
+                            </TextBlock>
+                        </ui:SimpleStackPanel>
+                    </Grid>
+                </Border>
+                <ui:SimpleStackPanel Grid.Row="1" Visibility="Visible" >
+                    <TextBlock Text="Paiement" FontSize="16"/>
+                    <Border Grid.Column="1" Margin="2.5,5" CornerRadius="2"  VerticalAlignment="Stretch" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" Padding="5" HorizontalAlignment="Stretch">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Transaction Id" VerticalAlignment="Center" FontWeight="Light" FontSize="16" />
+                            <TextBlock VerticalAlignment="Center" Margin="0,2.5" Text="098"  HorizontalAlignment="Right" FontSize="16" />
+                            <TextBlock Grid.Row="1" Text="Date" Margin="0,2.5" VerticalAlignment="Center" FontWeight="Light" FontSize="16" />
+                            <TextBlock Grid.Row="1" VerticalAlignment="Center" Margin="0,2.5" Text="25/03/2021"  HorizontalAlignment="Right" FontSize="16" />
+                            <TextBlock Grid.Row="2" Text="Montant" Margin="0,2.5" VerticalAlignment="Center" FontWeight="Light" FontSize="16" />
+                            <TextBlock Grid.Row="2" HorizontalAlignment="Right" FontSize="16" >
+                                  <Run FontWeight="SemiBold" Text="{Binding TotalAmount,Mode=OneWay,FallbackValue=20}"/>
+                                    <Run FontWeight="SemiBold" Text="$" />
+                            </TextBlock>
+                            <TextBlock Grid.Row="3" Text="Méthode de paiement" Margin="0,2.5" VerticalAlignment="Center" FontWeight="Light" FontSize="16" />
+                            <TextBlock Grid.Row="3" VerticalAlignment="Center" Margin="0,2.5" Text="Cash"  HorizontalAlignment="Right" FontSize="16" />
+                            <TextBlock Grid.Row="4" Text="Description" Margin="0,2.5" VerticalAlignment="Top" FontWeight="Light" FontSize="16" />
+                            <TextBlock Grid.Row="4" VerticalAlignment="Center" MaxWidth="200" Margin="0,2.5" MaxHeight="85"  TextWrapping="WrapWithOverflow" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."  HorizontalAlignment="Right" FontSize="16" FontWeight="Light" />
+                            <Button x:Name="BtnPrint" Grid.Row="5" Grid.ColumnSpan="2" Margin="0,2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
+                                <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                                    <Viewbox Height="15">
+                                        <Path  Stroke="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Data="M4,0C2.90625,0,2,0.90625,2,2L2,24C2,25.09375,2.90625,26,4,26L22,26C23.09375,26,24,25.09375,24,24L24,2C24,0.90625,23.09375,0,22,0z M4,2L22,2 22,24 4,24z M8.71875,5C8.167969,5.078125 7.78125,5.589844 7.859375,6.140625 7.9375,6.691406 8.449219,7.078125 9,7L17,7C17.359375,7.003906 17.695313,6.816406 17.878906,6.503906 18.058594,6.191406 18.058594,5.808594 17.878906,5.496094 17.695313,5.183594 17.359375,4.996094 17,5L9,5C8.96875,5 8.9375,5 8.90625,5 8.875,5 8.84375,5 8.8125,5 8.78125,5 8.75,5 8.71875,5z M6.71875,11C6.167969,11.078125 5.78125,11.589844 5.859375,12.140625 5.9375,12.691406 6.449219,13.078125 7,13L14,13C14.359375,13.003906 14.695313,12.816406 14.878906,12.503906 15.058594,12.191406 15.058594,11.808594 14.878906,11.496094 14.695313,11.183594 14.359375,10.996094 14,11L7,11C6.96875,11 6.9375,11 6.90625,11 6.875,11 6.84375,11 6.8125,11 6.78125,11 6.75,11 6.71875,11z M17.71875,11C17.167969,11.078125 16.78125,11.589844 16.859375,12.140625 16.9375,12.691406 17.449219,13.078125 18,13L19,13C19.359375,13.003906 19.695313,12.816406 19.878906,12.503906 20.058594,12.191406 20.058594,11.808594 19.878906,11.496094 19.695313,11.183594 19.359375,10.996094 19,11L18,11C17.96875,11 17.9375,11 17.90625,11 17.875,11 17.84375,11 17.8125,11 17.78125,11 17.75,11 17.71875,11z M6.71875,14C6.167969,14.078125 5.78125,14.589844 5.859375,15.140625 5.9375,15.691406 6.449219,16.078125 7,16L14,16C14.359375,16.003906 14.695313,15.816406 14.878906,15.503906 15.058594,15.191406 15.058594,14.808594 14.878906,14.496094 14.695313,14.183594 14.359375,13.996094 14,14L7,14C6.96875,14 6.9375,14 6.90625,14 6.875,14 6.84375,14 6.8125,14 6.78125,14 6.75,14 6.71875,14z M17.71875,14C17.167969,14.078125 16.78125,14.589844 16.859375,15.140625 16.9375,15.691406 17.449219,16.078125 18,16L19,16C19.359375,16.003906 19.695313,15.816406 19.878906,15.503906 20.058594,15.191406 20.058594,14.808594 19.878906,14.496094 19.695313,14.183594 19.359375,13.996094 19,14L18,14C17.96875,14 17.9375,14 17.90625,14 17.875,14 17.84375,14 17.8125,14 17.78125,14 17.75,14 17.71875,14z M6.71875,17C6.167969,17.078125 5.78125,17.589844 5.859375,18.140625 5.9375,18.691406 6.449219,19.078125 7,19L14,19C14.359375,19.003906 14.695313,18.816406 14.878906,18.503906 15.058594,18.191406 15.058594,17.808594 14.878906,17.496094 14.695313,17.183594 14.359375,16.996094 14,17L7,17C6.96875,17 6.9375,17 6.90625,17 6.875,17 6.84375,17 6.8125,17 6.78125,17 6.75,17 6.71875,17z M17.71875,17C17.167969,17.078125 16.78125,17.589844 16.859375,18.140625 16.9375,18.691406 17.449219,19.078125 18,19L19,19C19.359375,19.003906 19.695313,18.816406 19.878906,18.503906 20.058594,18.191406 20.058594,17.808594 19.878906,17.496094 19.695313,17.183594 19.359375,16.996094 19,17L18,17C17.96875,17 17.9375,17 17.90625,17 17.875,17 17.84375,17 17.8125,17 17.78125,17 17.75,17 17.71875,17z" />
+                                    </Viewbox>
+                                    <TextBlock Text="Imprimer le reçu"/>
+                                </ui:SimpleStackPanel>
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <TextBlock Text="Historique de paiement" Margin="1,0,0,5" FontSize="16"/>
+                    <ui:SimpleStackPanel Margin="1,0" >
+                        <Border  Padding="5,8" Margin="0,1" CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" HorizontalAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="25/03/2021" FontSize="14" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Margin="5,0" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit" FontSize="14" FontWeight="Light"/>
+                                <TextBlock Grid.Column="2" Text="Cash" Margin="5,0" FontSize="14" />
+                                <TextBlock Grid.Column="3" Margin="5,0,0,0" FontSize="14" FontWeight="SemiBold">
+                                    <Run Text="25"/>
+                                    <Run Text="$"/>
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                        <Border  Padding="5,8" Margin="0,1" CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" HorizontalAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="25/03/2021" FontSize="14" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Margin="5,0" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit" FontSize="14" FontWeight="Light"/>
+                                <TextBlock Grid.Column="2" Text="Cash" Margin="5,0" FontSize="14" />
+                                <TextBlock Grid.Column="3" Margin="5,0,0,0" FontSize="14" FontWeight="SemiBold">
+                                    <Run Text="25"/>
+                                    <Run Text="$"/>
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                        <Border  Padding="5,8" Margin="0,1" CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" HorizontalAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="25/03/2021" FontSize="14" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Margin="5,0" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit" FontSize="14" FontWeight="Light"/>
+                                <TextBlock Grid.Column="2" Text="Cash" Margin="5,0" FontSize="14" />
+                                <TextBlock Grid.Column="3" Margin="5,0,0,0" FontSize="14" FontWeight="SemiBold">
+                                    <Run Text="25"/>
+                                    <Run Text="$"/>
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                        <Border  Padding="5,8" Margin="0,1" CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" HorizontalAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="25/03/2021" FontSize="14" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Margin="5,0" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit" FontSize="14" FontWeight="Light"/>
+                                <TextBlock Grid.Column="2" Text="Cash" Margin="5,0" FontSize="14" />
+                                <TextBlock Grid.Column="3" Margin="5,0,0,0" FontSize="14" FontWeight="SemiBold">
+                                    <Run Text="25"/>
+                                    <Run Text="$"/>
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                        <Border  Padding="5,8" Margin="0,1" CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" HorizontalAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="25/03/2021" FontSize="14" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Margin="5,0" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit" FontSize="14" FontWeight="Light"/>
+                                <TextBlock Grid.Column="2" Text="Cash" Margin="5,0" FontSize="14" />
+                                <TextBlock Grid.Column="3" Margin="5,0,0,0" FontSize="14" FontWeight="SemiBold">
+                                    <Run Text="25"/>
+                                    <Run Text="$"/>
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                    </ui:SimpleStackPanel>
+                </ui:SimpleStackPanel>
+                <ui:SimpleStackPanel Grid.Row="1" Visibility="Visible"  Grid.Column="1">
+                    <TextBlock Text="Achat" FontSize="16"/>
+                    <Border Grid.Column="1" Margin="2.5,5" CornerRadius="2"  VerticalAlignment="Stretch" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" Padding="5" HorizontalAlignment="Stretch">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Transaction Id" VerticalAlignment="Center" Margin="0,2.5" FontWeight="Light" FontSize="16" />
+                            <TextBlock VerticalAlignment="Center" Text="098" Margin="0,2.5" HorizontalAlignment="Right" FontSize="16" Grid.Column="1" />
+                            <TextBlock Grid.Row="1" Text="Date" VerticalAlignment="Center" Margin="0,2.5" FontWeight="Light" FontSize="16" Grid.ColumnSpan="2" />
+                            <TextBlock Grid.Row="1" VerticalAlignment="Center" Margin="0,2.5" Text="25/03/2021"  HorizontalAlignment="Right" FontSize="16" Grid.Column="1" />
+                            <TextBlock Grid.Row="2" Text="Article" VerticalAlignment="Center" Margin="0,2.5" FontWeight="Light" FontSize="16" Grid.ColumnSpan="2" />
+                            <TextBlock Grid.Row="2" VerticalAlignment="Center"  Text="Coude en fer" Margin="0,2.5"  HorizontalAlignment="Right" FontSize="16" Grid.Column="1" />
+                            <TextBlock Grid.Row="3" Text="Quantité" VerticalAlignment="Center" Margin="0,2.5" FontWeight="Light" FontSize="16" Grid.ColumnSpan="2" />
+                            <TextBlock Grid.Row="3" VerticalAlignment="Center"   HorizontalAlignment="Right" FontSize="16" Grid.Column="1" >
+                                <Run Text="25"/>
+                                <Run Text="kg"/>
+                            </TextBlock>
+                            <TextBlock Grid.Row="4" Text="Qté livré" VerticalAlignment="Center" Margin="0,2.5" FontWeight="Light" FontSize="16" Grid.ColumnSpan="2" />
+                            <TextBlock Grid.Row="4" VerticalAlignment="Center"   HorizontalAlignment="Right" FontSize="16" Grid.Column="1" >
+                                <Run Text="25"/>
+                                <Run Text="kg"/>
+                            </TextBlock>
+                            <TextBlock Grid.Row="5" Text="En attente de livraison" VerticalAlignment="Center" Margin="0,2.5" FontWeight="Light" FontSize="16" Grid.ColumnSpan="2" />
+                            <TextBlock Grid.Row="5" VerticalAlignment="Center"   HorizontalAlignment="Right" FontSize="16" Grid.Column="1" >
+                                <Run Text="0"/>
+                                <Run Text="kg"/>
+                            </TextBlock>
+                            <TextBlock Grid.Row="6" Text="Montant" VerticalAlignment="Center" Margin="0,2.5" FontWeight="Light" FontSize="16" Grid.ColumnSpan="2" />
+                            <TextBlock Grid.Row="6" VerticalAlignment="Center"   HorizontalAlignment="Right" FontSize="16" Grid.Column="1" >
+                                <Run Text="20"/>
+                                <Run Text="$"/>
+                            </TextBlock>
+                            <TextBlock Grid.Row="7" Text="Dette" VerticalAlignment="Center" Margin="0,2.5" FontWeight="Light" FontSize="16" Grid.ColumnSpan="2" />
+                            <TextBlock Grid.Row="7" VerticalAlignment="Center"   HorizontalAlignment="Right" FontSize="16" Grid.Column="1" >
+                                <Run Text="20"/>
+                                <Run Text="$"/>
+                            </TextBlock>
+
+                            <Button x:Name="BtnShowSale" Grid.Row="8" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
+                                <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                                    <Viewbox Height="15">
+                                        <Path  Stroke="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Data="M4,0C2.90625,0,2,0.90625,2,2L2,24C2,25.09375,2.90625,26,4,26L22,26C23.09375,26,24,25.09375,24,24L24,2C24,0.90625,23.09375,0,22,0z M4,2L22,2 22,24 4,24z M8.71875,5C8.167969,5.078125 7.78125,5.589844 7.859375,6.140625 7.9375,6.691406 8.449219,7.078125 9,7L17,7C17.359375,7.003906 17.695313,6.816406 17.878906,6.503906 18.058594,6.191406 18.058594,5.808594 17.878906,5.496094 17.695313,5.183594 17.359375,4.996094 17,5L9,5C8.96875,5 8.9375,5 8.90625,5 8.875,5 8.84375,5 8.8125,5 8.78125,5 8.75,5 8.71875,5z M6.71875,11C6.167969,11.078125 5.78125,11.589844 5.859375,12.140625 5.9375,12.691406 6.449219,13.078125 7,13L14,13C14.359375,13.003906 14.695313,12.816406 14.878906,12.503906 15.058594,12.191406 15.058594,11.808594 14.878906,11.496094 14.695313,11.183594 14.359375,10.996094 14,11L7,11C6.96875,11 6.9375,11 6.90625,11 6.875,11 6.84375,11 6.8125,11 6.78125,11 6.75,11 6.71875,11z M17.71875,11C17.167969,11.078125 16.78125,11.589844 16.859375,12.140625 16.9375,12.691406 17.449219,13.078125 18,13L19,13C19.359375,13.003906 19.695313,12.816406 19.878906,12.503906 20.058594,12.191406 20.058594,11.808594 19.878906,11.496094 19.695313,11.183594 19.359375,10.996094 19,11L18,11C17.96875,11 17.9375,11 17.90625,11 17.875,11 17.84375,11 17.8125,11 17.78125,11 17.75,11 17.71875,11z M6.71875,14C6.167969,14.078125 5.78125,14.589844 5.859375,15.140625 5.9375,15.691406 6.449219,16.078125 7,16L14,16C14.359375,16.003906 14.695313,15.816406 14.878906,15.503906 15.058594,15.191406 15.058594,14.808594 14.878906,14.496094 14.695313,14.183594 14.359375,13.996094 14,14L7,14C6.96875,14 6.9375,14 6.90625,14 6.875,14 6.84375,14 6.8125,14 6.78125,14 6.75,14 6.71875,14z M17.71875,14C17.167969,14.078125 16.78125,14.589844 16.859375,15.140625 16.9375,15.691406 17.449219,16.078125 18,16L19,16C19.359375,16.003906 19.695313,15.816406 19.878906,15.503906 20.058594,15.191406 20.058594,14.808594 19.878906,14.496094 19.695313,14.183594 19.359375,13.996094 19,14L18,14C17.96875,14 17.9375,14 17.90625,14 17.875,14 17.84375,14 17.8125,14 17.78125,14 17.75,14 17.71875,14z M6.71875,17C6.167969,17.078125 5.78125,17.589844 5.859375,18.140625 5.9375,18.691406 6.449219,19.078125 7,19L14,19C14.359375,19.003906 14.695313,18.816406 14.878906,18.503906 15.058594,18.191406 15.058594,17.808594 14.878906,17.496094 14.695313,17.183594 14.359375,16.996094 14,17L7,17C6.96875,17 6.9375,17 6.90625,17 6.875,17 6.84375,17 6.8125,17 6.78125,17 6.75,17 6.71875,17z M17.71875,17C17.167969,17.078125 16.78125,17.589844 16.859375,18.140625 16.9375,18.691406 17.449219,19.078125 18,19L19,19C19.359375,19.003906 19.695313,18.816406 19.878906,18.503906 20.058594,18.191406 20.058594,17.808594 19.878906,17.496094 19.695313,17.183594 19.359375,16.996094 19,17L18,17C17.96875,17 17.9375,17 17.90625,17 17.875,17 17.84375,17 17.8125,17 17.78125,17 17.75,17 17.71875,17z" />
+                                    </Viewbox>
+                                    <TextBlock Text="Voir cette vente"/>
+                                </ui:SimpleStackPanel>
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <TextBlock Text="Ventes récentes" Margin="1,0,0,5" FontSize="16"/>
+                    <ui:SimpleStackPanel Margin="1,0" >
+                        <Border  Padding="5,8" Margin="0,1" CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" HorizontalAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="25/03/2021" FontSize="14" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Margin="5,0" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit" FontSize="14" FontWeight="Light"/>
+                                <TextBlock Grid.Column="2" Text="Livré" Margin="5,0" FontSize="14" />
+                                <TextBlock Grid.Column="3" Text="Payé" Margin="5,0,0,0" FontSize="14" />
+                            </Grid>
+                        </Border>
+                        <Border  Padding="5,8" Margin="0,1" CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" HorizontalAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="25/03/2021" FontSize="14" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Margin="5,0" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit" FontSize="14" FontWeight="Light"/>
+                                <TextBlock Grid.Column="2" Text="Livré" Margin="5,0" FontSize="14" />
+                                <TextBlock Grid.Column="3" Text="Payé" Margin="5,0,0,0" FontSize="14" />
+                            </Grid>
+                        </Border>
+                        <Border  Padding="5,8" Margin="0,1" CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" HorizontalAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="25/03/2021" FontSize="14" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Margin="5,0" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit" FontSize="14" FontWeight="Light"/>
+                                <TextBlock Grid.Column="2" Text="Livré" Margin="5,0" FontSize="14" />
+                                <TextBlock Grid.Column="3" Text="Payé" Margin="5,0,0,0" FontSize="14" />
+                            </Grid>
+                        </Border>
+                        <Border  Padding="5,8" Margin="0,1" CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" HorizontalAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="189.788"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="25/03/2021" FontSize="14" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Margin="5,0" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit" FontSize="14" FontWeight="Light"/>
+                                <TextBlock Grid.Column="2" Text="Livré" Margin="5,0" FontSize="14" />
+                                <TextBlock Grid.Column="3" Text="Payé" Margin="5,0,0,0" FontSize="14" />
+                            </Grid>
+                        </Border>
+                        <Border  Padding="5,8" Margin="0,1" CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" HorizontalAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="189.788"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="25/03/2021" FontSize="14" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Margin="5,0" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit" FontSize="14" FontWeight="Light"/>
+                                <TextBlock Grid.Column="2" Text="Livré" Margin="5,0" FontSize="14" />
+                                <TextBlock Grid.Column="3" Text="Payé" Margin="5,0,0,0" FontSize="14" />
+                            </Grid>
+                        </Border>
+                        <Border  Padding="5,8" Margin="0,1" CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" HorizontalAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="189.788"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="25/03/2021" FontSize="14" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Margin="5,0" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit" FontSize="14" FontWeight="Light"/>
+                                <TextBlock Grid.Column="2" Text="Livré" Margin="5,0" FontSize="14" />
+                                <TextBlock Grid.Column="3" Text="Payé" Margin="5,0,0,0" FontSize="14" />
+                            </Grid>
+                        </Border>
+                    </ui:SimpleStackPanel>
+                </ui:SimpleStackPanel>
+            </Grid>
+        </Grid>
     </Grid>
 </local:CustomerViewBase>

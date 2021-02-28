@@ -19,5 +19,8 @@ namespace GestRehema.Entities
         public Wallet? AmountDebtWallet { get; set; }
 
         public string Description { get; set; } = null!;
+
+        public int? PayementId { get; set; }
+        public Payement? Payement { get; set; }
     }
 }

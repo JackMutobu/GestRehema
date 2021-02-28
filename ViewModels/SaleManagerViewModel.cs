@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace GestRehema.ViewModels
 {
-    public class SaleManagerViewModel : ViewModelBaseWithValidation
+    public class SaleManagerViewModel : BaseSaleViewModel
     {
         private SourceList<Customer> _customers { get; } = new SourceList<Customer>();
         private SourceList<Article> _articles { get; } = new SourceList<Article>();
@@ -27,15 +27,11 @@ namespace GestRehema.ViewModels
 
         private readonly IArticleService _articleService;
         private readonly ICustomerService _customerService;
-        private readonly ISaleService _saleService;
-        private readonly IWalletService _walletService;
 
         public SaleManagerViewModel(SaleViewModel saleViewModel) : base(new SaleValidation())
         {
             _articleService = Locator.Current.GetService<IArticleService>();
             _customerService = Locator.Current.GetService<ICustomerService>();
-            _saleService = Locator.Current.GetService<ISaleService>();
-            _walletService = Locator.Current.GetService<IWalletService>();
             SelectedCustomer = new Customer();
             Sale = new Sale();
             SaleViewModel = saleViewModel;
@@ -161,6 +157,7 @@ namespace GestRehema.ViewModels
             RemoveFromCart
                 .InvokeCommand(CalculateCartSubTotal);
 
+
             Validate = ReactiveCommand.CreateFromTask<Sale, string>(
                 sale => Task.Run(() => validator.Validate(new ValidationContext<Sale>(sale)).ToString()));
             Validate
@@ -172,6 +169,35 @@ namespace GestRehema.ViewModels
                 .ToPropertyEx(this, x => x.IsBusy);
             Validate
                 .Subscribe(errors => Errors = errors);
+
+            AddPayement = ReactiveCommand.Create(() => new SalePayementModel(Sale, Entreprise, SelectedCustomer.Wallet ?? throw new Exception("Wallet can not be null"), CartSubTotal));
+
+            Pay = ReactiveCommand.CreateFromTask<List<Payement>, Sale>(x => Task.Run(() =>
+            {
+                Sale sale = UpdateOrAddSale(x);
+                return sale;
+            }));
+            Pay
+                .ThrownExceptions
+                .Select(x => x.Message)
+                .Subscribe(x => Errors = x);
+            Pay
+                .IsExecuting
+                .ToPropertyEx(this, x => x.IsBusy);
+
+            AddPayement
+                .ToPropertyEx(this, x => x.PayementModel);
+
+            AddPayement
+                .SelectMany(x =>
+                x.Pay)
+                .Where(x => x.Count > 0)
+                .InvokeCommand(Pay);
+
+            Validate
+                .Where(x => string.IsNullOrEmpty(x))
+                .Select(_ => Unit.Default)
+                .InvokeCommand(AddPayement);
 
             Charge = ReactiveCommand.CreateFromTask<Unit, Sale>(_ => Task.Run(() =>
              {
@@ -206,56 +232,11 @@ namespace GestRehema.ViewModels
             Charge
                 .Select(_ => CartItems.ToList())
                 .InvokeCommand(CalculateCartSubTotal);
-            Validate
-                .Subscribe(x => PayementModel = new SalePayementModel(Sale, Entreprise.TauxDuJour, CartSubTotal));
             Charge
                 .InvokeCommand(Validate);
-
-
-            Pay = ReactiveCommand.CreateFromTask<Unit, Sale>(_ => Task.Run(() =>
-             {
-                 if (PayementModel == null)
-                     throw new Exception("Veuillez procéder au paiement");
-
-                 var sale = _saleService.AddSale(PayementModel.Sale);
-                 var payement = new SalePayement()
-                 {
-                     AmountPaid = PayementModel.TotalPaid > PayementModel.TotalAmount ? PayementModel.TotalAmount : PayementModel.TotalPaid,
-                     Date = Entreprise.DateDuJour,
-                     SaleId = sale.Id,
-                     Payement = new Payement
-                     {
-                         AmountInCDF = PayementModel.PaidInCDF,
-                         AmountInUSD = PayementModel.PaidInUsd,
-                         CreatedAt = DateTime.UtcNow,
-                         UpdatedAt = DateTime.UtcNow,
-                         Method = PayementModel.PayementMethod,
-                         ToCompany = true
-                     }
-                 };
-
-                 if (PayementModel.ExcessInUsd > 0 && PayementModel.AddExcessToCustomerWallet)
-                     _walletService.AddExcess(SelectedCustomer.WalletId, Entreprise.WalletId, PayementModel.ExcessInUsd);
-
-                 if (PayementModel.Debt > 0)
-                     _walletService.AddDebt(SelectedCustomer.WalletId, Entreprise.WalletId, PayementModel.Debt);
-
-                 _walletService.AddToEntreprise(Entreprise.WalletId, PayementModel.TotalAmount);
-
-                 sale = _saleService.AddPayement(payement, sale.Id);
-
-                 return sale;
-             }),Observable.Return(!IsBusy));
             Pay
                 .Select(_ => new LoadParameter(SaleViewModel?.SearchQuery, SaleViewModel!.CurrentPage, SaleViewModel.ItemPerPage))
                 .InvokeCommand(SaleViewModel!.LoadSales);
-            Pay
-                .ThrownExceptions
-                .Select(x => x.Message)
-                .Subscribe(x => Errors = x);
-            Pay
-                .IsExecuting
-                .ToPropertyEx(this, x => x.IsBusy);
 
             UpdateSellingPrice = ReactiveCommand.Create(() => SelectedSaleCartItem);
 
@@ -264,9 +245,6 @@ namespace GestRehema.ViewModels
         public SaleViewModel SaleViewModel { get; }
 
         public Sale Sale { get; private set; }
-
-        [Reactive]
-        public SalePayementModel? PayementModel { get; set; }
 
         [Reactive]
         public SaleCartItem? SelectedSaleCartItem { get; set; }
@@ -290,8 +268,6 @@ namespace GestRehema.ViewModels
         public ReactiveCommand<Sale, string> Validate { get; }
 
         public ReactiveCommand<Unit, Sale> Charge { get; }
-
-        public ReactiveCommand<Unit, Sale> Pay { get; }
 
         [ObservableAsProperty]
         public decimal CartSubTotal { get; }
