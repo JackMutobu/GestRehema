@@ -12,6 +12,7 @@ using DynamicData;
 using System.Reactive;
 using System.Linq;
 using DynamicData.Binding;
+using System.Collections.ObjectModel;
 
 namespace GestRehema.ViewModels
 {
@@ -21,6 +22,7 @@ namespace GestRehema.ViewModels
         private readonly NavigationRootViewModel _navigationRootViewModel;
         private ICustomerService _customerService;
         private readonly IWalletService _walletService;
+        private readonly IPayementService _payementService;
         private SourceList<Customer> _customers { get; } = new SourceList<Customer>();
         private readonly IObservableCollection<Customer> _targetCollectionCustomers = new ObservableCollectionExtended<Customer>();
 
@@ -31,6 +33,7 @@ namespace GestRehema.ViewModels
             Model = new Customer();
             _customerService = Locator.Current.GetService<ICustomerService>();
             _walletService = Locator.Current.GetService<IWalletService>();
+            _payementService = Locator.Current.GetService<IPayementService>();
             ImageUrl = "/Assets/Placeholder/profile.png";
 
             _customers.Connect()
@@ -134,6 +137,7 @@ namespace GestRehema.ViewModels
                 .InvokeCommand(LoadCustomers);
 
             LoadCustomers
+                .Where(x => x != null && x.Count > 0)
                 .Select(x => x.FirstOrDefault())
                 .Subscribe(x => SelectedCustomer = x);
 
@@ -156,6 +160,37 @@ namespace GestRehema.ViewModels
 
             Pay
                 .Subscribe(x => CustomerWallet = x);
+
+            LoadPayements = ReactiveCommand.CreateFromTask<int, List<Payement>>(walletId => Task.Run(() => _payementService.GetPayements(walletId)));
+
+            LoadPayements
+                .Where(p => p != null)
+                .Select(x => 
+                {
+                    foreach(var p in x)
+                    {
+                        if(p != null)
+                        {
+                            p.TotalPaid = p.AmountInUSD + p.AmountInCDF / Entreprise.TauxDuJour;
+                        }
+                    }
+                    return new ObservableCollection<Payement>(x.Where(y => y != null));
+                })
+                .ToPropertyEx(this, x => x.Payements);
+            LoadPayements
+                .Select(x => x.Where(y=> y != null).FirstOrDefault())
+                .Where(x => x != null)
+                .Subscribe(x => SelectedPayement = x!);
+            LoadPayements.ThrownExceptions
+            .Select(x => x.Message)
+            .Subscribe(x => Errors = x);
+
+            this.WhenAnyValue(x => x.CustomerWallet)
+              .Where(x => x != null)
+              .Select(x => x.Id)
+              .InvokeCommand(LoadPayements);
+
+
 
 
 
@@ -223,6 +258,14 @@ namespace GestRehema.ViewModels
         public IScreen HostScreen => _navigationRootViewModel;
 
         public ReactiveCommand<LoadCustomerParameter,List<Customer>> LoadCustomers { get; }
+
+        public ReactiveCommand<int, List<Payement>> LoadPayements { get; }
+
+        [ObservableAsProperty]
+        public ObservableCollection<Payement> Payements { get; }
+
+        [Reactive]
+        public Payement SelectedPayement { get; set; }
 
         public ReactiveCommand<Unit,Customer> SaveCustomer { get; }
 

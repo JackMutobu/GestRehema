@@ -8,6 +8,9 @@
     <LangVersion>9</LangVersion>
     <ApplicationManifest>app.manifest</ApplicationManifest>
    <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
+   <SignAssembly>true</SignAssembly>
+   <AssemblyOriginatorKeyFile>GestRehema_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+    <!--<Platforms>x64;x86</Platforms>-->
   </PropertyGroup>
 
   <ItemGroup>

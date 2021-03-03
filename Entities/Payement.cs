@@ -9,10 +9,13 @@ namespace GestRehema.Entities
         public Payement()
         {
             WalletHistory = new Collection<WalletHistory>();
+
         }
         public int Id { get; set; }
 
         public DateTime CreatedAt { get; set; }
+
+        public string Date => CreatedAt.ToLocalTime().ToShortDateString();
 
         public DateTime? UpdatedAt { get; set; }
 
@@ -28,7 +31,7 @@ namespace GestRehema.Entities
 
         public decimal AmountInCDF { get; set; }
 
-        public decimal TotalPaid { get; private set; }
+        public decimal TotalPaid { get; set; }
 
         public bool ToCompany { get; set; }
 

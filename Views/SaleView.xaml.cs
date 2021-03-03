@@ -153,6 +153,31 @@ namespace GestRehema.Views
 
                 });
 
+                this.BtnPrintDeliveryBill
+               .Events().Click
+               .ObserveOn(RxApp.MainThreadScheduler)
+               .Subscribe(x =>
+               {
+                   PrintDialog printDialog = new PrintDialog();
+                   printDialog.PrintTicket.PageMediaSize = new PageMediaSize(PageMediaSizeName.ISOA4);
+                   PrintCapabilities capabilities = printDialog.PrintQueue
+                       .GetPrintCapabilities(printDialog.PrintTicket);
+
+                   var billView = new BillBondDeLivraisonView(ViewModel!.SelectedSale!, ViewModel.Entreprise, ViewModel!.SelectedSale!.Customer!, ViewModel.SaleArticles.ToList(), ViewModel.TotalToPay, ViewModel.Debt);
+                   printDialog.PrintVisual(billView, $"Imprimer Bon de livraison {ViewModel!.SelectedSale!.Id}");
+               });
+
+                this.BtnPrintDeliveryBill
+                .Events().MouseRightButtonDown
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                {
+                    var billView = new BillBondDeLivraisonView(ViewModel!.SelectedSale!, ViewModel.Entreprise, ViewModel!.SelectedSale!.Customer!, ViewModel.SaleArticles.ToList(), ViewModel.TotalToPay, ViewModel.Debt);
+                    var printPreview = new PrintPreview(billView);
+                    printPreview.ShowDialog();
+
+                });
+
             });
         }
 

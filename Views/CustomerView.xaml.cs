@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using System.Reactive.Threading.Tasks;
 using System.Windows.Controls;
 using GestRehema.Entities;
+using System.Windows;
+using ReactiveUI.Fody.Helpers;
+using System.Printing;
 
 namespace GestRehema.Views
 {
@@ -100,6 +103,48 @@ namespace GestRehema.Views
                 .Throttle(TimeSpan.FromMilliseconds(100))
                 .Subscribe(_ => RefreshBindings());
 
+                ListPayements
+                .Events().SelectionChanged
+                .Where(x => x.AddedItems.Count > 0)
+                .Select(x => x.AddedItems[0] as Payement)
+                .Subscribe(x =>  ViewModel.SelectedPayement = x!);
+
+                ListPayements
+               .Events().SelectionChanged
+               .Where(x => x.AddedItems.Count > 0)
+               .Throttle(TimeSpan.FromMilliseconds(100))
+               .Subscribe(_ => RefreshBindings());
+
+                this.ViewModel
+                .WhenAnyValue(x => x.Payements)
+                .Where(x => x != null)
+                .Subscribe(x => BorderPayements.Visibility = x.Count > 0 ? Visibility.Visible : Visibility.Collapsed);
+
+                this.BtnPrint
+              .Events().Click
+              .ObserveOn(RxApp.MainThreadScheduler)
+              .Subscribe(x =>
+              {
+                  PrintDialog printDialog = new PrintDialog();
+                  printDialog.PrintTicket.PageMediaSize = new PageMediaSize(PageMediaSizeName.ISOA4);
+                  PrintCapabilities capabilities = printDialog.PrintQueue
+                      .GetPrintCapabilities(printDialog.PrintTicket);
+
+                  var billView = new BillRecuView();
+                  printDialog.PrintVisual(billView, $"Imprimer Bon de livraison");
+              });
+
+                this.BtnPrint
+                .Events().MouseRightButtonDown
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                {
+                    var billView = new BillRecuView(); 
+                    var printPreview = new PrintPreview(billView);
+                    printPreview.ShowDialog();
+
+                });
+
             });
         }
         private async Task ShowAddDialog()
@@ -154,6 +199,10 @@ namespace GestRehema.Views
                 BorderCustomer.DataContext = ViewModel;
                 BorderWallet.DataContext = null;
                 BorderWallet.DataContext = ViewModel;
+                BorderPayements.DataContext = null;
+                BorderPayements.DataContext = ViewModel.SelectedPayement;
+                ListPayements.ItemsSource = null;
+                ListPayements.ItemsSource = ViewModel.Payements;
             });
         }
     }

@@ -18,7 +18,21 @@ namespace GestRehema.Views
         {
             InitializeComponent();
             this.Content = billView;
-            this.Height = System.Windows.SystemParameters.FullPrimaryScreenHeight;
+            this.Height = SystemParameters.FullPrimaryScreenHeight;
+        }
+
+        public PrintPreview(BillBondDeLivraisonView billView)
+        {
+            InitializeComponent();
+            this.Content = billView;
+            this.Height = SystemParameters.FullPrimaryScreenHeight;
+        }
+
+        public PrintPreview(BillRecuView billView)
+        {
+            InitializeComponent();
+            this.Content = billView;
+            this.Height = SystemParameters.FullPrimaryScreenHeight;
         }
     }
 }
