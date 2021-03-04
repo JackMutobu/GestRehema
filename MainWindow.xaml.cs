@@ -27,7 +27,7 @@ namespace GestRehema
                 {
                     try
                     {
-                        using var updateManager = new UpdateManager(@"E:\Project2021\FabProject\Publish");
+                        using var updateManager = await UpdateManager.GitHubUpdateManager("https://github.com/JackMutobu/GestRehema");
                         await updateManager.UpdateApp();
                     }
                     catch(Exception ex)
