@@ -146,9 +146,9 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <ui:PersonPicture Height="55" DisplayName="{Binding Name,FallbackValue=Junias Logo}" ProfilePicture="{Binding ImageUrl}"/>
+                                <ui:PersonPicture Height="55" DisplayName="{Binding Name,FallbackValue=Yaspi Kayisavira}" ProfilePicture="{Binding ImageUrl}"/>
                                 <ui:SimpleStackPanel Grid.Column="1" Margin="10,0,0,0">
-                                    <TextBlock Text="{Binding Name,FallbackValue=Junias Logo}" FontSize="16" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding Name,FallbackValue=Yaspi Kayisavira}" FontSize="16" FontWeight="SemiBold"/>
                                     <TextBlock Text="{Binding CustomerType,FallbackValue=Journalier}" Margin="0,5" FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" FontWeight="Medium" />
                                     <TextBlock Text="{Binding NumTelephone,FallbackValue=0978650832}" FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
                                 </ui:SimpleStackPanel>

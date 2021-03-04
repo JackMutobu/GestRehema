@@ -8,6 +8,8 @@ namespace GestRehema.Entities
 
         public const string Bank = "Banque";
 
+        public const string Cheque = "Cheque";
+
         public const string Wallet = "Compte Virtuel";
 
         public const string MobileMoney = nameof(MobileMoney);
@@ -18,6 +20,7 @@ namespace GestRehema.Entities
                 Cash,
                 Bank,
                 Wallet,
+                Cheque,
                 MobileMoney
             };
     }

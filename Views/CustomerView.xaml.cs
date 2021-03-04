@@ -123,27 +123,11 @@ namespace GestRehema.Views
                 this.BtnPrint
               .Events().Click
               .ObserveOn(RxApp.MainThreadScheduler)
-              .Subscribe(x =>
+              .Subscribe(async x =>
               {
-                  PrintDialog printDialog = new PrintDialog();
-                  printDialog.PrintTicket.PageMediaSize = new PageMediaSize(PageMediaSizeName.ISOA4);
-                  PrintCapabilities capabilities = printDialog.PrintQueue
-                      .GetPrintCapabilities(printDialog.PrintTicket);
-
-                  var billView = new BillRecuView();
-                  printDialog.PrintVisual(billView, $"Imprimer Bon de livraison");
+                  BillRecuDialog billRecuDialog = new(new BillRecuViewModel(ViewModel.Entreprise, ViewModel.SelectedCustomer ?? throw new ArgumentException("Veuillez séléctionner un client",nameof(ViewModel.SelectedCustomer)), ViewModel.SelectedPayement)); ;
+                  await billRecuDialog.ShowAsync();
               });
-
-                this.BtnPrint
-                .Events().MouseRightButtonDown
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(x =>
-                {
-                    var billView = new BillRecuView(); 
-                    var printPreview = new PrintPreview(billView);
-                    printPreview.ShowDialog();
-
-                });
 
             });
         }

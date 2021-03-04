@@ -1,5 +1,7 @@
-﻿using GestRehema.Entities;
+﻿using GestRehema.ViewModels;
 using ModernWpf.Controls;
+using System.Printing;
+using System.Windows.Controls;
 
 namespace GestRehema.Views
 {
@@ -8,15 +10,31 @@ namespace GestRehema.Views
     /// </summary>
     public partial class BillRecuDialog : ContentDialog
     {
-        public BillRecuDialog(Entreprise entreprise, Sale sale)
+        private readonly BillRecuViewModel _billRecuViewModel;
+
+        public BillRecuDialog(BillRecuViewModel billRecuViewModel)
         {
-            Entreprise = entreprise;
-            Sale = sale;
+            _billRecuViewModel = billRecuViewModel;
+            DataContext = billRecuViewModel;
+            PrimaryButtonClick += BillRecuDialog_PrimaryButtonClick;
             InitializeComponent();
         }
 
-        public Entreprise Entreprise { get; }
+        private void BillRecuDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            var billView = new BillRecuView(_billRecuViewModel);
+            if (CheckVoirRecu.IsChecked == true)
+            {
+                var printPreview = new PrintPreview(billView);
+                printPreview.ShowDialog();
+            }
 
-        public Sale Sale { get; }
+            PrintDialog printDialog = new();
+            printDialog.PrintTicket.PageMediaSize = new PageMediaSize(PageMediaSizeName.ISOA4);
+            printDialog.PrintQueue.GetPrintCapabilities(printDialog.PrintTicket);
+
+            
+            printDialog.PrintVisual(billView, $"Impression du recu");
+        }
     }
 }

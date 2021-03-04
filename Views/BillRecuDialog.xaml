@@ -13,14 +13,16 @@
              mc:Ignorable="d" >
     <ui:SimpleStackPanel Spacing="10">
         <TextBlock x:Name="TxtError"  Text="{Binding Errors}"   Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" />
-        <TextBox x:Name="TxtAmountInLetters" Text="{Binding AmountInLetters,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,FallbackValue=deux milles dollards}"
+        <TextBox x:Name="TxtAmountInLetters" Text="{Binding AmountInLetters,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,FallbackValue=deux milles dollars américains}"
                         ui:ControlHelper.Header="Montant en lettres"
                         ui:ControlHelper.PlaceholderText="deux milles"  />
         <TextBlock HorizontalAlignment="Center" >
             <Run FontWeight="SemiBold" Text="{Binding ElementName=TxtAmountInLetters,Path=Text}"/>
             <Run Text="="/>
-            <Run FontWeight="SemiBold" Text="{Binding Amount,FallbackValue=2000}"/>
+            <Run FontWeight="SemiBold" Text="{Binding Payement.TotalPaid,FallbackValue=2000}"/>
             <Run FontWeight="SemiBold" Text="$"/>
         </TextBlock>
+        <ComboBox ItemsSource="{Binding Motives}" Text="{Binding Motive}"  ui:ControlHelper.Header="Raison de paiement" HorizontalAlignment="Stretch" SelectedIndex="0"   MinWidth="150" />
+        <CheckBox x:Name="CheckVoirRecu" IsChecked="True" Content="Voir le recu"/>
     </ui:SimpleStackPanel>
 </ui:ContentDialog>

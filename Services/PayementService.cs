@@ -35,14 +35,17 @@ namespace GestRehema.Services
         public List<Payement> GetPayements(int walletId)
         {
             var finalPayement = _dbContext.WalletHistories
+                .Where(x => x != null)
                 .Include(x => x.Payement)
+                .ThenInclude(x => x!.SalePayement)
+                .ThenInclude(x => x!.Sale)
                 .Where(x => x.AmountDebtWalletId == walletId || x.AmountExcessWalletId == walletId)
                 .Select(x => x.Payement)
                 .ToList();
                 
 
 
-            return finalPayement;
+            return finalPayement ?? new List<Payement>();
         }
     }
 }
