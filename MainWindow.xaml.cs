@@ -1,6 +1,10 @@
 ﻿using GestRehema.Views;
 using ModernWpf;
+using ReactiveUI;
+using System.Reactive.Linq;
 using System.Windows;
+using System;
+using Squirrel;
 
 namespace GestRehema
 {
@@ -16,7 +20,23 @@ namespace GestRehema
 
             
             ThemeButton.Click += ThemeButton_Click;
+            this.Events()
+                .Loaded
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(async _ =>
+                {
+                    try
+                    {
+                        using var updateManager = new UpdateManager(@"E:\Project2021\FabProject\Publish");
+                        await updateManager.UpdateApp();
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                },ex => MessageBox.Show(ex.Message));
         }
+
 
         private void ThemeButton_Click(object sender, RoutedEventArgs e)
         {

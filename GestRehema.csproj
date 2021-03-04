@@ -8,7 +8,7 @@
     <LangVersion>9</LangVersion>
     <ApplicationManifest>app.manifest</ApplicationManifest>
    <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
-   <SignAssembly>true</SignAssembly>
+   <SignAssembly>false</SignAssembly>
    <AssemblyOriginatorKeyFile>GestRehema_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
     <!--<Platforms>x64;x86</Platforms>-->
   </PropertyGroup>
@@ -20,6 +20,7 @@
     <None Remove="Assets\Placeholder\profile.png" />
     <None Remove="Assets\ProductImages\product.jpg" />
     <None Remove="Assets\ProfileImages\profile.png" />
+    <None Remove="GestRehema.runtimeconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,6 +55,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="ModernWpfUI" Version="0.9.3" />
+    <PackageReference Include="ppy.squirrel.windows" Version="1.9.0.5" />
     <PackageReference Include="ReactiveUI" Version="13.1.1" />
     <PackageReference Include="ReactiveUI.Events.WPF" Version="13.1.1" />
     <PackageReference Include="ReactiveUI.Fody" Version="13.1.1" />
