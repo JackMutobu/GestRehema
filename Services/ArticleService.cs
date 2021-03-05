@@ -67,6 +67,11 @@ namespace GestRehema.Services
             }
             else
             {
+                regArticle = _dbContext.Articles.FirstOrDefault(x => x.Name.ToLower() == article.Name.ToLower());
+
+                if (regArticle != null)
+                    throw new Exception("Un autre produit avec le meme nom existe déjà");
+
                 article.CreatedAt = DateTime.UtcNow;
                 _dbContext.Articles.Add(article);
                 _dbContext.SaveChanges();

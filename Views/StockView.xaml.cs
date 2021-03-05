@@ -29,6 +29,14 @@ namespace GestRehema.Views
 
                 this.OneWayBind(ViewModel, vm => vm.Articles, v => v.DtGridArticle.ItemsSource);
 
+                this.WhenAnyValue(x => x.ViewModel!.Errors)
+                    .SubscribeOn(RxApp.MainThreadScheduler)
+               .Subscribe(value =>
+               {
+                   TxtError.Visibility = value?.ToVisibility() ?? System.Windows.Visibility.Collapsed;
+                   TxtError.Text = value;
+               });
+
                 this.ViewModel.SelectForUpdate
                  .SubscribeOn(RxApp.MainThreadScheduler)
                  .Subscribe(async x => await ShowAddDialog());

@@ -35,7 +35,13 @@ namespace GestRehema.Views
 
                 this.OneWayBind(ViewModel, vm => vm.Customers, v => v.DtGridClient.ItemsSource);
 
-                
+                this.WhenAnyValue(x => x.ViewModel!.Errors)
+                    .SubscribeOn(RxApp.MainThreadScheduler)
+               .Subscribe(value =>
+               {
+                   TxtError.Visibility = value?.ToVisibility() ?? Visibility.Collapsed;
+                   TxtError.Text = value;
+               });
 
                 this.BtnAddCustomer
                 .Events().Click

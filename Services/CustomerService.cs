@@ -58,6 +58,10 @@ namespace GestRehema.Services
             }
             else
             {
+                regItem = _dbContext.Customers.FirstOrDefault(x => x.Name.ToLower() == item.Name.ToLower() && x.NumTelephone.ToLower() == item.NumTelephone.ToLower());
+                if (regItem != null)
+                    throw new Exception("Un client avec le meme nom et numéro de téléphone existe déjà");
+
                 item!.CreatedAt = DateTime.UtcNow;
                 item.Wallet = new Wallet()
                 {
