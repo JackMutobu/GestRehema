@@ -12,6 +12,8 @@ namespace GestRehema.Services
     {
         Payement AddPayement(Payement payement);
         List<Payement> GetPayements(int walletId);
+        List<Payement> GetPayements(int walletId, int customerId);
+        List<Payement> GetSalePayements(int customerId);
     }
 
     public class PayementService : IPayementService
@@ -42,10 +44,34 @@ namespace GestRehema.Services
                 .Where(x => x.AmountDebtWalletId == walletId || x.AmountExcessWalletId == walletId)
                 .Select(x => x.Payement)
                 .ToList();
-                
+
+
+
+            return finalPayement ?? new List<Payement>();
+        }
+
+        public List<Payement> GetPayements(int walletId, int customerId)
+        => GetPayements(walletId)
+            .Union(GetSalePayements(customerId))
+            .OrderByDescending(x => x.UpdatedAt)
+            .ThenBy(x => x.CreatedAt)
+            .ToList();
+
+        public List<Payement> GetSalePayements(int customerId)
+        {
+            var finalPayement = _dbContext.Sales
+                .Where(x => x.CustomerId == customerId)
+                .Include(x => x.PayementHistory)
+                .ThenInclude(x => x.Payement)
+                .OrderByDescending(x => x.UpdatedAt)
+                .SelectMany(x => x.PayementHistory)
+                .Select(x => x.Payement)
+                .ToList();
+
 
 
             return finalPayement ?? new List<Payement>();
         }
     }
+
 }

@@ -41,7 +41,7 @@ namespace GestRehema.Entities
 
         public void SetTotalPaid(decimal exchangeRate)
         {
-            TotalPaid = AmountInUSD + (AmountInCDF / exchangeRate);
+            TotalPaid = decimal.Round(AmountInUSD + (AmountInCDF / exchangeRate),2, MidpointRounding.AwayFromZero);
         }
 
     }

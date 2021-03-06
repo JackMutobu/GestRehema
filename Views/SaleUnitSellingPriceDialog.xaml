@@ -24,14 +24,14 @@
             <Run FontWeight="SemiBold" Text="1"/>
             <Run FontWeight="SemiBold" Text="{Binding Article.Conditionement}"/>
             <Run Text="="/>
-            <Run FontWeight="SemiBold" Text="{Binding SellingPrice}"/>
+            <Run FontWeight="SemiBold" Text="{Binding SellingPrice,StringFormat={}{0:F2}}"/>
              <Run FontWeight="SemiBold" Text="$"/>
             </TextBlock>
             <TextBlock HorizontalAlignment="Center" >
             <Run FontWeight="SemiBold" Text="1"/>
             <Run FontWeight="SemiBold" Text="{Binding Article.UnitOfMeasure}"/>
             <Run Text="="/>
-            <Run FontWeight="SemiBold" Text="{Binding SellingPricePerUnitOfMeasure}"/>
+            <Run FontWeight="SemiBold" Text="{Binding SellingPricePerUnitOfMeasure,StringFormat={}{0:F2}}"/>
              <Run FontWeight="SemiBold" Text="$"/>
             </TextBlock>
         </ui:SimpleStackPanel>

@@ -120,13 +120,16 @@ namespace GestRehema.ViewModels
         protected virtual void DeriveAmounts(decimal exchangeRate, decimal amountInUsd, decimal amountInCDF,decimal walletBalance)
         {
             TotalPaid = amountInUsd + decimal.Round((amountInCDF / exchangeRate), 2, MidpointRounding.AwayFromZero);
-            if(TotalAmount != null && TotalAmount > 0)
+            if (TotalAmount != null && TotalAmount > 0)
             {
                 Debt = TotalAmount > TotalPaid ? TotalAmount.Value - TotalPaid : 0;
                 ExcessInUsd = TotalPaid > TotalAmount ? TotalPaid - TotalAmount.Value : 0;
+
                 ExcessInFC = decimal.Round(ExcessInUsd * exchangeRate, 2, MidpointRounding.ToEven);
+                Debt = decimal.Round(Debt, 2, MidpointRounding.AwayFromZero);
+                TotalPaid = decimal.Round(TotalPaid, 2, MidpointRounding.AwayFromZero);
             }
-           
+
             WalletBalance = GetWalletBalance(walletBalance, TotalPaid);
         }
 

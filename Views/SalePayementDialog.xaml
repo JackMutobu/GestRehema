@@ -49,33 +49,33 @@
             </Grid.RowDefinitions>
             <TextBlock Text="Montant à payer" FontSize="16" Margin="2,5"/>
             <TextBlock HorizontalAlignment="Right" FontSize="16" Margin="2,5">
-                <Run FontWeight="SemiBold" Text="{Binding TotalAmount,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding TotalAmount,Mode=OneWay,StringFormat={}{0:F2}}"/>
                 <Run FontWeight="SemiBold" Text="$" />
             </TextBlock>
 
             <TextBlock Text="Total payé" Grid.Row="1" FontSize="16" Margin="2,5"/>
             <TextBlock HorizontalAlignment="Right" Grid.Row="1" FontSize="16" Margin="2,5">
-                <Run FontWeight="SemiBold" Text="{Binding TotalPaid,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding TotalPaid,Mode=OneWay,StringFormat={}{0:F2}}"/>
                 <Run FontWeight="SemiBold" Text="$" />
             </TextBlock>
 
             <TextBlock Text="Excédent" Grid.Row="2" FontSize="16" Margin="2,5"/>
             <TextBlock HorizontalAlignment="Right" Grid.Row="2" FontSize="16" Margin="2,5">
-                <Run FontWeight="SemiBold" Text="{Binding ExcessInUsd,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding ExcessInUsd,Mode=OneWay,StringFormat={}{0:F2}}"/>
                 <Run FontWeight="SemiBold" Text="$" />
                 <LineBreak/>
-                <Run FontWeight="SemiBold" Text="{Binding ExcessInFC,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding ExcessInFC,Mode=OneWay,StringFormat={}{0:F2}}"/>
                 <Run FontWeight="SemiBold" Text="FC" />
             </TextBlock>
 
             <TextBlock Text="Reste" Grid.Row="3" FontSize="16" Margin="2,5"/>
             <TextBlock HorizontalAlignment="Right" Grid.Row="3" FontSize="16" Margin="2,5">
-                <Run FontWeight="SemiBold" Text="{Binding Debt,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding Debt,Mode=OneWay,StringFormat={}{0:F2}}"/>
                 <Run FontWeight="SemiBold" Text="$" />
             </TextBlock>
             <TextBlock Text="Balance Virtuel" Grid.Row="4" FontSize="16" Margin="2,5"/>
             <TextBlock HorizontalAlignment="Right" Grid.Row="4" FontSize="16" Margin="2,5">
-                <Run FontWeight="SemiBold" Text="{Binding WalletBalance,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding WalletBalance,Mode=OneWay,StringFormat={}{0:F2}}"/>
                 <Run FontWeight="SemiBold" Text="$" />
             </TextBlock>
         </Grid>

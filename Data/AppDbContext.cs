@@ -2,6 +2,7 @@
 using GestRehema.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 
 namespace GestRehema.Data
 {
@@ -40,6 +41,7 @@ namespace GestRehema.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             modelBuilder.Entity<User>()
                 .HasIndex(x => x.Username)
                 .IsUnique();

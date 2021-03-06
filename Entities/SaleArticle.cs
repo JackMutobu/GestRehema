@@ -14,9 +14,9 @@ namespace GestRehema.Entities
 
         public double QtyInUnitOfMeasure => Quantity * Article?.QtyPerConditionement ?? 0;
 
-        public decimal TotalAmount => (decimal)Quantity * UnitSellingPrice;
+        public decimal TotalAmount => decimal.Round((decimal)Quantity * UnitSellingPrice,2, MidpointRounding.AwayFromZero);
 
-        public decimal Commission => (UnitSellingPrice - UnitRealSellingPrice) * (decimal)Quantity;
+        public decimal Commission => decimal.Round((UnitSellingPrice - UnitRealSellingPrice) * (decimal)Quantity,2, MidpointRounding.AwayFromZero);
 
         public decimal UnitSellingPrice { get; set; }
         public decimal UnitRealSellingPrice { get; set; }

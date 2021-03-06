@@ -161,7 +161,7 @@ namespace GestRehema.ViewModels
             Pay
                 .Subscribe(x => CustomerWallet = x);
 
-            LoadPayements = ReactiveCommand.CreateFromTask<int, List<Payement>>(walletId => Task.Run(() => _payementService.GetPayements(walletId)));
+            LoadPayements = ReactiveCommand.CreateFromTask<int, List<Payement>>(walletId => Task.Run(() => _payementService.GetPayements(walletId,SelectedCustomer.Id)));
 
             LoadPayements
                 .Where(p => p != null)

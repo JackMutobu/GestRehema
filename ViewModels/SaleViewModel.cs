@@ -56,7 +56,8 @@ namespace GestRehema.ViewModels
              .Select(x => x.Message)
              .Subscribe(x => Errors = x);
             LoadSale
-                .Subscribe(x => SelectedSale = x);
+                .Subscribe(x => 
+                SelectedSale = x);
             LoadSales
                 .Where(x => x.Count > 0)
                 .Select(x => x.First().Id)
@@ -79,7 +80,13 @@ namespace GestRehema.ViewModels
 
             LoadSale
               .Select(sale => GetSaleArticles(sale))
-              .Select(x => x.Sum(x => x.Quantity) > x.Sum(x => x.DeliveredQuantity))
+              .Select(x => 
+              {
+                  var totalQty = Math.Round(x.Sum(x => x.Quantity),5, MidpointRounding.ToEven);
+                  var totalDeliveredQty = Math.Round(x.Sum(x => x.DeliveredQuantity),5, MidpointRounding.ToEven);
+                  return totalQty > totalDeliveredQty;
+              })
+              .Select(x => x)
               .ToPropertyEx(this, x => x.CanAddDelivery);
 
             LoadSales

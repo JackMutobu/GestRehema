@@ -55,7 +55,7 @@
         <ui:ProgressBar  x:Name="ProgIndicator"  IsIndeterminate="True" Grid.Row="1"/>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1.5*"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <DataGrid  x:Name="DtGridSales"
@@ -194,10 +194,10 @@
                                         <Run Text="{Binding Article.TechnicalCode,FallbackValue=XRP9483}"/>
                                                 </TextBlock>
                                                 <TextBlock  FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
-                                            <Run Text="{Binding Quantity}"/>
+                                            <Run Text="{Binding Quantity,StringFormat={}{0:F2}}"/>
                                             <Run Text="{Binding Article.Conditionement,FallbackValue=carton}"/>
                                             <LineBreak/>
-                                            <Run Text="{Binding QtyInUnitOfMeasure,Mode=OneWay}"/>
+                                            <Run Text="{Binding QtyInUnitOfMeasure,Mode=OneWay,StringFormat={}{0:F2}}"/>
                                             <Run Text="{Binding Article.UnitOfMeasure,FallbackValue=kg}"/>
                                                 </TextBlock>
                                             </ui:SimpleStackPanel>
@@ -221,14 +221,14 @@
                                                 <ui:SimpleStackPanel >
                                                     <TextBlock Text="Livré" FontSize="14" HorizontalAlignment="Right"/>
                                                     <TextBlock HorizontalAlignment="Right"  FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
-                                        <Run Text="{Binding DeliverdQtyInUnitOfMeasure,FallbackValue=20,Mode=OneWay}"/>
+                                        <Run Text="{Binding DeliverdQtyInUnitOfMeasure,FallbackValue=20,Mode=OneWay,StringFormat={}{0:F2}}"/>
                                         <Run Text="{Binding Article.UnitOfMeasure,FallbackValue=kg}"/>
                                                     </TextBlock>
                                                 </ui:SimpleStackPanel>
                                                 <ui:SimpleStackPanel >
                                                     <TextBlock Text="En attente" FontSize="14" HorizontalAlignment="Right"/>
                                                     <TextBlock HorizontalAlignment="Right"  FontWeight="SemiBold" FontSize="14" >
-                                        <Run Text="{Binding AwaitingDeliveryInUnitOfMeasure,FallbackValue=200,Mode=OneWay}"/>
+                                        <Run Text="{Binding AwaitingDeliveryInUnitOfMeasure,FallbackValue=200,Mode=OneWay,StringFormat={}{0:F2}}"/>
                                         <Run Text="{Binding Article.UnitOfMeasure,FallbackValue=kg}"/>
                                                     </TextBlock>
                                                 </ui:SimpleStackPanel>

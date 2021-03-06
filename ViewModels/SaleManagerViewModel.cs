@@ -102,7 +102,7 @@ namespace GestRehema.ViewModels
                 .Execute(new LoadParameter(SearchCustomerQuery, CurrentCustomerPage, CustomerItemsPerPage))
                 .Subscribe();
 
-            CalculateCartSubTotal = ReactiveCommand.CreateFromTask<List<SaleCartItem>, decimal>(items => Task.Run(() => items.Sum(x => x.Total)));
+            CalculateCartSubTotal = ReactiveCommand.CreateFromTask<List<SaleCartItem>, decimal>(items => Task.Run(()  => items.Sum(x => x.Total)));
             CalculateCartSubTotal
                 .ToPropertyEx(this, x => x.CartSubTotal);
 

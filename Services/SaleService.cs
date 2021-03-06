@@ -13,7 +13,7 @@ namespace GestRehema.Services
     {
         Sale AddPayement(SalePayement salePayement, int saleId);
         Sale AddSale(Sale sale);
-        Sale GetSale(int saleId);
+        Sale? GetSale(int saleId);
         List<Sale> GetSalesWithCustomers(int skip = 0, int take = 100);
         List<Sale> SearchSales(string query);
         Sale AddDelivery(SaleDelivery saleDelivery, int saleId);
@@ -42,7 +42,7 @@ namespace GestRehema.Services
             .DistinctBy(x => x.Id)
             .ToList();
 
-        public Sale GetSale(int saleId)
+        public Sale? GetSale(int saleId)
             => _dbContext.Sales
             .Include(x => x.Customer)
             .Include(x => x.DeliveryHistory)
@@ -65,8 +65,8 @@ namespace GestRehema.Services
             .ThenInclude(x => x.Payement)
             .Skip(skip)
             .Take(take)
-           .OrderByDescending(x => x.UpdatedAt)
-           .ToList();
+            .OrderByDescending(x => x.UpdatedAt)
+            .ToList();
 
         public Sale AddSale(Sale sale)
         {
@@ -169,8 +169,8 @@ namespace GestRehema.Services
 
         private  string GetPayementStatus(SalePayement salePayement, Sale sale)
         {
-            var totalAmount = sale.ArticleSold.Sum(x => (decimal)x.Quantity * x.UnitSellingPrice);
-            var totalPaid = sale.PayementHistory.Sum(x => x.AmountPaid);
+            var totalAmount = decimal.Round(sale.ArticleSold.Sum(x => (decimal)x.Quantity * x.UnitSellingPrice),2, MidpointRounding.AwayFromZero);
+            var totalPaid = decimal.Round(sale.PayementHistory.Sum(x => x.AmountPaid),2, MidpointRounding.AwayFromZero);
 
             if (totalAmount == totalPaid)
                 throw new InvalidOperationException("Cette vente a déjà été entièrement payé");
@@ -190,13 +190,14 @@ namespace GestRehema.Services
 
         private string GetDeliverytStatus(SaleDelivery saleDelivery, Sale sale)
         {
-            var totalQty = sale.ArticleSold.Sum(x => x.Quantity);
-            var totalDelivered = sale.DeliveryHistory.Sum(x => x.DeliveredQuantity);
+            var totalQty = Math.Round(sale.ArticleSold.Sum(x => x.Quantity),5, MidpointRounding.AwayFromZero);
+            var totalDelivered = Math.Round(sale.DeliveryHistory.Sum(x => x.DeliveredQuantity),5, MidpointRounding.AwayFromZero);
+            var newDelivery = Math.Round(saleDelivery.DeliveredQuantity, 5, MidpointRounding.AwayFromZero);
 
             if (totalQty == totalDelivered)
                 throw new InvalidOperationException("Ce produit a déjà été entièrement livré");
 
-            var remainingQty = totalQty - (totalDelivered + saleDelivery.DeliveredQuantity);
+            var remainingQty = Math.Round(totalQty - (totalDelivered + newDelivery),5, MidpointRounding.ToEven);
 
             if(remainingQty < 0)
                 throw new InvalidOperationException("La quantité livré est supérieur à la quantité en attente");

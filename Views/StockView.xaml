@@ -123,7 +123,7 @@
                 <DataGridTextColumn
                         Header="En stock"
                         IsReadOnly="True"
-                        Binding="{Binding InStock}" />
+                        Binding="{Binding InStock,StringFormat={}{0:F2}}" />
                 <DataGridTemplateColumn Header="Action" Width="100" IsReadOnly="True" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

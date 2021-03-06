@@ -27,8 +27,7 @@ namespace GestRehema.ViewModels
                     else
                     {
                         QtyInUnitOfMeasure = Article.QtyPerConditionement * qty;
-                        Total = SellingPrice == null ? (decimal)qty * Article.SellingPrice : (decimal)qty * SellingPrice.Value;
-                        Total = decimal.Round(Total, 2, MidpointRounding.AwayFromZero);
+                        Total = decimal.Round(SellingPrice == null ? (decimal)qty * Article.SellingPrice : (decimal)qty * SellingPrice.Value,2,MidpointRounding.AwayFromZero);
                     }
                 });
 
@@ -53,8 +52,7 @@ namespace GestRehema.ViewModels
                     else
                     {
                         SellingPricePerUnitOfMeasure = x / (decimal)Article.QtyPerConditionement;
-                        Total = (decimal)QtyInConditionement * x!.Value;
-                        Total = decimal.Round(Total, 2, MidpointRounding.AwayFromZero);
+                        Total = decimal.Round((decimal)QtyInConditionement * x!.Value,2, MidpointRounding.AwayFromZero);
                     }
                 });
 

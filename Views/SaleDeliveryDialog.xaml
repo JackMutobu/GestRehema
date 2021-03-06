@@ -34,28 +34,28 @@
             </Grid.RowDefinitions>
             <TextBlock Text="Quantité à livrer" FontSize="16" Margin="2,5"/>
             <TextBlock HorizontalAlignment="Right" FontSize="16" Margin="2,5">
-                <Run FontWeight="SemiBold" Text="{Binding TotalQtyInConditionement,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding TotalQtyInConditionement,Mode=OneWay,StringFormat={}{0:F2}}"/>
                 <Run FontWeight="SemiBold" Text="{Binding Article.Conditionement}" />
                 <LineBreak/>
-                <Run FontWeight="SemiBold" Text="{Binding TotalQtyInUnitOfMeasure,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding TotalQtyInUnitOfMeasure,Mode=OneWay,StringFormat={}{0:F2}}"/>
                 <Run FontWeight="SemiBold" Text="{Binding Article.UnitOfMeasure}" />
             </TextBlock>
 
             <TextBlock Text="Quantité livré" Grid.Row="1" FontSize="16" Margin="2,5"/>
             <TextBlock HorizontalAlignment="Right" Grid.Row="1" FontSize="16" Margin="2,5">
-                <Run FontWeight="SemiBold" Text="{Binding QtyInConditionement,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding QtyInConditionement,Mode=OneWay,StringFormat={}{0:F2}}"/>
                 <Run FontWeight="SemiBold" Text="{Binding Article.Conditionement}" />
                 <LineBreak/>
-                <Run FontWeight="SemiBold" Text="{Binding QtyInUnitOfMeasure,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding QtyInUnitOfMeasure,Mode=OneWay,StringFormat={}{0:F2}}"/>
                 <Run FontWeight="SemiBold" Text="{Binding Article.UnitOfMeasure}" />
             </TextBlock>
 
             <TextBlock Text="Reste" Grid.Row="2" FontSize="16" Margin="2,5"/>
             <TextBlock HorizontalAlignment="Right" Grid.Row="2" FontSize="16" Margin="2,5">
-                <Run FontWeight="SemiBold" Text="{Binding RemainingConditionement,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding RemainingConditionement,Mode=OneWay,StringFormat={}{0:F2}}"/>
                 <Run FontWeight="SemiBold" Text="{Binding Article.Conditionement}" />
                 <LineBreak/>
-                <Run FontWeight="SemiBold" Text="{Binding RemainingQtyUnitOfMeasure,Mode=OneWay}"/>
+                <Run FontWeight="SemiBold" Text="{Binding RemainingQtyUnitOfMeasure,Mode=OneWay,StringFormat={}{0:F2}}"/>
                 <Run FontWeight="SemiBold" Text="{Binding Article.UnitOfMeasure}" />
             </TextBlock>
         </Grid>
