@@ -1,4 +1,7 @@
-﻿using System.Configuration;
+﻿using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using System.Configuration;
 using System.Windows;
 
 namespace GestRehema
@@ -12,6 +15,8 @@ namespace GestRehema
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            AppCenter.Start("32f60010-1949-405c-a5ab-51b9c0cd6be9", typeof(Analytics), typeof(Crashes));
+
             var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
 
             _appBootstrapper = new AppBootstrapper(connectionString);
