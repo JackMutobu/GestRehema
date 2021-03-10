@@ -14,10 +14,10 @@
     <ui:SimpleStackPanel Spacing="10">
         <TextBlock x:Name="TxtError"  Text="{Binding Errors}"   Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" />
         <ui:SimpleStackPanel DataContext="{Binding SelectedSaleCartItem}" Spacing="5">
-            <TextBox x:Name="TxtSellingPriceQteEnConditionement" Text="{Binding SellingPrice,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+            <TextBox x:Name="TxtSellingPriceQteEnConditionement" Text="{Binding SellingPrice,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:F2}}"
                         ui:ControlHelper.Header="{Binding PriceInConditionement}"
                         ui:ControlHelper.PlaceholderText="20"  />
-            <TextBox x:Name="TxtSellingPriceEnUniteOfMeasure" Text="{Binding SellingPricePerUnitOfMeasure,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+            <TextBox x:Name="TxtSellingPriceEnUniteOfMeasure" Text="{Binding SellingPricePerUnitOfMeasure,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:F2}}"
                         ui:ControlHelper.Header="{Binding PriceInUnitOfMeasure}"
                         ui:ControlHelper.PlaceholderText="20"  />
             <TextBlock HorizontalAlignment="Center" >
@@ -34,6 +34,9 @@
             <Run FontWeight="SemiBold" Text="{Binding SellingPricePerUnitOfMeasure,StringFormat={}{0:F2}}"/>
              <Run FontWeight="SemiBold" Text="$"/>
             </TextBlock>
+            <TextBox x:Name="TxtTotalPrice" Text="{Binding Total,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:F2}}"
+                        ui:ControlHelper.Header="Prix Total"
+                        ui:ControlHelper.PlaceholderText="20"  />
         </ui:SimpleStackPanel>
 
     </ui:SimpleStackPanel>

@@ -80,6 +80,10 @@ namespace GestRehema.Views
                 StockAddArticleDialog stockAddArticleDialog = new StockAddArticleDialog(ViewModel!);
                 await stockAddArticleDialog.ShowAsync();
             }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             catch (Exception ex)
             {
                 ViewModel!.Errors = ex.Message;
@@ -95,6 +99,10 @@ namespace GestRehema.Views
 
                 if (result == ModernWpf.Controls.ContentDialogResult.Primary)
                     ViewModel!.DeleteArticle.Execute(articleId).Subscribe();
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
             {

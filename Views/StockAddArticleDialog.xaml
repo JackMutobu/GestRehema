@@ -37,7 +37,11 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Image x:Name="ImgProduct" Height="100" ToolTip="Cliquer pour modifier l'image du produit" Source="{Binding ImageUrl}" />
+                <ui:SimpleStackPanel>
+                    <Image x:Name="ImgProduct" Height="100" ToolTip="Cliquer pour modifier l'image du produit" Source="{Binding ImageUrl}" />
+                    <Button x:Name="BtnModifyImage" Content="Modifier image" HorizontalAlignment="Center" />
+                </ui:SimpleStackPanel>
+               
                 <TextBox Text="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                         ui:ControlHelper.Header="Nom:"
                         ui:ControlHelper.PlaceholderText="Coude" Grid.Row="1" Margin="0,5"  />

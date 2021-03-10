@@ -131,9 +131,22 @@ namespace GestRehema.Views
               .ObserveOn(RxApp.MainThreadScheduler)
               .Subscribe(async x =>
               {
-                  BillRecuDialog billRecuDialog = new(new BillRecuViewModel(ViewModel.Entreprise, ViewModel.SelectedCustomer ?? throw new ArgumentException("Veuillez séléctionner un client",nameof(ViewModel.SelectedCustomer)), ViewModel.SelectedPayement)); ;
-                  await billRecuDialog.ShowAsync();
+                  try
+                  {
+                      BillRecuDialog billRecuDialog = new(new BillRecuViewModel(ViewModel.Entreprise, ViewModel.SelectedCustomer ?? throw new ArgumentException("Veuillez séléctionner un client", nameof(ViewModel.SelectedCustomer)), ViewModel.SelectedPayement));
+                      await billRecuDialog.ShowAsync();
+                  }
+                  catch(InvalidOperationException ex)
+                  {
+                      Console.WriteLine(ex.Message);
+                  }
+                  catch(Exception ex)
+                  {
+                      ViewModel!.Errors = ex.Message;
+                  }
               });
+
+                
 
             });
         }
@@ -143,6 +156,10 @@ namespace GestRehema.Views
             {
                 CustomerAddDialog dialog = new CustomerAddDialog(ViewModel!);
                 await dialog.ShowAsync();
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
             {
@@ -156,6 +173,10 @@ namespace GestRehema.Views
             {
                 var dialog = new CustomerDepositDialog(ViewModel!);
                 await dialog.ShowAsync();
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
             {
@@ -172,6 +193,10 @@ namespace GestRehema.Views
 
                 if (result == ModernWpf.Controls.ContentDialogResult.Primary)
                     ViewModel!.Delete.Execute(itemId).Subscribe();
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
             {

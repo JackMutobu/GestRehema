@@ -171,7 +171,7 @@ namespace GestRehema.ViewModels
                     {
                         if(p != null)
                         {
-                            p.TotalPaid = p.AmountInUSD + p.AmountInCDF / Entreprise.TauxDuJour;
+                            p.TotalPaid = decimal.Round(p.AmountInUSD + p.AmountInCDF / Entreprise.TauxDuJour,2, MidpointRounding.ToEven);
                         }
                     }
                     return new ObservableCollection<Payement>(x.Where(y => y != null));
@@ -187,12 +187,8 @@ namespace GestRehema.ViewModels
 
             this.WhenAnyValue(x => x.CustomerWallet)
               .Where(x => x != null)
-              .Select(x => x.Id)
+              .Select(x => x!.Id)
               .InvokeCommand(LoadPayements);
-
-
-
-
 
         }
 

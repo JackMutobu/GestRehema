@@ -1,4 +1,5 @@
-﻿using GestRehema.Extensions;
+﻿using GestRehema.Contants;
+using GestRehema.Extensions;
 using GestRehema.Services;
 using GestRehema.ViewModels;
 using Microsoft.Win32;
@@ -9,6 +10,7 @@ using Splat;
 using System;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
@@ -49,32 +51,39 @@ namespace GestRehema.Views
                    TxtPrixDeVente.SetValue(ControlHelper.HeaderProperty, $"Prix de vente par {x} en $:");
                    TxtQteEnStock.SetValue(ControlHelper.HeaderProperty, $"Qté en Stock en nombre de {x}:");
                });
+
+            this.BtnModifyImage
+                .Events().Click
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => UploadImages());
         }
 
         private void ImgProduct_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            UploadImages();
+
+        }
+
+        private void UploadImages()
+        {
             try
             {
-                OpenFileDialog openFileDialog = new OpenFileDialog();
+                OpenFileDialog openFileDialog = new();
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    Uri fileUri = new Uri(openFileDialog.FileName);
+                    Uri fileUri = new(openFileDialog.FileName);
                     var image = new BitmapImage(fileUri);
                     var fileService = Locator.Current.GetService<IFileService>();
 
-                    var imageUrl = fileService.SaveImage(image.ToBitmap(), $"ProductImages/{fileUri.AbsolutePath.Split("/").Last()}");
+                    var imageUrl = fileService.SaveImage(image.ToBitmap(), FilePath.ArticleImage,fileUri.AbsolutePath.Split("/").Last());
 
-                    var imagePath = $"{Environment.CurrentDirectory.Replace("\\", "/")}{imageUrl}";
-                    _viewModel.ImageUrl = imagePath;
+                    _viewModel.ImageUrl = imageUrl;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                MessageBox.Show(ex.Message);
             }
-            
         }
-
-
     }
 }

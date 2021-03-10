@@ -133,13 +133,20 @@ namespace GestRehema.Views
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(x =>
                 {
-                    PrintDialog printDialog = new PrintDialog();
-                    printDialog.PrintTicket.PageMediaSize = new PageMediaSize(PageMediaSizeName.ISOA4);
-                    PrintCapabilities capabilities = printDialog.PrintQueue
-                        .GetPrintCapabilities(printDialog.PrintTicket);
+                    try
+                    {
+                        PrintDialog printDialog = new PrintDialog();
+                        printDialog.PrintTicket.PageMediaSize = new PageMediaSize(PageMediaSizeName.ISOA4);
+                        PrintCapabilities capabilities = printDialog.PrintQueue
+                            .GetPrintCapabilities(printDialog.PrintTicket);
 
-                    BillView billView = new BillView(ViewModel!.SelectedSale!, ViewModel.Entreprise, ViewModel!.SelectedSale!.Customer!, ViewModel.SaleArticles.ToList(), ViewModel.TotalToPay, ViewModel.Debt);
-                    printDialog.PrintVisual(billView, $"Imprimer facture {ViewModel!.SelectedSale!.Id}");
+                        BillView billView = new BillView(ViewModel!.SelectedSale!, ViewModel.Entreprise, ViewModel!.SelectedSale!.Customer!, ViewModel.SaleArticles.ToList(), ViewModel.TotalToPay, ViewModel.Debt);
+                        printDialog.PrintVisual(billView, $"Imprimer facture {ViewModel!.SelectedSale!.Id}");
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewModel!.Errors = ex.Message;
+                    }
                 });
 
                 this.BtnPrint
@@ -147,9 +154,16 @@ namespace GestRehema.Views
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(x =>
                 {
-                    BillView billView = new BillView(ViewModel!.SelectedSale!, ViewModel.Entreprise, ViewModel!.SelectedSale!.Customer!, ViewModel.SaleArticles.ToList(), ViewModel.TotalToPay, ViewModel.Debt);
-                    var printPreview = new PrintPreview(billView);
-                    printPreview.ShowDialog();
+                    try
+                    {
+                        BillView billView = new BillView(ViewModel!.SelectedSale!, ViewModel.Entreprise, ViewModel!.SelectedSale!.Customer!, ViewModel.SaleArticles.ToList(), ViewModel.TotalToPay, ViewModel.Debt);
+                        var printPreview = new PrintPreview(billView);
+                        printPreview.ShowDialog();
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewModel!.Errors = ex.Message;
+                    }
 
                 });
 
@@ -158,13 +172,21 @@ namespace GestRehema.Views
                .ObserveOn(RxApp.MainThreadScheduler)
                .Subscribe(x =>
                {
-                   PrintDialog printDialog = new PrintDialog();
-                   printDialog.PrintTicket.PageMediaSize = new PageMediaSize(PageMediaSizeName.ISOA4);
-                   PrintCapabilities capabilities = printDialog.PrintQueue
-                       .GetPrintCapabilities(printDialog.PrintTicket);
+                   try
+                   {
+                       PrintDialog printDialog = new PrintDialog();
+                       printDialog.PrintTicket.PageMediaSize = new PageMediaSize(PageMediaSizeName.ISOA4);
+                       PrintCapabilities capabilities = printDialog.PrintQueue
+                           .GetPrintCapabilities(printDialog.PrintTicket);
 
-                   var billView = new BillBondDeLivraisonView(ViewModel!.SelectedSale!, ViewModel.Entreprise, ViewModel!.SelectedSale!.Customer!, ViewModel.SaleArticles.ToList(), ViewModel.TotalToPay, ViewModel.Debt);
-                   printDialog.PrintVisual(billView, $"Imprimer Bon de livraison {ViewModel!.SelectedSale!.Id}");
+                       var billView = new BillBondDeLivraisonView(ViewModel!.SelectedSale!, ViewModel.Entreprise, ViewModel!.SelectedSale!.Customer!, ViewModel.SaleArticles.ToList(), ViewModel.TotalToPay, ViewModel.Debt);
+                       printDialog.PrintVisual(billView, $"Imprimer Bon de livraison {ViewModel!.SelectedSale!.Id}");
+                   }
+                   catch (Exception ex)
+                   {
+                       ViewModel!.Errors = ex.Message;
+                   }
+                   
                });
 
                 this.BtnPrintDeliveryBill
@@ -172,10 +194,16 @@ namespace GestRehema.Views
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(x =>
                 {
-                    var billView = new BillBondDeLivraisonView(ViewModel!.SelectedSale!, ViewModel.Entreprise, ViewModel!.SelectedSale!.Customer!, ViewModel.SaleArticles.ToList(), ViewModel.TotalToPay, ViewModel.Debt);
-                    var printPreview = new PrintPreview(billView);
-                    printPreview.ShowDialog();
-
+                    try
+                    {
+                        var billView = new BillBondDeLivraisonView(ViewModel!.SelectedSale!, ViewModel.Entreprise, ViewModel!.SelectedSale!.Customer!, ViewModel.SaleArticles.ToList(), ViewModel.TotalToPay, ViewModel.Debt);
+                        var printPreview = new PrintPreview(billView);
+                        printPreview.ShowDialog();
+                    }
+                    catch(Exception ex)
+                    {
+                        ViewModel!.Errors = ex.Message;
+                    }
                 });
 
             });
@@ -203,14 +231,37 @@ namespace GestRehema.Views
 
         private async Task ShowPayementDialog(SalePayementModel salePayementModel)
         {
-            var payementDialog = new SalePayementDialog(salePayementModel);
-            await payementDialog.ShowAsync();
+            try
+            {
+                var payementDialog = new SalePayementDialog(salePayementModel);
+                await payementDialog.ShowAsync();
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ViewModel!.Errors = ex.Message;
+            }
         }
 
         private async Task ShowDeliveryDialog()
         {
-            var deliveryDialog = new SaleDeliveryDialog(ViewModel!);
-            await deliveryDialog.ShowAsync();
+            try
+            {
+                var deliveryDialog = new SaleDeliveryDialog(ViewModel!);
+                await deliveryDialog.ShowAsync();
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ViewModel!.Errors = ex.Message;
+            }
+
         }
     }
 }

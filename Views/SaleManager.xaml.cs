@@ -91,7 +91,8 @@ namespace GestRehema.Views
 
                 this.ViewModel.WhenAnyValue(x => x.SelectedSaleCartItem)
                     .Where(x => x != null)
-                    .SelectMany(x => ShowSaleUnitPirceDialog().ToObservable())
+                    .SelectMany(x => 
+                    ShowSaleUnitPirceDialog().ToObservable())
                     .Subscribe();
 
             });
@@ -110,6 +111,10 @@ namespace GestRehema.Views
                 CustomerAddDialog dialog = new CustomerAddDialog(viewModel);
                 await dialog.ShowAsync();
             }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             catch (Exception ex)
             {
                 ViewModel!.Errors = ex.Message;
@@ -118,14 +123,36 @@ namespace GestRehema.Views
 
         private async Task ShowPayementDialog(SalePayementModel salePayementModel)
         {
-            var payementDialog = new SalePayementDialog(salePayementModel);
-            await payementDialog.ShowAsync();
+            try
+            {
+                var payementDialog = new SalePayementDialog(salePayementModel);
+                await payementDialog.ShowAsync();
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ViewModel!.Errors = ex.Message;
+            }
         }
 
         private async Task ShowSaleUnitPirceDialog()
         {
-            var dialog = new SaleUnitSellingPriceDialog(ViewModel!);
-            await dialog.ShowAsync();
+            try
+            {
+                var dialog = new SaleUnitSellingPriceDialog(ViewModel!);
+                await dialog.ShowAsync();
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch(Exception ex)
+            {
+                ViewModel!.Errors = ex.Message;
+            }
         }
     }
 }

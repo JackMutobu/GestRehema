@@ -64,6 +64,8 @@ namespace GestRehema.ViewModels
             SellingPrice = Article.SellingPrice;
             UpdateSellingPrice = ReactiveCommand.Create(() => 
             {
+                if (SellingPrice != null)
+                    this.SellingPrice = decimal.Round(this.SellingPrice.Value, 2, MidpointRounding.AwayFromZero);
                 saleManagerViewModel.SelectedSaleCartItem = this;
             });
 
@@ -73,6 +75,8 @@ namespace GestRehema.ViewModels
                 {
                     SellingPrice = x!.SellingPrice;
                 });
+            this.WhenAnyValue(x => x.Total)
+                .Subscribe(x => SellingPrice = x / (decimal)QtyInConditionement);
 
         }
 
@@ -99,7 +103,7 @@ namespace GestRehema.ViewModels
         public double QtyInConditionement { get; set; }
 
         [Reactive]
-        public decimal Total { get; private set; }
+        public decimal Total { get; set; }
 
         public ReactiveCommand<Unit,Unit> UpdateSellingPrice { get; }
 

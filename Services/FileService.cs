@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace GestRehema.Services
 {
     public interface IFileService
     {
         string SaveImage(Bitmap bitmap, string fileName);
+        string SaveImage(Bitmap bitmap, string destinationPath, string fileName);
     }
 
     public class FileService : IFileService
@@ -14,9 +16,34 @@ namespace GestRehema.Services
         public string SaveImage(Bitmap bitmap, string fileName)
         {
             ImageCodecInfo myImageCodecInfo;
+            EncoderParameters myEncoderParameters;
+            GetImage(out myImageCodecInfo, out myEncoderParameters);
+            bitmap.Save(@"Assets/" + fileName, myImageCodecInfo, myEncoderParameters);
+
+            return $"/Assets/{fileName}";
+        }
+
+        public string SaveImage(Bitmap bitmap, string destinationPath, string fileName)
+        {
+            if (!Directory.Exists(destinationPath))
+                Directory.CreateDirectory(destinationPath);
+
+            ImageCodecInfo myImageCodecInfo;
+            EncoderParameters myEncoderParameters;
+            GetImage(out myImageCodecInfo, out myEncoderParameters);
+
+
+            var imagePath = Path.Combine(destinationPath, fileName);
+
+            bitmap.Save(imagePath, myImageCodecInfo, myEncoderParameters);
+
+            return imagePath;
+        }
+
+        private static void GetImage(out ImageCodecInfo myImageCodecInfo, out EncoderParameters myEncoderParameters)
+        {
             Encoder myEncoder;
             EncoderParameter myEncoderParameter;
-            EncoderParameters myEncoderParameters;
 
             // Get an ImageCodecInfo object that represents the JPEG codec.
             myImageCodecInfo = GetEncoderInfo("image/jpeg");
@@ -39,9 +66,6 @@ namespace GestRehema.Services
             // Save the bitmap as a JPEG file with quality level 75.
             myEncoderParameter = new EncoderParameter(myEncoder, 75L);
             myEncoderParameters.Param[0] = myEncoderParameter;
-            bitmap.Save(@"Assets/" + fileName, myImageCodecInfo, myEncoderParameters);
-
-            return $"/Assets/{fileName}";
         }
 
         private static ImageCodecInfo GetEncoderInfo(String mimeType)

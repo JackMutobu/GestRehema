@@ -53,6 +53,7 @@ namespace GestRehema.Services
         public List<Payement> GetPayements(int walletId, int customerId)
         => GetPayements(walletId)
             .Union(GetSalePayements(customerId))
+            .Where(x => x != null)
             .OrderByDescending(x => x.UpdatedAt)
             .ThenBy(x => x.CreatedAt)
             .ToList();
@@ -60,6 +61,7 @@ namespace GestRehema.Services
         public List<Payement> GetSalePayements(int customerId)
         {
             var finalPayement = _dbContext.Sales
+                .Where(x => x != null)
                 .Where(x => x.CustomerId == customerId)
                 .Include(x => x.PayementHistory)
                 .ThenInclude(x => x.Payement)
