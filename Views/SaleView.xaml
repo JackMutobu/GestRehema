@@ -94,7 +94,7 @@
                     <DataGridTemplateColumn Header="Image">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <ui:PersonPicture Height="80" Margin="0,5" DisplayName="{Binding Customer.Name}" ProfilePicture="{Binding ImageUrl}" />
+                                <ui:PersonPicture Height="80" Margin="0,5" DisplayName="{Binding Customer.Name}" ProfilePicture="{Binding Customer.ImageUrl}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
