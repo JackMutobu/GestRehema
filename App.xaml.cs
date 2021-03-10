@@ -15,13 +15,14 @@ namespace GestRehema
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            AppCenter.Start("32f60010-1949-405c-a5ab-51b9c0cd6be9", typeof(Analytics), typeof(Crashes));
-
+            base.OnStartup(e);
             var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
 
             _appBootstrapper = new AppBootstrapper(connectionString);
 
             FrameworkCompatibilityPreferences.KeepTextBoxDisplaySynchronizedWithTextProperty = false;
+            
+            //AppCenter.Start("32f60010-1949-405c-a5ab-51b9c0cd6be9", typeof(Analytics), typeof(Crashes));
         }
     }
 }

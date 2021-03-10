@@ -2,8 +2,8 @@
 {
     public class FilePath
     {
-        public const string ArticleImage = @"C:\Gestrehema\Products\Images";
+        public const string ArticleImage = @"C:\GestrehemaAssets\Products\Images";
 
-        public const string ProfileImage = @"C:\Gestrehema\Profiles";
+        public const string ProfileImage = @"C:\GestrehemaAssets\Profiles";
     }
 }
