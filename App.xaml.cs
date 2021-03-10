@@ -1,9 +1,7 @@
 ﻿using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
-using System;
 using System.Configuration;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 

@@ -7,6 +7,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Reactive.Threading.Tasks;
 using System.Windows.Controls.Primitives;
+using GestRehema.Entities;
 
 namespace GestRehema.Views
 {
@@ -62,6 +63,24 @@ namespace GestRehema.Views
                    .Throttle(TimeSpan.FromMilliseconds(500))
                    .Subscribe(x => RefreshBindings());
 
+                this.DtGridArticle
+                  .Events().SelectionChanged
+                  .Where(x => x.AddedItems.Count > 0)
+                  .Select(x => x.AddedItems[0] as Article)
+                  .Subscribe(x => ViewModel.SelectedArticle = x);
+
+                this.DtGridArticle
+                   .Events().SelectionChanged
+                   .Where(x => x.AddedItems.Count > 0)
+                   .Select(x => x.AddedItems[0] as Article)
+                   .Where(x => x != null)
+                   .Throttle(TimeSpan.FromMilliseconds(200))
+                   .Subscribe(x => RefreshBindings());
+
+                this.ViewModel.LoadArticle
+                 .Throttle(TimeSpan.FromMilliseconds(200))
+                 .Subscribe(x => RefreshBindings());
+
             });
 
             TxtSearchArticle.TextChanged += TxtSearchArticle_TextChanged;
@@ -116,6 +135,12 @@ namespace GestRehema.Views
             {
                 DtGridArticle.ItemsSource = null;
                 DtGridArticle.ItemsSource = ViewModel!.Articles;
+                BorderArticleDetails.DataContext = null;
+                BorderArticleDetails.DataContext = ViewModel!.SelectedArticle;
+                BtnModifyArticle.DataContext = null;
+                BtnModifyArticle.DataContext = ViewModel;
+                BtnDeleteArticle.DataContext = null;
+                BtnDeleteArticle.DataContext = ViewModel;
             });
         }
 

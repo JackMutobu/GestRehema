@@ -41,6 +41,8 @@ namespace GestRehema.Services
             || x.Id.ToString().Contains(query) 
             || (!string.IsNullOrEmpty(x.TechnicalCode) && x.TechnicalCode.ToLower().Contains(query.ToLower())))
             .ToList()
+            .OrderByDescending(x => x.UpdatedAt)
+            .ThenBy(x => x.Id)
             .DistinctBy(x => x.Id)
             .ToList();
 
@@ -73,6 +75,7 @@ namespace GestRehema.Services
                     throw new Exception("Un autre produit avec le meme nom existe déjà");
 
                 article.CreatedAt = DateTime.UtcNow;
+                article.UpdatedAt = DateTime.UtcNow;
                 _dbContext.Articles.Add(article);
                 _dbContext.SaveChanges();
                 return _dbContext.Articles.First(x => x.CreatedAt == article.CreatedAt);
@@ -90,6 +93,7 @@ namespace GestRehema.Services
                 regArticle.SellingPrice = article.SellingPrice;
                 regArticle.TechnicalCode = article.TechnicalCode;
                 regArticle.UnitOfMeasure = article.UnitOfMeasure;
+                regArticle.UpdatedAt = DateTime.UtcNow;
 
                 _dbContext.Articles.Update(regArticle);
                 return _dbContext.SaveChanges();
@@ -121,6 +125,7 @@ namespace GestRehema.Services
                 var newStockValue = (decimal)articleStock.Quantity * articleStock.BuyinPrice;
 
                 article.BuyingPrice = (currentStockValue + newStockValue) / (decimal)article.InStock + (decimal)articleStock.Quantity;
+                article.UpdatedAt = DateTime.UtcNow;
 
                 _dbContext.Articles.Update(article);
                 _dbContext.SaveChanges();
@@ -155,11 +160,15 @@ namespace GestRehema.Services
 
         public List<Article> GetArticles(int skip = 0, int take = 100)
             => _dbContext.Articles.Skip(skip).Take(take)
-            .OrderByDescending(x => x.Id)
+            .OrderByDescending(x => x.UpdatedAt)
+            .ThenBy(x => x.Id)
             .ToList();
 
         public List<Article> GetArticlesWithSale(int skip = 0, int take = 100)
-           => _dbContext.Articles.Include(x => x.Sales).Skip(skip).Take(take)
+           => _dbContext.Articles
+            .Include(x => x.Sales).Skip(skip).Take(take)
+            .OrderByDescending(x => x.UpdatedAt)
+            .ThenBy(x => x.Id)
             .ToList();
 
         public List<string> GetCategories()

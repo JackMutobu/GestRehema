@@ -48,102 +48,169 @@
         </Grid>
         <TextBlock x:Name="TxtError" Grid.Row="1"  Margin="10"  Visibility="Collapsed" Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" />
         <ui:ProgressBar  x:Name="ProgIndicator" IsIndeterminate="True" Grid.Row="1"/>
-        <DataGrid Grid.Row="2"
-                x:Name="DtGridArticle"
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.6*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <DataGrid x:Name="DtGridArticle"
                 AutoGenerateColumns="False"
                 HeadersVisibility="Column"
                 CanUserAddRows="False"
                 GridLinesVisibility="Horizontal"
                 VirtualizingPanel.VirtualizationMode="Recycling"
                 VirtualizingPanel.IsVirtualizingWhenGrouping="True">
-            <DataGrid.Resources>
-                <ResourceDictionary>
-                    <Style x:Key="{x:Type DataGridCell}" TargetType="{x:Type DataGridCell}">
-                        <Setter Property="BorderBrush" Value="{x:Null}" />
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="BorderBrush" Value="{x:Null}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                    <Style TargetType="{x:Type DataGridRow}">
-                        <Setter Property="BorderBrush" Value="{x:Null}" />
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="BorderBrush" Value="{x:Null}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ResourceDictionary>
-            </DataGrid.Resources>
-            <DataGrid.Columns>
-                
-                <DataGridTextColumn 
+                <DataGrid.Resources>
+                    <ResourceDictionary>
+                        <Style x:Key="{x:Type DataGridCell}" TargetType="{x:Type DataGridCell}">
+                            <Setter Property="BorderBrush" Value="{x:Null}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderBrush" Value="{x:Null}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                        <Style TargetType="{x:Type DataGridRow}">
+                            <Setter Property="BorderBrush" Value="{x:Null}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderBrush" Value="{x:Null}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ResourceDictionary>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn 
                         Header="ID"
                         IsReadOnly="True"
                         Width="80"
                         Binding="{Binding Id}" />
-                <DataGridTemplateColumn Header="Image">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image Height="80" Margin="0,5" Source="{Binding ImageUrl}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn
+                    <DataGridTemplateColumn Header="Image">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Height="80" Margin="0,5" Source="{Binding ImageUrl}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn
                         Header="Nom"
                         Width="300"
                         Binding="{Binding Name}" />
-                <DataGridTextColumn
+                    <DataGridTextColumn
                         Header="Code"
                         Width="100"
                         Binding="{Binding TechnicalCode}" />
-                <DataGridTextColumn
+                    <DataGridTextColumn
                         Header="Catégorie"
                         Width="100"
                         Binding="{Binding Category}" />
-                <DataGridTextColumn
-                        Header="Unité de mesure"
-                        Binding="{Binding UnitOfMeasure}" />
-                <DataGridTextColumn
-                        Header="Conditionement"
-                        Binding="{Binding Conditionement}" />
-                <DataGridTextColumn
-                        Header="Qté par conditionement"
-                        Binding="{Binding QtyPerConditionement}" />
-                <DataGridTextColumn
+
+                    <DataGridTextColumn
                         Header="Prix de vente($)"
                         IsReadOnly="True"
                         Binding="{Binding SellingPrice}" />
-                <DataGridTextColumn
-                        Header="Prix d'achat($)"
-                        IsReadOnly="True"
-                        Binding="{Binding BuyingPrice}" />
 
-                <DataGridTextColumn
+                    <DataGridTextColumn
                         Header="En stock"
                         IsReadOnly="True"
                         Binding="{Binding InStock,StringFormat={}{0:F2}}" />
-                <DataGridTemplateColumn Header="Action" Width="100" IsReadOnly="True" >
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ui:SimpleStackPanel Spacing="10" Orientation="Horizontal" VerticalAlignment="Center">
-                                <Button  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:StockViewBase}}, Path= DataContext.SelectForUpdate}" CommandParameter="{Binding Id}" ToolTip="Modifier cet article">
-                                    <Viewbox Height="25">
-                                        <Path  Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}" Data="M46.6,3.4C45.6,2.4 44.4,2 43.2,2 42,2 40.7,2.5 39.8,3.4 39.8,3.4 39.7,3.5 39.6,3.6 39.6,3.6 39.6,3.6 39.6,3.6L4.3,38.8C4.2,38.9,4.1,39.1,4,39.2L2,46.7C1.9,47 2,47.4 2.3,47.7 2.5,47.9 2.7,48 3,48 3.1,48 3.2,48 3.3,48L10.8,46C11,46,11.1,45.9,11.2,45.7L46.4,10.5C46.4,10.5 46.4,10.5 46.4,10.5 46.5,10.4 46.6,10.3 46.6,10.3 48.5,8.4 48.5,5.3 46.6,3.4z M45.2,4.8C46.3,5.9 46.3,7.7 45.2,8.9 44.9,9.2 44.6,9.5 44.3,9.8L40.2,5.7C40.7,5.2 41.1,4.8 41.1,4.8 41.6,4.3 42.4,4 43.1,4 43.9,4 44.6,4.3 45.2,4.8z M5.6,41.2L8.8,44.4 4.4,45.6 5.6,41.2z" />
-                                    </Viewbox>
-                                </Button>
-                                <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:StockViewBase}}, Path= DataContext.SelectForDelete}" CommandParameter="{Binding Id}"  ToolTip="Supprimer cet article">
-                                    <Viewbox Height="25">
-                                        <Path  Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}" Data="M4.9902344,3.9902344A1.0001,1.0001,0,0,0,4.2929688,5.7070312L10.585938,12 4.2929688,18.292969A1.0001,1.0001,0,1,0,5.7070312,19.707031L12,13.414062 18.292969,19.707031A1.0001,1.0001,0,1,0,19.707031,18.292969L13.414062,12 19.707031,5.7070312A1.0001,1.0001,0,0,0,18.980469,3.9902344A1.0001,1.0001,0,0,0,18.292969,4.2929688L12,10.585938 5.7070312,4.2929688A1.0001,1.0001,0,0,0,4.9902344,3.9902344z" />
-                                    </Viewbox>
-                                </Button>
-                            </ui:SimpleStackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                
-            </DataGrid.Columns>
-        </DataGrid>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Grid x:Name="GridSide"  Grid.Column="1" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Border x:Name="BorderArticleDetails" Grid.ColumnSpan="2" DataContext="{Binding SelectedArticle}" CornerRadius="2" VerticalAlignment="Stretch"  Margin="2.5,0,2.5,5" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" Padding="5" HorizontalAlignment="Stretch">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Image x:Name="ImgProduct" Grid.ColumnSpan="2" Height="150"  Source="{Binding ImageUrl}" />
+                        <TextBlock Grid.Row="1" Margin="5,0" Text="Noms"  VerticalAlignment="Center" HorizontalAlignment="Left"  FontSize="14"  FontWeight="Light" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="5,0" Text="{Binding Name,FallbackValue=Coude en fer}"  VerticalAlignment="Center" HorizontalAlignment="Right"  FontSize="14"  />
+                        <TextBlock Grid.Row="2" Margin="5,0" Text="Code téchnique"  VerticalAlignment="Center" HorizontalAlignment="Left"  FontSize="14"  FontWeight="Light" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="5,0" Text="{Binding TechnicalCode,FallbackValue=Coude 36829}"  VerticalAlignment="Center" HorizontalAlignment="Right"  FontSize="14"  />
+                        <TextBlock Grid.Row="3" Margin="5,0" Text="Qté en Stock"  VerticalAlignment="Center" HorizontalAlignment="Left"  FontSize="14"  FontWeight="Light" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Margin="5,0"   VerticalAlignment="Center" HorizontalAlignment="Right"  FontSize="14">
+                            <Run Text="{Binding InStock,FallbackValue=20,StringFormat={}{0:F2}}"/>
+                            <Run Text="{Binding Conditionement,FallbackValue=carton}"/>
+                        </TextBlock>
+                        <TextBlock Grid.Row="4" Margin="5,0" Text="Prix de vente"  VerticalAlignment="Center" HorizontalAlignment="Left"  FontSize="14"  FontWeight="Light" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Margin="5,0"   VerticalAlignment="Center" HorizontalAlignment="Right"  FontSize="14">
+                            <Run Text="{Binding SellingPrice,FallbackValue=20}"/>
+                             <Run Text="$"/>
+                            <Run Text="par" FontWeight="Light"/>
+                            <Run Text="{Binding Conditionement,FallbackValue=carton}" FontWeight="Light"/>
+                        </TextBlock>
+                        <TextBlock Grid.Row="5" Margin="5,0" Text="Prix d'achat"  VerticalAlignment="Center" HorizontalAlignment="Left"  FontSize="14"  FontWeight="Light" />
+                        <TextBlock Grid.Row="5" Grid.Column="1" Margin="5,0"   VerticalAlignment="Center" HorizontalAlignment="Right"  FontSize="14">
+                            <Run Text="{Binding BuyingPrice,FallbackValue=20}"/>
+                             <Run Text="$"/>
+                            <Run Text="par" FontWeight="Light"/>
+                            <Run Text="{Binding Conditionement,FallbackValue=carton}" FontWeight="Light"/>
+                        </TextBlock>
+                        <TextBlock Grid.Row="6" Margin="5,0" Text="Unité de mesure"  VerticalAlignment="Center" HorizontalAlignment="Left"  FontSize="14"  FontWeight="Light" />
+                        <TextBlock Grid.Row="6" Grid.Column="1" Margin="5,0"   VerticalAlignment="Center" HorizontalAlignment="Right"  FontSize="14">
+                            <Run Text="{Binding UnitOfMeasure,FallbackValue=kg}"/>
+                        </TextBlock>
+                        <TextBlock Grid.Row="7" Margin="5,0" Text="Conditionement"  VerticalAlignment="Center" HorizontalAlignment="Left"  FontSize="14"  FontWeight="Light" />
+                        <TextBlock Grid.Row="7" Grid.Column="1" Margin="5,0"   VerticalAlignment="Center" HorizontalAlignment="Right"  FontSize="14">
+                            <Run Text="{Binding Conditionement,FallbackValue=carton}"/>
+                        </TextBlock>
+                        <TextBlock Grid.Row="8" Margin="5,0" Text="Qté par conditionement"  VerticalAlignment="Center" HorizontalAlignment="Left"  FontSize="14"  FontWeight="Light" />
+                        <TextBlock Grid.Row="8" Grid.Column="1" Margin="5,0"   VerticalAlignment="Center" HorizontalAlignment="Right"  FontSize="14">
+                            <Run Text="{Binding QtyPerConditionement,FallbackValue=20,StringFormat={}{0:F2}}"/>
+                              <Run Text="{Binding UnitOfMeasure,FallbackValue=kg}" FontWeight="Light"/>
+                            <Run Text="par" FontWeight="Light"/>
+                            <Run Text="{Binding Conditionement,FallbackValue=carton}" FontWeight="Light"/>
+                        </TextBlock>
+                        <TextBlock Grid.Row="9" Margin="5,0" Text="Catégorie"  VerticalAlignment="Center" HorizontalAlignment="Left"  FontSize="14"  FontWeight="Light" />
+                        <TextBlock Grid.Row="9" Grid.Column="1" Margin="5,0"   VerticalAlignment="Center" HorizontalAlignment="Right"  FontSize="14">
+                            <Run Text="{Binding Category,FallbackValue=coude}"/>
+                        </TextBlock>
+
+
+                    </Grid>
+                </Border>
+                <Button HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5" Grid.Row="1" Command="{Binding SelectForUpdate}" CommandParameter="{Binding SelectedArticle.Id,FallbackValue=1}"  x:Name="BtnModifyArticle"  >
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                        <Viewbox Height="15">
+                            <Path  Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}" Data="M46.6,3.4C45.6,2.4 44.4,2 43.2,2 42,2 40.7,2.5 39.8,3.4 39.8,3.4 39.7,3.5 39.6,3.6 39.6,3.6 39.6,3.6 39.6,3.6L4.3,38.8C4.2,38.9,4.1,39.1,4,39.2L2,46.7C1.9,47 2,47.4 2.3,47.7 2.5,47.9 2.7,48 3,48 3.1,48 3.2,48 3.3,48L10.8,46C11,46,11.1,45.9,11.2,45.7L46.4,10.5C46.4,10.5 46.4,10.5 46.4,10.5 46.5,10.4 46.6,10.3 46.6,10.3 48.5,8.4 48.5,5.3 46.6,3.4z M45.2,4.8C46.3,5.9 46.3,7.7 45.2,8.9 44.9,9.2 44.6,9.5 44.3,9.8L40.2,5.7C40.7,5.2 41.1,4.8 41.1,4.8 41.6,4.3 42.4,4 43.1,4 43.9,4 44.6,4.3 45.2,4.8z M5.6,41.2L8.8,44.4 4.4,45.6 5.6,41.2z" />
+                        </Viewbox>
+                        <TextBlock Text="Modifier"/>
+                    </ui:SimpleStackPanel>
+                </Button>
+                <Button HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="1" Margin="5" Grid.Row="1" Command="{Binding SelectForDelete}" CommandParameter="{Binding SelectedArticle.Id,FallbackValue=1}"  x:Name="BtnDeleteArticle"  >
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                        <Viewbox Height="15">
+                            <Path  Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}" Data="M4.9902344,3.9902344A1.0001,1.0001,0,0,0,4.2929688,5.7070312L10.585938,12 4.2929688,18.292969A1.0001,1.0001,0,1,0,5.7070312,19.707031L12,13.414062 18.292969,19.707031A1.0001,1.0001,0,1,0,19.707031,18.292969L13.414062,12 19.707031,5.7070312A1.0001,1.0001,0,0,0,18.980469,3.9902344A1.0001,1.0001,0,0,0,18.292969,4.2929688L12,10.585938 5.7070312,4.2929688A1.0001,1.0001,0,0,0,4.9902344,3.9902344z" />
+                        </Viewbox>
+                        <TextBlock Text="Supprimer"/>
+                    </ui:SimpleStackPanel>
+                </Button>
+            </Grid>
+        </Grid>
     </Grid>
 </local:StockViewBase>

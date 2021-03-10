@@ -160,6 +160,18 @@ namespace GestRehema.ViewModels
                 .Select(_ => Unit.Default)
                 .InvokeCommand(LoadCategories);
 
+            LoadArticle = ReactiveCommand.CreateFromTask<int,Article?>(id => Task.Run(() => Locator.Current.GetService<IArticleService>().GetArticle(id)));
+            LoadArticle
+                .Where(x => x != null)
+                .Subscribe(x => SelectedArticle = x);
+            LoadArticles
+                .Where(x => x != null && x.Count > 0)
+                .Select(x => x.First().Id)
+                .InvokeCommand(LoadArticle);
+            SaveArticle
+                .Select(x => x.Id)
+                .InvokeCommand(LoadArticle);
+
         }
 
         private void InitializeFields()
@@ -222,6 +234,9 @@ namespace GestRehema.ViewModels
         [Reactive]
         public double? QtyPerConditionement { get; set; }
 
+        [Reactive]
+        public Article? SelectedArticle { get; set; }
+
 
 
         public string? UrlPathSegment => nameof(StockViewModel);
@@ -241,6 +256,8 @@ namespace GestRehema.ViewModels
         public ReactiveCommand<LoadParameter, List<Article>> LoadArticles { get; }
 
         public ReactiveCommand<Unit, List<string>> LoadCategories { get; }
+
+        public ReactiveCommand<int, Article?> LoadArticle { get; }
 
 
         private void ValidateModel()
