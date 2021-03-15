@@ -38,6 +38,8 @@ namespace GestRehema.Data
 
         public DbSet<Payement> Payements { get; set; } = null!;
 
+        public DbSet<Expense> Expenses { get; set; } = null!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

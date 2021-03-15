@@ -4,7 +4,7 @@ namespace GestRehema.ViewModels
 {
     public class SalePayementModel:BasePayementModel
     {
-        public SalePayementModel(Sale sale,Entreprise entreprise,Wallet wallet, decimal totalAmount) :base(wallet,entreprise,totalAmount)
+        public SalePayementModel(Sale sale,Entreprise entreprise,Wallet wallet, decimal totalAmount,bool isNewPayement) :base(wallet,entreprise, isNewPayement,totalAmount)
         {
             Sale = sale;
 

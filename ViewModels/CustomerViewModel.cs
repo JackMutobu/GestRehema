@@ -148,7 +148,7 @@ namespace GestRehema.ViewModels
 
             this.WhenAnyValue(x => x.SelectedCustomer)
                .Where(x => x != null)
-               .Subscribe(x => PayementModel = new CustomerPayementModel(x!, Entreprise));
+               .Subscribe(x => PayementModel = new CustomerPayementModel(x!, Entreprise,false));
 
             Pay = ReactiveCommand.CreateFromTask<Unit, Wallet>(_ => Task.Run(() => _walletService.AddExcess(CustomerWallet!.Id,Entreprise.WalletId,PayementModel!.TotalPaid)));
             Pay.ThrownExceptions
@@ -161,7 +161,7 @@ namespace GestRehema.ViewModels
             Pay
                 .Subscribe(x => CustomerWallet = x);
 
-            LoadPayements = ReactiveCommand.CreateFromTask<int, List<Payement>>(walletId => Task.Run(() => _payementService.GetPayements(walletId,SelectedCustomer.Id)));
+            LoadPayements = ReactiveCommand.CreateFromTask<int, List<Payement>>(walletId => Task.Run(() => _payementService.GetPayements(walletId,SelectedCustomer!.Id)));
 
             LoadPayements
                 .Where(p => p != null)
@@ -174,7 +174,7 @@ namespace GestRehema.ViewModels
                             p.TotalPaid = decimal.Round(p.AmountInUSD + p.AmountInCDF / Entreprise.TauxDuJour,2, MidpointRounding.ToEven);
                         }
                     }
-                    return new ObservableCollection<Payement>(x.Where(y => y != null));
+                    return new ObservableCollection<Payement>(x.Where(y => y != null && y.TotalPaid != 0));
                 })
                 .ToPropertyEx(this, x => x.Payements);
             LoadPayements

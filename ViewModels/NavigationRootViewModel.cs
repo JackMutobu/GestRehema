@@ -59,6 +59,9 @@ namespace GestRehema.ViewModels
 
             NavigateToSale = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(new SaleViewModel(this)));
 
+            NavigateToCash = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(new CashViewModel(this)));
+
+
             Initialize();
         }
 
@@ -75,6 +78,8 @@ namespace GestRehema.ViewModels
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToCustomer { get; }
 
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToSale { get; }
+
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToCash { get; }
 
         public ReactiveCommand<Unit, Unit> GoBack { get; }
 

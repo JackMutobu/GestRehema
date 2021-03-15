@@ -55,8 +55,9 @@
         <ui:ProgressBar  x:Name="ProgIndicator"  IsIndeterminate="True" Grid.Row="1"/>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.5*"/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="17*"/>
+                <ColumnDefinition Width="28*"/>
+                <ColumnDefinition Width="30*"/>
             </Grid.ColumnDefinitions>
             <DataGrid  x:Name="DtGridSales"
                 AutoGenerateColumns="False"
@@ -64,7 +65,7 @@
                 CanUserAddRows="False"
                 GridLinesVisibility="Horizontal"
                 VirtualizingPanel.VirtualizationMode="Recycling"
-                VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+                VirtualizingPanel.IsVirtualizingWhenGrouping="True" Grid.ColumnSpan="2">
                 <DataGrid.Resources>
                     <ResourceDictionary>
                         <Style x:Key="{x:Type DataGridCell}" TargetType="{x:Type DataGridCell}">
@@ -117,7 +118,7 @@
                         Binding="{Binding DeliveryStatus}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <Border x:Name="BorderBill" Grid.Column="1" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="5">
+            <Border x:Name="BorderBill" Grid.Column="2" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="5">
                 <Grid >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -328,7 +329,7 @@
                     </Grid>
                 </Grid>
             </Border>
-            
+
         </Grid>
     </Grid>
 </local:SaleViewBase>

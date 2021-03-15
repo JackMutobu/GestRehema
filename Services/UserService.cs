@@ -40,6 +40,7 @@ namespace GestRehema.Services
             var user = _dbContext.Users
                 .Include(x => x.Employee)
                 .ThenInclude(x => x.Entreprise)
+                .ThenInclude(x => x.Wallet)
                 .SingleOrDefault(x => x.Username == username);
 
             if (user != null && user.Password.Verify(password))

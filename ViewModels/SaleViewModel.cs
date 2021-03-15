@@ -107,7 +107,7 @@ namespace GestRehema.ViewModels
                 .ToPropertyEx(this, x => x.IsBusy);
 
 
-            AddPayement = ReactiveCommand.Create(() => new SalePayementModel(SelectedSale!, Entreprise, Locator.Current.GetService<ICustomerService>().GetWallet(SelectedSale!.Customer!.Id) ?? throw new Exception("Wallet can not be null"), Debt));
+            AddPayement = ReactiveCommand.Create(() => new SalePayementModel(SelectedSale!, Entreprise, Locator.Current.GetService<ICustomerService>().GetWallet(SelectedSale!.Customer!.Id) ?? throw new Exception("Wallet can not be null"), Debt, false));
             AddPayement
                 .ToPropertyEx(this, x => x.PayementModel);
 

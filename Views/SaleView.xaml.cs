@@ -13,9 +13,6 @@ using System.Reactive.Threading.Tasks;
 using System.Printing;
 using System.Windows.Media;
 using System.Windows;
-using System.Windows.Xps;
-using System.IO;
-using System.Windows.Xps.Packaging;
 using System.Windows.Documents;
 
 namespace GestRehema.Views

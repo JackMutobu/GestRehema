@@ -65,6 +65,8 @@ namespace GestRehema.Views
                 ViewModel!.NavigateToCustomer.Execute().Subscribe();
             else if (navItem!.Content.ToString() == "Ventes")
                 ViewModel!.NavigateToSale.Execute().Subscribe();
+            else if (navItem!.Content.ToString() == "Caisse")
+                ViewModel!.NavigateToCash.Execute().Subscribe();
         }
 
         private async void NavView_BackRequested(ModernWpf.Controls.NavigationView sender, ModernWpf.Controls.NavigationViewBackRequestedEventArgs args)

@@ -25,6 +25,7 @@ namespace GestRehema
             Locator.CurrentMutable.Register<ISaleService>(() => new SaleService());
             Locator.CurrentMutable.Register<IWalletService>(() => new WalletService());
             Locator.CurrentMutable.Register<IPayementService>(() => new PayementService());
+            Locator.CurrentMutable.Register<IExpenseService>(() => new ExpenseService());
 
             Locator.CurrentMutable.RegisterViewsForViewModels(Assembly.GetExecutingAssembly());
         }

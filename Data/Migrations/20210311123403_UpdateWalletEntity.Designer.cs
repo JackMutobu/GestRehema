@@ -4,14 +4,16 @@ using GestRehema.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GestRehema.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210311123403_UpdateWalletEntity")]
+    partial class UpdateWalletEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,7 +198,7 @@ namespace GestRehema.Data.Migrations
                             Position = "Admin",
                             Postnom = "Informatique",
                             Prenom = "Rehema",
-                            UserId = new Guid("5960f86a-7a9b-4b5b-9b4b-c34d8aad23bd")
+                            UserId = new Guid("ac6bd2fd-c45b-4523-9ca0-433eaf0d5ed3")
                         });
                 });
 
@@ -268,8 +270,8 @@ namespace GestRehema.Data.Migrations
                         {
                             Id = -1,
                             Contact = "+243971871546\r\n+243822903906\r\n+243819521649",
-                            CreatedAt = new DateTime(2021, 3, 13, 12, 44, 13, 121, DateTimeKind.Utc).AddTicks(1569),
-                            DateDuJour = new DateTime(2021, 3, 13, 12, 44, 13, 120, DateTimeKind.Utc).AddTicks(8836),
+                            CreatedAt = new DateTime(2021, 3, 11, 12, 34, 0, 968, DateTimeKind.Utc).AddTicks(9174),
+                            DateDuJour = new DateTime(2021, 3, 11, 12, 34, 0, 968, DateTimeKind.Utc).AddTicks(6637),
                             Description = "Votre besoin en construction est assuré",
                             IDNAT = "493-N50888J",
                             Location = "Bunia",
@@ -303,7 +305,10 @@ namespace GestRehema.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EmployeeId")
+                    b.Property<int>("EmpleyeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("EmployeeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Owner")
@@ -587,10 +592,10 @@ namespace GestRehema.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5960f86a-7a9b-4b5b-9b4b-c34d8aad23bd"),
+                            Id = new Guid("ac6bd2fd-c45b-4523-9ca0-433eaf0d5ed3"),
                             AccessLevel = "all",
-                            CreatedAt = new DateTime(2021, 3, 13, 12, 44, 13, 123, DateTimeKind.Utc).AddTicks(365),
-                            Password = "10000.Mr65p0Vv+WOa/Andtunvww==.8GfV8y/0J58LWFLeVmvf2bQFCGcfl3iDePAY+50FjxA=",
+                            CreatedAt = new DateTime(2021, 3, 11, 12, 34, 0, 970, DateTimeKind.Utc).AddTicks(9385),
+                            Password = "10000.WcJqw1ohRrDAgUg+8okdiw==.StHvxejP/BLTjKmBrDAXFCSVb34EL1lic8hRrT1jCTI=",
                             Role = "SuperAdmin",
                             Username = "admin@rehema.com"
                         });
@@ -629,7 +634,7 @@ namespace GestRehema.Data.Migrations
                             AmountInDebt = 0m,
                             AmountInExcess = 0m,
                             AmountOwned = 0m,
-                            CreatedAt = new DateTime(2021, 3, 13, 12, 44, 13, 118, DateTimeKind.Utc).AddTicks(7890)
+                            CreatedAt = new DateTime(2021, 3, 11, 12, 34, 0, 966, DateTimeKind.Utc).AddTicks(6150)
                         });
                 });
 
@@ -714,9 +719,7 @@ namespace GestRehema.Data.Migrations
                 {
                     b.HasOne("GestRehema.Entities.Employee", "Employee")
                         .WithMany("Expenses")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeId");
 
                     b.HasOne("GestRehema.Entities.Payement", "Payement")
                         .WithOne("Expense")

@@ -29,6 +29,8 @@ namespace GestRehema.Entities
 
         public decimal AmountInUSD { get; set; }
 
+        public string? Description { get; set; }
+
         public decimal AmountInCDF { get; set; }
 
         public decimal TotalPaid { get; set; }
@@ -36,6 +38,8 @@ namespace GestRehema.Entities
         public bool ToCompany { get; set; }
 
         public SalePayement? SalePayement { get; set; }
+
+        public Expense? Expense { get; set; }
 
         public ICollection<WalletHistory> WalletHistory { get; set; }
 

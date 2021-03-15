@@ -170,7 +170,7 @@ namespace GestRehema.ViewModels
             Validate
                 .Subscribe(errors => Errors = errors);
 
-            AddPayement = ReactiveCommand.Create(() => new SalePayementModel(Sale, Entreprise, SelectedCustomer.Wallet ?? throw new Exception("Wallet can not be null"), CartSubTotal));
+            AddPayement = ReactiveCommand.Create(() => new SalePayementModel(Sale, Entreprise, SelectedCustomer.Wallet ?? throw new Exception("Wallet can not be null"), CartSubTotal,true));
 
             Pay = ReactiveCommand.CreateFromTask<List<Payement>, Sale>(x => Task.Run(() =>
             {

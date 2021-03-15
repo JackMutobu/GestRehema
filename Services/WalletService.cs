@@ -11,6 +11,8 @@ namespace GestRehema.Services
         Wallet AddDebt(int walletId, int entrepriseWalletId, decimal amount, int? payementId = null);
         Wallet AddExcess(int walletId, int entrepriseWalletId, decimal amount, int? payementId = null);
         Wallet AddToEntreprise(int entrepriseWalletId, decimal amount, int? payementId = null);
+        Wallet DeductFromEntreprise(int entrepriseWalletId, decimal amount, int? payementId = null);
+        Wallet? GetWallet(int id);
     }
 
     public class WalletService : IWalletService
@@ -99,6 +101,8 @@ namespace GestRehema.Services
             entrepriseWallet.AmountOwned += amount;
             entrepriseWallet.UpdatedAt = DateTime.UtcNow;
 
+            entrepriseWallet = RegularizeWallet(entrepriseWallet, true);
+
             var newWalletHistory = new WalletHistory
             {
                 Date = DateTime.UtcNow,
@@ -115,6 +119,36 @@ namespace GestRehema.Services
 
             return entrepriseWallet;
         }
+
+        public Wallet DeductFromEntreprise(int entrepriseWalletId, decimal amount, int? payementId = null)
+        {
+            if (amount <= 0)
+                throw new ArgumentException("Le montant doit etre supérieur à 0");
+
+            var entrepriseWallet = _dbContext.Wallets.Single(x => x.Id == entrepriseWalletId);
+            entrepriseWallet.AmountOwned -= amount;
+            entrepriseWallet.UpdatedAt = DateTime.UtcNow;
+            entrepriseWallet = RegularizeWallet(entrepriseWallet, true);
+
+            var newWalletHistory = new WalletHistory
+            {
+                Date = DateTime.UtcNow,
+                Description = $"Ajout de {amount}$ à la caisse",
+                Amount = -amount,
+                AmountDebtWalletId = entrepriseWalletId,
+                AmountExcessWalletId = entrepriseWalletId,
+                PayementId = payementId
+            };
+
+            _dbContext.Wallets.Update(entrepriseWallet);
+            _dbContext.WalletHistories.Add(newWalletHistory);
+            _dbContext.SaveChanges();
+
+            return entrepriseWallet;
+        }
+
+        public Wallet? GetWallet(int id)
+            => _dbContext.Wallets.FirstOrDefault(x => x.Id == id);
 
         private Wallet RegularizeWallet(Wallet wallet, bool isEntrerpise = false)
         {
