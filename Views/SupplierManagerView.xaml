@@ -1,0 +1,128 @@
+﻿<local:SupplierManagerViewBase x:Class="GestRehema.Views.SupplierManagerView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:local="clr-namespace:GestRehema.Views"
+        mc:Ignorable="d"
+           WindowStyle="None"
+        Title="Gérer une vente/commande"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        ui:WindowHelper.UseModernWindowStyle="True" Height="650" Width="800"  Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Border Padding="30,0" Background="{DynamicResource AppContentBackgroundBrush}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <TextBlock x:Name="TxtError"  Grid.ColumnSpan="2" Text="{Binding Errors}" Margin="0,10"  Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" />
+
+                <ui:ProgressBar x:Name="ProgIndicator"
+                    IsIndeterminate="True" Grid.ColumnSpan="2" Visibility="Collapsed" />
+
+                <Grid Grid.Row="1" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <ui:SimpleStackPanel>
+                        <Image x:Name="ImgItem" Height="100" ToolTip="Cliquer pour modifier l'image" Source="{Binding ImageUrl}" />
+                        <Button x:Name="BtnModifyImage" Content="Modifier image" HorizontalAlignment="Center" />
+                    </ui:SimpleStackPanel>
+                    <TextBox Text="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        ui:ControlHelper.Header="Noms:"
+                        ui:ControlHelper.PlaceholderText="Julius Nyerere" Grid.Row="1" Margin="0,5"  />
+                    <TextBox Text="{Binding NumTelephone,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        ui:ControlHelper.Header="Numéro de Télephone:"
+                        ui:ControlHelper.PlaceholderText="+2439786408335" Grid.Row="2" Margin="0,5"  />
+                    <TextBox Text="{Binding Email,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        ui:ControlHelper.Header="Email:"
+                        ui:ControlHelper.PlaceholderText="example@gmail.com" Grid.Row="3" Margin="0,5"  />
+                    <ComboBox x:Name="ComboLocations" HorizontalAlignment="Stretch" IsEditable="True"  Text="{Binding Adresse,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        ui:ControlHelper.Header="Localisation:"
+                        ui:ControlHelper.PlaceholderText="Butembo" Grid.Row="4" Margin="0,5"  />
+                    <Button x:Name="BtnPrint" Grid.Row="5"  ToolTip="Imprimer la facture" Margin="2.5,10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
+                        <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                            <Viewbox Height="15">
+                                <Path  Stroke="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Data="M4,0C2.90625,0,2,0.90625,2,2L2,24C2,25.09375,2.90625,26,4,26L22,26C23.09375,26,24,25.09375,24,24L24,2C24,0.90625,23.09375,0,22,0z M4,2L22,2 22,24 4,24z M8.71875,5C8.167969,5.078125 7.78125,5.589844 7.859375,6.140625 7.9375,6.691406 8.449219,7.078125 9,7L17,7C17.359375,7.003906 17.695313,6.816406 17.878906,6.503906 18.058594,6.191406 18.058594,5.808594 17.878906,5.496094 17.695313,5.183594 17.359375,4.996094 17,5L9,5C8.96875,5 8.9375,5 8.90625,5 8.875,5 8.84375,5 8.8125,5 8.78125,5 8.75,5 8.71875,5z M6.71875,11C6.167969,11.078125 5.78125,11.589844 5.859375,12.140625 5.9375,12.691406 6.449219,13.078125 7,13L14,13C14.359375,13.003906 14.695313,12.816406 14.878906,12.503906 15.058594,12.191406 15.058594,11.808594 14.878906,11.496094 14.695313,11.183594 14.359375,10.996094 14,11L7,11C6.96875,11 6.9375,11 6.90625,11 6.875,11 6.84375,11 6.8125,11 6.78125,11 6.75,11 6.71875,11z M17.71875,11C17.167969,11.078125 16.78125,11.589844 16.859375,12.140625 16.9375,12.691406 17.449219,13.078125 18,13L19,13C19.359375,13.003906 19.695313,12.816406 19.878906,12.503906 20.058594,12.191406 20.058594,11.808594 19.878906,11.496094 19.695313,11.183594 19.359375,10.996094 19,11L18,11C17.96875,11 17.9375,11 17.90625,11 17.875,11 17.84375,11 17.8125,11 17.78125,11 17.75,11 17.71875,11z M6.71875,14C6.167969,14.078125 5.78125,14.589844 5.859375,15.140625 5.9375,15.691406 6.449219,16.078125 7,16L14,16C14.359375,16.003906 14.695313,15.816406 14.878906,15.503906 15.058594,15.191406 15.058594,14.808594 14.878906,14.496094 14.695313,14.183594 14.359375,13.996094 14,14L7,14C6.96875,14 6.9375,14 6.90625,14 6.875,14 6.84375,14 6.8125,14 6.78125,14 6.75,14 6.71875,14z M17.71875,14C17.167969,14.078125 16.78125,14.589844 16.859375,15.140625 16.9375,15.691406 17.449219,16.078125 18,16L19,16C19.359375,16.003906 19.695313,15.816406 19.878906,15.503906 20.058594,15.191406 20.058594,14.808594 19.878906,14.496094 19.695313,14.183594 19.359375,13.996094 19,14L18,14C17.96875,14 17.9375,14 17.90625,14 17.875,14 17.84375,14 17.8125,14 17.78125,14 17.75,14 17.71875,14z M6.71875,17C6.167969,17.078125 5.78125,17.589844 5.859375,18.140625 5.9375,18.691406 6.449219,19.078125 7,19L14,19C14.359375,19.003906 14.695313,18.816406 14.878906,18.503906 15.058594,18.191406 15.058594,17.808594 14.878906,17.496094 14.695313,17.183594 14.359375,16.996094 14,17L7,17C6.96875,17 6.9375,17 6.90625,17 6.875,17 6.84375,17 6.8125,17 6.78125,17 6.75,17 6.71875,17z M17.71875,17C17.167969,17.078125 16.78125,17.589844 16.859375,18.140625 16.9375,18.691406 17.449219,19.078125 18,19L19,19C19.359375,19.003906 19.695313,18.816406 19.878906,18.503906 20.058594,18.191406 20.058594,17.808594 19.878906,17.496094 19.695313,17.183594 19.359375,16.996094 19,17L18,17C17.96875,17 17.9375,17 17.90625,17 17.875,17 17.84375,17 17.8125,17 17.78125,17 17.75,17 17.71875,17z" />
+                            </Viewbox>
+                            <TextBlock Text="Facture"/>
+                        </ui:SimpleStackPanel>
+                    </Button>
+
+
+                </Grid>
+
+            </Grid>
+
+        </Border>
+        <Border Grid.Row="1"  Grid.Column="1" BorderThickness="0,0,1,0" Padding="5" BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Choisir le(s) produit(s)" FontSize="16"  Margin="0,10,0,10"/>
+                <TextBox x:Name="TxtSearchArticle" Grid.Row="1"  ui:ControlHelper.PlaceholderText="Rechercher un produit" MinWidth="220" Margin="5,5,0,5" HorizontalAlignment="Stretch"/>
+
+                <ui:ListView x:Name="ListArticles"  Grid.Row="2" Margin="0,10">
+                    <ui:ListView.ItemContainerStyle>
+                        <Style TargetType="ui:ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Margin" Value="0"/>
+                            <Setter Property="Padding" Value="0"/>
+                        </Style>
+                    </ui:ListView.ItemContainerStyle>
+                    <ui:ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ui:ThemeShadowChrome    HorizontalAlignment="Stretch" Depth="5" Margin="0,1" CornerRadius="2">
+                                <Border CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" Padding="5" HorizontalAlignment="Stretch">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Height="80" Margin="0,5" Source="{Binding ImageUrl}" />
+                                        <ui:SimpleStackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
+                                            <TextBlock  FontSize="16" FontWeight="SemiBold">
+                                        <Run Text="{Binding Name}"/>
+                                        <Run Text=" - "/>
+                                        <Run Text="{Binding TechnicalCode}"/>
+                                            </TextBlock>
+                                            <TextBlock  FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
+                                                <Run Text="En Stock:"/>
+                                                <Run Text="{Binding InStock,StringFormat={}{0:F2}}"/>
+                                            </TextBlock>
+                                            <TextBlock  Margin="0,10,0,0" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
+                                        <Run Text="{Binding SellingPrice,StringFormat={}{0:F2}}"/>
+                                        <Run Text="$"/>
+                                            </TextBlock>
+                                        </ui:SimpleStackPanel>
+
+                                        <CheckBox  IsChecked="{Binding Selected,Mode=TwoWay}" HorizontalAlignment="Right" Margin="0,0,-40,0" Grid.Column="2"/>
+                                    </Grid>
+                                </Border>
+                            </ui:ThemeShadowChrome>
+                        </DataTemplate>
+                    </ui:ListView.ItemTemplate>
+                </ui:ListView>
+            </Grid>
+        </Border>
+    </Grid>
+</local:SupplierManagerViewBase>

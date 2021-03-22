@@ -40,6 +40,18 @@ namespace GestRehema.Data
 
         public DbSet<Expense> Expenses { get; set; } = null!;
 
+        public DbSet<Supplier> Suppliers { get; set; } = null!;
+
+        public DbSet<Supply> Supplies { get; set; } = null!;
+
+        public DbSet<SupplyArticle> SupplyArticles { get; set; } = null!;
+
+        public DbSet<SupplyDelivery> SupplyDeliveries { get; set; } = null!;
+
+        public DbSet<SupplyPayement> SupplyPayements { get; set; } = null!;
+
+        public DbSet<SupplyExpense> SupplyExpenses { get; set; } = null!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -124,8 +136,32 @@ namespace GestRehema.Data
         .WithOne(e => e!.Employee!)
         .OnDelete(DeleteBehavior.SetNull);
 
+            modelBuilder.Entity<SupplyArticle>()
+          .HasKey(sa => new {
+              sa.ArticleId,
+              sa.SupplyId
+          });
+            modelBuilder.Entity<SupplyArticle>()
+                .HasOne(sa => sa.Supply)
+                .WithMany(s => s.ArticlesSupplied)
+                .HasForeignKey(sa => sa.SupplyId);
+            modelBuilder.Entity<SaleArticle>()
+                        .HasOne(asa => asa.Article)
+                        .WithMany(a => a.Sales)
+                        .HasForeignKey(asa => asa.ArticleId);
+
+            modelBuilder.Entity<Supply>()
+                       .HasOne(asa => asa.Supplier)
+                       .WithMany(a => a.Supplies)
+                       .HasForeignKey(asa => asa.SupplierId)
+                       .OnDelete(DeleteBehavior.NoAction);
+
+
+
             base.OnModelCreating(modelBuilder);
         }
 
-    }
+       
+
+}
 }

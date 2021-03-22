@@ -1,6 +1,6 @@
 ﻿namespace GestRehema.Entities
 {
-    public class SalePayementStatus
+    public class SupplyPayementStatus
     {
         public const string AwaitingPayement = "En attente de paiement";
 

@@ -27,10 +27,9 @@ namespace GestRehema.ViewModels
             _walletService = Locator.Current.GetService<IWalletService>();
             SelectedCategory = "Toutes";
 
-            LoadWallet = ReactiveCommand.CreateFromTask<int,Wallet>(walletId => Task.Run(() =>  _walletService.GetWallet(walletId)));
+            LoadWallet = ReactiveCommand.CreateFromTask<int,Wallet>(walletId => Task.Run(() => Locator.Current.GetService<IWalletService>().GetWallet(walletId)));
             LoadWallet
-                .Subscribe(x => 
-                EntrepriseWallet = x);
+                .Subscribe(x => EntrepriseWallet = x);
             LoadCategories = ReactiveCommand.CreateFromTask<Unit, List<string>>(_ => Task.Run(() => 
             {
                 var categories = _expenseService.GetCategories();

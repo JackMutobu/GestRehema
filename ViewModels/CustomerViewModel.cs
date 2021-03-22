@@ -102,7 +102,7 @@ namespace GestRehema.ViewModels
             .Subscribe(x => Errors = x);
 
             SelectForUpdate
-                .Subscribe(x =>
+                .Subscribe((Action<Customer>)(x =>
                 {
                     ImageUrl = x.ImageUrl ?? "";
                     Name = x.Name;
@@ -120,7 +120,7 @@ namespace GestRehema.ViewModels
                         Adresse = x.Adresse,
                         ImageUrl = x.ImageUrl,
                     };
-                });
+                }));
 
             Delete = ReactiveCommand.CreateFromTask<int, int>(id => Task.Run(() => _customerService.DeleteCustomer(id)));
             Delete.ThrownExceptions

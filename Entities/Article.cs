@@ -9,6 +9,8 @@ namespace GestRehema.Entities
         public Article()
         {
             Sales = new Collection<SaleArticle>();
+            Suppliers = new Collection<Supplier>();
+            Supplies = new Collection<SupplyArticle>();
         }
 
         public int Id { get; set; }
@@ -44,6 +46,10 @@ namespace GestRehema.Entities
         public DateTime? LastAwaitingDeliveryToCustomersUpdate { get; set; }
 
         public ICollection<SaleArticle> Sales { get; set; }
+
+        public ICollection<SupplyArticle> Supplies { get; set; }
+
+        public ICollection<Supplier> Suppliers { get; set; }
 
     }
 }

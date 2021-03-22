@@ -19,6 +19,21 @@ namespace GestRehema.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("ArticleSupplier", b =>
+                {
+                    b.Property<int>("ArticlesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SuppliersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ArticlesId", "SuppliersId");
+
+                    b.HasIndex("SuppliersId");
+
+                    b.ToTable("ArticleSupplier");
+                });
+
             modelBuilder.Entity("GestRehema.Entities.Article", b =>
                 {
                     b.Property<int>("Id")
@@ -196,7 +211,7 @@ namespace GestRehema.Data.Migrations
                             Position = "Admin",
                             Postnom = "Informatique",
                             Prenom = "Rehema",
-                            UserId = new Guid("5960f86a-7a9b-4b5b-9b4b-c34d8aad23bd")
+                            UserId = new Guid("b22ed04b-92d6-48c5-86f9-23b4bf66b386")
                         });
                 });
 
@@ -268,8 +283,8 @@ namespace GestRehema.Data.Migrations
                         {
                             Id = -1,
                             Contact = "+243971871546\r\n+243822903906\r\n+243819521649",
-                            CreatedAt = new DateTime(2021, 3, 13, 12, 44, 13, 121, DateTimeKind.Utc).AddTicks(1569),
-                            DateDuJour = new DateTime(2021, 3, 13, 12, 44, 13, 120, DateTimeKind.Utc).AddTicks(8836),
+                            CreatedAt = new DateTime(2021, 3, 22, 15, 17, 18, 7, DateTimeKind.Utc).AddTicks(3088),
+                            DateDuJour = new DateTime(2021, 3, 22, 15, 17, 18, 7, DateTimeKind.Utc).AddTicks(1184),
                             Description = "Votre besoin en construction est assuré",
                             IDNAT = "493-N50888J",
                             Location = "Bunia",
@@ -553,6 +568,212 @@ namespace GestRehema.Data.Migrations
                     b.ToTable("Store");
                 });
 
+            modelBuilder.Entity("GestRehema.Entities.Supplier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Adresse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NumTelephone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("WalletId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("Suppliers");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.Supply", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateOperation")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeliveryStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PayementStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("Supplies");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.SupplyArticle", b =>
+                {
+                    b.Property<int>("ArticleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SupplyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("Quantity")
+                        .HasColumnType("float");
+
+                    b.Property<decimal>("UnitBuyingPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("ArticleId", "SupplyId");
+
+                    b.HasIndex("SupplyId");
+
+                    b.ToTable("SupplyArticles");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.SupplyDelivery", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ArticleId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("DeliveredQuantity")
+                        .HasColumnType("float");
+
+                    b.Property<int>("SupplyId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArticleId");
+
+                    b.HasIndex("SupplyId");
+
+                    b.ToTable("SupplyDeliveries");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.SupplyExpense", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Owner")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PayementId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SupplyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("PayementId");
+
+                    b.HasIndex("SupplyId");
+
+                    b.ToTable("SupplyExpenses");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.SupplyPayement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("AmountPaid")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PayementId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SupplyId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PayementId");
+
+                    b.HasIndex("SupplyId");
+
+                    b.ToTable("SupplyPayements");
+                });
+
             modelBuilder.Entity("GestRehema.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -587,10 +808,10 @@ namespace GestRehema.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5960f86a-7a9b-4b5b-9b4b-c34d8aad23bd"),
+                            Id = new Guid("b22ed04b-92d6-48c5-86f9-23b4bf66b386"),
                             AccessLevel = "all",
-                            CreatedAt = new DateTime(2021, 3, 13, 12, 44, 13, 123, DateTimeKind.Utc).AddTicks(365),
-                            Password = "10000.Mr65p0Vv+WOa/Andtunvww==.8GfV8y/0J58LWFLeVmvf2bQFCGcfl3iDePAY+50FjxA=",
+                            CreatedAt = new DateTime(2021, 3, 22, 15, 17, 18, 8, DateTimeKind.Utc).AddTicks(9492),
+                            Password = "10000.LNYAu9qjvw4zhmWaNIrogg==.EXx8Vreaq6reCpzThmyGTrq8Am8YDBNcNgpZLz4d1xE=",
                             Role = "SuperAdmin",
                             Username = "admin@rehema.com"
                         });
@@ -629,7 +850,7 @@ namespace GestRehema.Data.Migrations
                             AmountInDebt = 0m,
                             AmountInExcess = 0m,
                             AmountOwned = 0m,
-                            CreatedAt = new DateTime(2021, 3, 13, 12, 44, 13, 118, DateTimeKind.Utc).AddTicks(7890)
+                            CreatedAt = new DateTime(2021, 3, 22, 15, 17, 18, 5, DateTimeKind.Utc).AddTicks(2627)
                         });
                 });
 
@@ -668,6 +889,21 @@ namespace GestRehema.Data.Migrations
                     b.HasIndex("PayementId");
 
                     b.ToTable("WalletHistories");
+                });
+
+            modelBuilder.Entity("ArticleSupplier", b =>
+                {
+                    b.HasOne("GestRehema.Entities.Article", null)
+                        .WithMany()
+                        .HasForeignKey("ArticlesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GestRehema.Entities.Supplier", null)
+                        .WithMany()
+                        .HasForeignKey("SuppliersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GestRehema.Entities.Customer", b =>
@@ -823,6 +1059,112 @@ namespace GestRehema.Data.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("GestRehema.Entities.Supplier", b =>
+                {
+                    b.HasOne("GestRehema.Entities.Wallet", "Wallet")
+                        .WithMany()
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Wallet");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.Supply", b =>
+                {
+                    b.HasOne("GestRehema.Entities.Supplier", "Supplier")
+                        .WithMany("Supplies")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.SupplyArticle", b =>
+                {
+                    b.HasOne("GestRehema.Entities.Article", "Article")
+                        .WithMany("Supplies")
+                        .HasForeignKey("ArticleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GestRehema.Entities.Supply", "Supply")
+                        .WithMany("ArticlesSupplied")
+                        .HasForeignKey("SupplyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Article");
+
+                    b.Navigation("Supply");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.SupplyDelivery", b =>
+                {
+                    b.HasOne("GestRehema.Entities.Article", "Article")
+                        .WithMany()
+                        .HasForeignKey("ArticleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GestRehema.Entities.Supply", "Supply")
+                        .WithMany("DeliveryHistory")
+                        .HasForeignKey("SupplyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Article");
+
+                    b.Navigation("Supply");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.SupplyExpense", b =>
+                {
+                    b.HasOne("GestRehema.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GestRehema.Entities.Payement", "Payement")
+                        .WithMany()
+                        .HasForeignKey("PayementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GestRehema.Entities.Supply", "Supply")
+                        .WithMany("Expenses")
+                        .HasForeignKey("SupplyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Payement");
+
+                    b.Navigation("Supply");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.SupplyPayement", b =>
+                {
+                    b.HasOne("GestRehema.Entities.Payement", "Payement")
+                        .WithMany()
+                        .HasForeignKey("PayementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GestRehema.Entities.Supply", "Supply")
+                        .WithMany("PayementHistory")
+                        .HasForeignKey("SupplyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Payement");
+
+                    b.Navigation("Supply");
+                });
+
             modelBuilder.Entity("GestRehema.Entities.WalletHistory", b =>
                 {
                     b.HasOne("GestRehema.Entities.Wallet", "AmountDebtWallet")
@@ -847,6 +1189,8 @@ namespace GestRehema.Data.Migrations
             modelBuilder.Entity("GestRehema.Entities.Article", b =>
                 {
                     b.Navigation("Sales");
+
+                    b.Navigation("Supplies");
                 });
 
             modelBuilder.Entity("GestRehema.Entities.Customer", b =>
@@ -882,6 +1226,22 @@ namespace GestRehema.Data.Migrations
                     b.Navigation("ArticleSold");
 
                     b.Navigation("DeliveryHistory");
+
+                    b.Navigation("PayementHistory");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.Supplier", b =>
+                {
+                    b.Navigation("Supplies");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.Supply", b =>
+                {
+                    b.Navigation("ArticlesSupplied");
+
+                    b.Navigation("DeliveryHistory");
+
+                    b.Navigation("Expenses");
 
                     b.Navigation("PayementHistory");
                 });
