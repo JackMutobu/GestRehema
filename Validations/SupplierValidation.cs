@@ -3,7 +3,7 @@ using GestRehema.Entities;
 
 namespace GestRehema.Validations
 {
-    public class SupplierValidation:AbstractValidator<Customer>
+    public class SupplierValidation:AbstractValidator<Supplier>
     {
         public SupplierValidation()
         {

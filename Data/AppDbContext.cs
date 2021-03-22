@@ -52,6 +52,8 @@ namespace GestRehema.Data
 
         public DbSet<SupplyExpense> SupplyExpenses { get; set; } = null!;
 
+        public DbSet<ArticleSupplier> ArticleSuppliers { get; set; } = null!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -141,6 +143,12 @@ namespace GestRehema.Data
               sa.ArticleId,
               sa.SupplyId
           });
+
+            modelBuilder.Entity<ArticleSupplier>()
+         .HasKey(sa => new {
+             sa.ArticleId,
+             sa.SupplierId
+         });
             modelBuilder.Entity<SupplyArticle>()
                 .HasOne(sa => sa.Supply)
                 .WithMany(s => s.ArticlesSupplied)

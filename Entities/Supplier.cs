@@ -8,7 +8,7 @@ namespace GestRehema.Entities
     {
         public Supplier()
         {
-            Articles = new Collection<Article>();
+            Articles = new Collection<ArticleSupplier>();
             Supplies = new Collection<Supply>();
         }
         public int Id { get; set; }
@@ -30,7 +30,7 @@ namespace GestRehema.Entities
         public int WalletId { get; set; }
         public Wallet? Wallet { get; set; }
 
-        public ICollection<Article> Articles { get; set; }
+        public ICollection<ArticleSupplier> Articles { get; set; }
 
         public ICollection<Supply> Supplies { get; set; }
 

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestRehema.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210322151720_InitialCreate")]
+    [Migration("20210322163250_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,21 +20,6 @@ namespace GestRehema.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("ArticleSupplier", b =>
-                {
-                    b.Property<int>("ArticlesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SuppliersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ArticlesId", "SuppliersId");
-
-                    b.HasIndex("SuppliersId");
-
-                    b.ToTable("ArticleSupplier");
-                });
 
             modelBuilder.Entity("GestRehema.Entities.Article", b =>
                 {
@@ -97,6 +82,21 @@ namespace GestRehema.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Articles");
+                });
+
+            modelBuilder.Entity("GestRehema.Entities.ArticleSupplier", b =>
+                {
+                    b.Property<int>("ArticleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ArticleId", "SupplierId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("ArticleSuppliers");
                 });
 
             modelBuilder.Entity("GestRehema.Entities.Customer", b =>
@@ -213,7 +213,7 @@ namespace GestRehema.Data.Migrations
                             Position = "Admin",
                             Postnom = "Informatique",
                             Prenom = "Rehema",
-                            UserId = new Guid("b22ed04b-92d6-48c5-86f9-23b4bf66b386")
+                            UserId = new Guid("81530f12-8308-4754-93de-cf14e6c634c1")
                         });
                 });
 
@@ -285,8 +285,8 @@ namespace GestRehema.Data.Migrations
                         {
                             Id = -1,
                             Contact = "+243971871546\r\n+243822903906\r\n+243819521649",
-                            CreatedAt = new DateTime(2021, 3, 22, 15, 17, 18, 7, DateTimeKind.Utc).AddTicks(3088),
-                            DateDuJour = new DateTime(2021, 3, 22, 15, 17, 18, 7, DateTimeKind.Utc).AddTicks(1184),
+                            CreatedAt = new DateTime(2021, 3, 22, 16, 32, 47, 725, DateTimeKind.Utc).AddTicks(9129),
+                            DateDuJour = new DateTime(2021, 3, 22, 16, 32, 47, 725, DateTimeKind.Utc).AddTicks(7282),
                             Description = "Votre besoin en construction est assuré",
                             IDNAT = "493-N50888J",
                             Location = "Bunia",
@@ -810,10 +810,10 @@ namespace GestRehema.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b22ed04b-92d6-48c5-86f9-23b4bf66b386"),
+                            Id = new Guid("81530f12-8308-4754-93de-cf14e6c634c1"),
                             AccessLevel = "all",
-                            CreatedAt = new DateTime(2021, 3, 22, 15, 17, 18, 8, DateTimeKind.Utc).AddTicks(9492),
-                            Password = "10000.LNYAu9qjvw4zhmWaNIrogg==.EXx8Vreaq6reCpzThmyGTrq8Am8YDBNcNgpZLz4d1xE=",
+                            CreatedAt = new DateTime(2021, 3, 22, 16, 32, 47, 727, DateTimeKind.Utc).AddTicks(2326),
+                            Password = "10000.sQoH2sBOxKrZ4O92rHI3Cg==.vOmSxvBPLT7uDqMHHPsl4l2v9uwKOO1LckRtfFSZtjU=",
                             Role = "SuperAdmin",
                             Username = "admin@rehema.com"
                         });
@@ -852,7 +852,7 @@ namespace GestRehema.Data.Migrations
                             AmountInDebt = 0m,
                             AmountInExcess = 0m,
                             AmountOwned = 0m,
-                            CreatedAt = new DateTime(2021, 3, 22, 15, 17, 18, 5, DateTimeKind.Utc).AddTicks(2627)
+                            CreatedAt = new DateTime(2021, 3, 22, 16, 32, 47, 724, DateTimeKind.Utc).AddTicks(2310)
                         });
                 });
 
@@ -893,19 +893,23 @@ namespace GestRehema.Data.Migrations
                     b.ToTable("WalletHistories");
                 });
 
-            modelBuilder.Entity("ArticleSupplier", b =>
+            modelBuilder.Entity("GestRehema.Entities.ArticleSupplier", b =>
                 {
-                    b.HasOne("GestRehema.Entities.Article", null)
-                        .WithMany()
-                        .HasForeignKey("ArticlesId")
+                    b.HasOne("GestRehema.Entities.Article", "Article")
+                        .WithMany("Suppliers")
+                        .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GestRehema.Entities.Supplier", null)
-                        .WithMany()
-                        .HasForeignKey("SuppliersId")
+                    b.HasOne("GestRehema.Entities.Supplier", "Supplier")
+                        .WithMany("Articles")
+                        .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Article");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("GestRehema.Entities.Customer", b =>
@@ -1192,6 +1196,8 @@ namespace GestRehema.Data.Migrations
                 {
                     b.Navigation("Sales");
 
+                    b.Navigation("Suppliers");
+
                     b.Navigation("Supplies");
                 });
 
@@ -1234,6 +1240,8 @@ namespace GestRehema.Data.Migrations
 
             modelBuilder.Entity("GestRehema.Entities.Supplier", b =>
                 {
+                    b.Navigation("Articles");
+
                     b.Navigation("Supplies");
                 });
 

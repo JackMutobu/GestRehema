@@ -17,6 +17,7 @@ namespace GestRehema.Services
         Supplier? GetSupplier(int itemId);
         Wallet? GetWallet(int supplierId);
         List<Supplier> SearchSupplier(string query);
+        void AddArticlesToSupplier(int supplierId, List<Article> articles);
     }
 
     public class SupplierService : ISupplierService
@@ -70,6 +71,19 @@ namespace GestRehema.Services
                 return _dbContext.Suppliers.First(x => x.CreatedAt == supplier.CreatedAt);
             }
 
+        }
+
+        public void AddArticlesToSupplier(int supplierId, List<Article> articles)
+        {
+            var supplier = _dbContext.Suppliers.FirstOrDefault(x => x.Id == supplierId);
+            if (articles.Count > 0 && supplier != null)
+            {
+                articles.ForEach(x => supplier.Articles.Add(new ArticleSupplier
+                {
+                    ArticleId = x.Id,
+                    SupplierId = supplier.Id
+                }));
+            }
         }
 
         public int Deletesupplier(int supplierId)

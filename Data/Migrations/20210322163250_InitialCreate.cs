@@ -291,24 +291,24 @@ namespace GestRehema.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ArticleSupplier",
+                name: "ArticleSuppliers",
                 columns: table => new
                 {
-                    ArticlesId = table.Column<int>(type: "int", nullable: false),
-                    SuppliersId = table.Column<int>(type: "int", nullable: false)
+                    ArticleId = table.Column<int>(type: "int", nullable: false),
+                    SupplierId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ArticleSupplier", x => new { x.ArticlesId, x.SuppliersId });
+                    table.PrimaryKey("PK_ArticleSuppliers", x => new { x.ArticleId, x.SupplierId });
                     table.ForeignKey(
-                        name: "FK_ArticleSupplier_Articles_ArticlesId",
-                        column: x => x.ArticlesId,
+                        name: "FK_ArticleSuppliers_Articles_ArticleId",
+                        column: x => x.ArticleId,
                         principalTable: "Articles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ArticleSupplier_Suppliers_SuppliersId",
-                        column: x => x.SuppliersId,
+                        name: "FK_ArticleSuppliers_Suppliers_SupplierId",
+                        column: x => x.SupplierId,
                         principalTable: "Suppliers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -613,27 +613,27 @@ namespace GestRehema.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "AccessLevel", "CreatedAt", "Password", "Role", "Username" },
-                values: new object[] { new Guid("b22ed04b-92d6-48c5-86f9-23b4bf66b386"), "all", new DateTime(2021, 3, 22, 15, 17, 18, 8, DateTimeKind.Utc).AddTicks(9492), "10000.LNYAu9qjvw4zhmWaNIrogg==.EXx8Vreaq6reCpzThmyGTrq8Am8YDBNcNgpZLz4d1xE=", "SuperAdmin", "admin@rehema.com" });
+                values: new object[] { new Guid("81530f12-8308-4754-93de-cf14e6c634c1"), "all", new DateTime(2021, 3, 22, 16, 32, 47, 727, DateTimeKind.Utc).AddTicks(2326), "10000.sQoH2sBOxKrZ4O92rHI3Cg==.vOmSxvBPLT7uDqMHHPsl4l2v9uwKOO1LckRtfFSZtjU=", "SuperAdmin", "admin@rehema.com" });
 
             migrationBuilder.InsertData(
                 table: "Wallets",
                 columns: new[] { "Id", "AmountInDebt", "AmountInExcess", "AmountOwned", "CreatedAt", "UpdatedAt" },
-                values: new object[] { -1, 0m, 0m, 0m, new DateTime(2021, 3, 22, 15, 17, 18, 5, DateTimeKind.Utc).AddTicks(2627), null });
+                values: new object[] { -1, 0m, 0m, 0m, new DateTime(2021, 3, 22, 16, 32, 47, 724, DateTimeKind.Utc).AddTicks(2310), null });
 
             migrationBuilder.InsertData(
                 table: "Entreprises",
                 columns: new[] { "Id", "Contact", "CreatedAt", "DateDuJour", "Description", "IDNAT", "Location", "LogoUrl", "Name", "PoBox", "RCCM", "Slogan", "TauxDuJour", "UpdatedAt", "WalletId" },
-                values: new object[] { -1, "+243971871546\r\n+243822903906\r\n+243819521649", new DateTime(2021, 3, 22, 15, 17, 18, 7, DateTimeKind.Utc).AddTicks(3088), new DateTime(2021, 3, 22, 15, 17, 18, 7, DateTimeKind.Utc).AddTicks(1184), "Votre besoin en construction est assuré", "493-N50888J", "Bunia", null, "Ets Rehema", "76", "BIA/RCCM/19-A-1320265", "Chez FLORENCE", 2000m, null, -1 });
+                values: new object[] { -1, "+243971871546\r\n+243822903906\r\n+243819521649", new DateTime(2021, 3, 22, 16, 32, 47, 725, DateTimeKind.Utc).AddTicks(9129), new DateTime(2021, 3, 22, 16, 32, 47, 725, DateTimeKind.Utc).AddTicks(7282), "Votre besoin en construction est assuré", "493-N50888J", "Bunia", null, "Ets Rehema", "76", "BIA/RCCM/19-A-1320265", "Chez FLORENCE", 2000m, null, -1 });
 
             migrationBuilder.InsertData(
                 table: "Employees",
                 columns: new[] { "Id", "Adresse", "CreatedAt", "Email", "EntrepriseId", "Nom", "NumTelephone", "Position", "Postnom", "Prenom", "ProfileUrl", "UpdatedAt", "UserId" },
-                values: new object[] { -1, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -1, "Admin", "09786408335", "Admin", "Informatique", "Rehema", null, null, new Guid("b22ed04b-92d6-48c5-86f9-23b4bf66b386") });
+                values: new object[] { -1, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -1, "Admin", "09786408335", "Admin", "Informatique", "Rehema", null, null, new Guid("81530f12-8308-4754-93de-cf14e6c634c1") });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ArticleSupplier_SuppliersId",
-                table: "ArticleSupplier",
-                column: "SuppliersId");
+                name: "IX_ArticleSuppliers_SupplierId",
+                table: "ArticleSuppliers",
+                column: "SupplierId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_WalletId",
@@ -793,7 +793,7 @@ namespace GestRehema.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ArticleSupplier");
+                name: "ArticleSuppliers");
 
             migrationBuilder.DropTable(
                 name: "Expenses");
