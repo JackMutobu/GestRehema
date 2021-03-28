@@ -11,5 +11,7 @@
         public const string SaleNewDelivery = nameof(SaleNewDelivery);
 
         public const string SaleDeliverAll = nameof(SaleDeliverAll);
+
+        public const string ArticleSaved = nameof(ArticleSaved);
     }
 }

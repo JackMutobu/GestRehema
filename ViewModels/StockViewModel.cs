@@ -12,6 +12,9 @@ using System.Collections.Generic;
 using System.Linq;
 using DynamicData;
 using DynamicData.Binding;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Analytics;
+using GestRehema.Contants;
 
 namespace GestRehema.ViewModels
 {
@@ -54,6 +57,8 @@ namespace GestRehema.ViewModels
                .Subscribe(x => Errors = x);
             SaveArticle.IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
+            SaveArticle.ThrownExceptions
+              .Subscribe(x => Crashes.TrackError(x));
             SaveArticle
               .Subscribe(x =>
               {
@@ -91,6 +96,8 @@ namespace GestRehema.ViewModels
             LoadArticles.ThrownExceptions
               .Select(x => x.Message)
               .Subscribe(x => Errors = x);
+            LoadArticles.ThrownExceptions
+             .Subscribe(x => Crashes.TrackError(x));
             LoadArticles.IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
 
@@ -98,6 +105,8 @@ namespace GestRehema.ViewModels
             SelectForUpdate.ThrownExceptions
             .Select(x => x.Message)
             .Subscribe(x => Errors = x);
+            SelectForUpdate.ThrownExceptions
+             .Subscribe(x => Crashes.TrackError(x));
 
             SelectForUpdate
                 .Subscribe(x =>
@@ -132,11 +141,15 @@ namespace GestRehema.ViewModels
             SelectForDelete.ThrownExceptions
             .Select(x => x.Message)
             .Subscribe(x => Errors = x);
+            SelectForDelete.ThrownExceptions
+             .Subscribe(x => Crashes.TrackError(x));
 
             DeleteArticle = ReactiveCommand.CreateFromTask<int, int>(id => Task.Run(() => _articleService.DeleteArticle(id)));
             DeleteArticle.ThrownExceptions
             .Select(x => x.Message)
             .Subscribe(x => Errors = x);
+            DeleteArticle.ThrownExceptions
+             .Subscribe(x => Crashes.TrackError(x));
             DeleteArticle.IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
             DeleteArticle
@@ -148,12 +161,16 @@ namespace GestRehema.ViewModels
             LoadCategories.ThrownExceptions
             .Select(x => x.Message)
             .Subscribe(x => Errors = x);
+            LoadCategories.ThrownExceptions
+             .Subscribe(x => Crashes.TrackError(x));
             LoadCategories
                 .Subscribe(categories => Categories = categories);
 
             SaveArticle
                 .Select(_ => Unit.Default)
                 .InvokeCommand(LoadCategories);
+            SaveArticle
+               .Subscribe(x => Analytics.TrackEvent(nameof(AnalyticsKeys.ArticleSaved)));
 
 
             LoadArticles.Execute(new LoadParameter(SearchQuery, CurrentPage, ItemPerPage))
