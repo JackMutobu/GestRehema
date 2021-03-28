@@ -5,12 +5,13 @@ using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
 using System;
+using GestRehema.Contants;
 
 namespace GestRehema.ViewModels
 {
     public class CashExpensePayementModel : BasePayementModel
     {
-        public CashExpensePayementModel(Wallet wallet, Entreprise entreprise,List<string> categories) : base(wallet, entreprise, false)
+        public CashExpensePayementModel(Wallet wallet, Entreprise entreprise,List<string> categories) : base(wallet, entreprise, PayementType.EntrepriseAccountDeposit)
         {
             Categories = categories;
             Title = null!;

@@ -148,7 +148,7 @@ namespace GestRehema.ViewModels
 
             this.WhenAnyValue(x => x.SelectedCustomer)
                .Where(x => x != null)
-               .Subscribe(x => PayementModel = new CustomerPayementModel(x!, Entreprise,false));
+               .Subscribe(x => PayementModel = new CustomerPayementModel(x!, Entreprise));
 
             Pay = ReactiveCommand.CreateFromTask<Unit, Wallet>(_ => Task.Run(() => _walletService.AddExcess(CustomerWallet!.Id,Entreprise.WalletId,PayementModel!.TotalPaid)));
             Pay.ThrownExceptions

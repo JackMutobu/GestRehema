@@ -3,7 +3,6 @@ using ReactiveUI;
 using System.Reactive.Linq;
 using System;
 using GestRehema.Extensions;
-using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using Splat;
 using GestRehema.Services;
@@ -25,16 +24,14 @@ namespace GestRehema.Views
     {
         public SupplierManagerView() { }
 
-        public SupplierManagerView(List<string> locations)
+        public SupplierManagerView(SupplierManagerViewModel supplierManagerViewModel)
         {
             InitializeComponent();
-            ViewModel = new SupplierManagerViewModel(locations);
+            ViewModel = supplierManagerViewModel;
+            DataContext = supplierManagerViewModel;
 
             this.WhenActivated(disposable =>
             {
-                this.WhenAnyValue(x => x.ViewModel)
-                    .BindTo(this, x => x.DataContext);
-
                 this.OneWayBind(this.ViewModel, vm => vm.Articles, v => v.ListArticles.ItemsSource)
                     .DisposeWith(disposable); ;
                 this.BindCommand(ViewModel, vm => vm.SaveSupplier, v => v.BtnSave)

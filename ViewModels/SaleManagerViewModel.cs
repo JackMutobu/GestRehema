@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
 using FluentValidation;
+using GestRehema.Contants;
 using GestRehema.Entities;
 using GestRehema.Services;
 using GestRehema.Validations;
@@ -170,7 +171,7 @@ namespace GestRehema.ViewModels
             Validate
                 .Subscribe(errors => Errors = errors);
 
-            AddPayement = ReactiveCommand.Create(() => new SalePayementModel(Sale, Entreprise, SelectedCustomer.Wallet ?? throw new Exception("Wallet can not be null"), CartSubTotal,true));
+            AddPayement = ReactiveCommand.Create(() => new SalePayementModel(Sale, Entreprise, SelectedCustomer.Wallet ?? throw new Exception("Wallet can not be null"), CartSubTotal, PayementType.NewSalePayement));
 
             Pay = ReactiveCommand.CreateFromTask<List<Payement>, Sale>(x => Task.Run(() =>
             {

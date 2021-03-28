@@ -16,6 +16,9 @@ namespace GestRehema.Validations
             RuleFor(x => x.NumTelephone)
                 .NotEmpty()
                 .WithMessage("Veuillez spécifier le numéro de téléphone du fourniseur");
+            RuleFor(x => x.SupplierType)
+              .NotEmpty()
+              .WithMessage("Veuillez spécifier le type de fournisseur");
         }
     }
 }

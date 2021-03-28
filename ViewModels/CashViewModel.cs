@@ -132,14 +132,10 @@ namespace GestRehema.ViewModels
                .Select(_ => new LoadParameter("", CurrentPage, ItemPerPage))
                .InvokeCommand(LoadExpenses);
 
-            //AddDeposit = ReactiveCommand.Create<Unit, CustomerPayementModel>(_ => new CustomerPayementModel(null, Entreprise, true));
-            //AddDeposit
-            //    .ToPropertyEx(this, x => x.DepositPayementModel);
-            //AddDeposit
-            //    .SelectMany(x => x.Pay)
-            //    .Where(x => x.Count > 0)
-            //    .Select(x => Entreprise.Id)
-            //    .InvokeCommand(LoadWallet);
+            RefreshWallet = ReactiveCommand.CreateFromTask<Unit, Wallet>(_ => Task.Run(() => _walletService.RegularizeWallet(Entreprise.WalletId, true)));
+            RefreshWallet
+                .Subscribe(x => EntrepriseWallet = x);
+
         }
 
         public string? UrlPathSegment => nameof(CashViewModel);
@@ -181,7 +177,7 @@ namespace GestRehema.ViewModels
 
         public ReactiveCommand<int, Wallet> LoadWallet { get; }
 
-        public ReactiveCommand<Unit, CustomerPayementModel> AddDeposit { get; }
+        public ReactiveCommand<Unit, Wallet> RefreshWallet { get; }
 
         public ReactiveCommand<(CashExpensePayementModel PayementModel,List<Payement> Payements), Expense> SaveExpense { get; }
 

@@ -30,6 +30,8 @@ namespace GestRehema.Entities
         public int WalletId { get; set; }
         public Wallet? Wallet { get; set; }
 
+        public string SupplierType { get; set; } = Entities.SupplierType.Ordinary;
+
         public ICollection<ArticleSupplier> Articles { get; set; }
 
         public ICollection<Supply> Supplies { get; set; }

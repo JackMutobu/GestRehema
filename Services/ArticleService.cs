@@ -24,6 +24,7 @@ namespace GestRehema.Services
         List<Article> SearchArticles(string query);
         List<string> GetCategories();
         Article ReduceStock(double qty, int articleId);
+        List<Article> GetArticlesForSupplier(int supplierId);
     }
 
     public class ArticleService : IArticleService
@@ -112,6 +113,12 @@ namespace GestRehema.Services
             }
             throw new Exception("Article inconnu");
         }
+
+        public List<Article> GetArticlesForSupplier(int supplierId)
+            => _dbContext.Articles
+            .Include(x => x.Suppliers)
+            .Where(x => x.Suppliers.Any(x => x.SupplierId == supplierId))
+            .ToList();
 
         public ArticleStock UpdateStock(ArticleStock articleStock)
         {

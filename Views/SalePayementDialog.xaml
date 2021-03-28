@@ -26,6 +26,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <ComboBox Grid.Row="1" x:Name="ComboPayement" ItemsSource="{Binding PayementMethods}" Text="{Binding PayementMethod,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" Margin="0,5" ui:ControlHelper.PlaceholderText="Cash" ui:ControlHelper.Header="Méthode de paiement:" />
         <TextBox Grid.Row="2" Text="{Binding PaidInUsd,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ui:ControlHelper.Header="Montant payé en $" ui:ControlHelper.PlaceholderText="20" Margin="0,5"/>

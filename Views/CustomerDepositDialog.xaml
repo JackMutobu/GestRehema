@@ -25,6 +25,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <ComboBox Grid.Row="1" x:Name="ComboPayement" ItemsSource="{Binding PayementMethods}" Text="{Binding PayementMethod,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" Margin="0,5" ui:ControlHelper.PlaceholderText="Cash" ui:ControlHelper.Header="Méthode de paiement:" />
         <TextBox Grid.Row="2" Text="{Binding PaidInUsd,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ui:ControlHelper.Header="Montant payé en $" ui:ControlHelper.PlaceholderText="20" Margin="0,5"/>
@@ -56,5 +57,6 @@
                 <Run FontWeight="SemiBold" Text="$" />
             </TextBlock>
         </Grid>
+        <TextBlock x:Name="TxtDanger" Grid.Row="8" Visibility="{Binding ShowDanger,Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="Red" FontSize="16" TextWrapping="Wrap" Text="Attention, ce client à une vente non payée. Veuillez d'abord éffectuer ce paiement avant de faire un depot."/>
     </Grid>
 </ui:ContentDialog>

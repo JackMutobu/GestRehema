@@ -8,6 +8,7 @@ using Splat;
 using System.Reactive;
 using System.Threading.Tasks;
 using System.Reactive.Linq;
+using GestRehema.Contants;
 
 namespace GestRehema.ViewModels
 {
@@ -15,15 +16,12 @@ namespace GestRehema.ViewModels
     {
         private readonly IWalletService _walletService;
         private readonly IPayementService _payementService;
-        private readonly bool _isNewPayement;
-        private readonly bool _isDepositToEntreprise;
-
-        public BasePayementModel(Wallet wallet,Entreprise entreprise, bool isNewPayement, decimal? totalAmount = null, bool isDepositToEntreprise = false)
+        private string _payementType;
+        public BasePayementModel(Wallet wallet,Entreprise entreprise, string payementType, decimal? totalAmount = null)
         {
             _walletService = Locator.Current.GetService<IWalletService>();
             _payementService = Locator.Current.GetService<IPayementService>();
-            _isNewPayement = isNewPayement;
-            _isDepositToEntreprise = isDepositToEntreprise;
+            _payementType = payementType;
 
             TotalAmount = totalAmount;
             Wallet = wallet;
@@ -53,6 +51,7 @@ namespace GestRehema.ViewModels
 
             this.WhenAnyValue(x => x.AddExcessToCustomerWallet)
                 .Subscribe(x => DeriveAmounts(Entreprise.TauxDuJour, PaidInUsd, PaidInCDF, walletBalance));
+
 
             this.WhenAnyValue(x => x.PayementMethod)
                 .Subscribe(x => DeriveAmounts(Entreprise.TauxDuJour, PaidInUsd, PaidInCDF, walletBalance));
@@ -140,20 +139,32 @@ namespace GestRehema.ViewModels
 
         protected virtual decimal GetWalletBalance(decimal walletBalance,decimal totalPaid)
         {
-            var balance = _isNewPayement switch
+            var balance = (_payementType == PayementType.NewSalePayement)  switch
             {
-                true => AddExcessToCustomerWallet ? ExcessInUsd + walletBalance - Debt : walletBalance - Debt,
-                _ => AddExcessToCustomerWallet ? ExcessInUsd + walletBalance + totalPaid : walletBalance + totalPaid
+                true => ( PayementMethod == Entities.PayementMethod.Wallet) switch
+                { 
+                    true => AddExcessToCustomerWallet ? ExcessInUsd + walletBalance - Debt - totalPaid : walletBalance - Debt - totalPaid,
+                    _ => AddExcessToCustomerWallet ? ExcessInUsd + walletBalance - Debt : walletBalance - Debt
+                }, 
+                _ =>  (_payementType == PayementType.SaleNewPayement) switch
+                {
+                    true => (PayementMethod == Entities.PayementMethod.Wallet) switch
+                    {
+                        true => AddExcessToCustomerWallet ? ExcessInUsd + walletBalance - totalPaid : walletBalance - totalPaid,
+                        _ => (Wallet.AmountInDebt > 0) switch
+                        {
+                            true => AddExcessToCustomerWallet ? ExcessInUsd + walletBalance + DeductFromWallet(Wallet.AmountInDebt,totalPaid).AmountDeducted : walletBalance + DeductFromWallet(Wallet.AmountInDebt, totalPaid).AmountDeducted,
+                            _ => AddExcessToCustomerWallet ? ExcessInUsd + walletBalance : walletBalance
+                        }
+                    },
+                    _ => AddExcessToCustomerWallet ? ExcessInUsd + walletBalance + totalPaid : walletBalance + totalPaid
+                }
+
             };
 
-            if(TotalAmount != null && TotalAmount > 0)
-            {
-                balance = PayementMethod == Entities.PayementMethod.Wallet ? balance - totalPaid : balance;
-            }
-            else
-            {
+
+            if(!(TotalAmount != null && TotalAmount > 0))
                 balance = Wallet.Id == Entreprise.WalletId ? walletBalance - totalPaid : walletBalance + totalPaid;
-            }
 
             return balance;
         }
@@ -163,51 +174,65 @@ namespace GestRehema.ViewModels
             var payements = new List<Payement>();
             if(TotalPaid >= 0)
             {
-                var payement = new Payement
+                var payement = SavePayement(payements);
+                switch (_payementType)
                 {
-                    AmountInCDF = PaidInCDF,
-                    AmountInUSD = PaidInUsd,
-                    AccountNumber = AccountNumber,
-                    Method = PayementMethod,
-                    PayementOrganization = PayementOrganization,
-                    ToCompany = true,
-                    TransactionId = TransactionId,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                };
-                if (Wallet.Id == Entreprise.WalletId)
-                    payement.ToCompany = false;
+                    case PayementType.NewSalePayement:
+                        if (TotalAmount != null && TotalAmount > 0)
+                        {
+                            if (ExcessInUsd > 0 && AddExcessToCustomerWallet)
+                                _walletService.AddExcess(Wallet.Id, Entreprise.WalletId, ExcessInUsd, payement.Id);
 
-                payement = _payementService.AddPayement(payement);
-                payements.Add(payement);
-                payement.SetTotalPaid(Entreprise.TauxDuJour);
+                            if (Debt > 0)
+                            {
+                                var result = PayFromVirtualAccount(Wallet, Debt);
+                                if (result.Debt > 0)
+                                    _walletService.AddDebt(Wallet.Id, Entreprise.WalletId, result.Debt, payement.Id);
+                                if (result.Payement != null)
+                                    payements.Add(result.Payement);
+                            }
 
-                if (Wallet.Id != Entreprise.WalletId)
-                {
-                    if (TotalAmount != null && TotalAmount > 0)
-                    {
-                        if (ExcessInUsd > 0 && AddExcessToCustomerWallet)
-                            _walletService.AddExcess(Wallet.Id, Entreprise.WalletId, ExcessInUsd, payement.Id);
+                            if (TotalPaid > 0)
+                            {
+                                if (payement.Method == Entities.PayementMethod.Wallet)
+                                    _walletService.AddDebt(Wallet.Id, Entreprise.WalletId, TotalPaid, payement.Id);
+                                else
+                                    _walletService.AddToEntreprise(Entreprise.WalletId, TotalPaid, payement.Id);
+                            }
+                        }
+                        break;
+                    case PayementType.SaleNewPayement:
+                        if (TotalAmount != null && TotalAmount > 0)
+                        {
+                            if (ExcessInUsd > 0 && AddExcessToCustomerWallet)
+                                _walletService.AddExcess(Wallet.Id, Entreprise.WalletId, ExcessInUsd, payement.Id);
 
-                        if (_isNewPayement)
-                            payement = AddDebt(payements, payement);
-                        else
-                            _walletService.AddExcess(Wallet.Id, Entreprise.WalletId, TotalPaid, payement.Id);
+                            if (payement.Method == Entities.PayementMethod.Wallet)
+                                _walletService.AddDebt(Wallet.Id, Entreprise.WalletId, TotalPaid, payement.Id);
+                            else
+                            {
+                                if (Wallet.AmountInDebt > 0)
+                                {
+                                    var deductionResult = DeductFromWallet(Wallet.AmountInDebt, TotalPaid);
+                                    _walletService.AddExcess(Wallet.Id, Entreprise.WalletId, deductionResult.AmountDeducted, payement.Id);
+                                    TotalPaid = deductionResult.RemainingDebt;
+                                }
 
-                        _walletService.AddToEntreprise(Entreprise.WalletId, TotalAmount.Value, payement.Id);
-                    }
-                    else
-                        _walletService.AddExcess(Wallet.Id, Entreprise.WalletId, TotalPaid, payement.Id);
-                }
-                else
-                {
-                    if(!_isDepositToEntreprise)
-                        _walletService.DeductFromEntreprise(Entreprise.WalletId, TotalPaid, payement.Id);
-                    else
+                                if (TotalPaid > 0)
+                                    _walletService.AddToEntreprise(Entreprise.WalletId, TotalPaid, payement.Id);
+                            }
+                        }
+                        break;
+                    case PayementType.EntrepriseAccountDeposit:
                         _walletService.AddToEntreprise(Entreprise.WalletId, TotalPaid, payement.Id);
+                        break;
+                    case PayementType.VirtualAccountDeposit:
+                        _walletService.AddExcess(Wallet.Id, Entreprise.WalletId, TotalPaid, payement.Id);
+                        break;
+                    case PayementType.EntrepriseAccountWithdrawal:
+                        _walletService.DeductFromEntreprise(Entreprise.WalletId, TotalPaid, payement.Id);
+                        break;
                 }
-                    
-                
 
                 return payements;
             }
@@ -215,44 +240,70 @@ namespace GestRehema.ViewModels
 
         }
 
-        protected virtual Payement AddDebt(List<Payement> payements, Payement payement)
+        private Payement SavePayement(List<Payement> payements)
         {
-            if (Debt > 0)
+            var payement = new Payement
             {
-                if (Wallet.Balance > 0)
+                AmountInCDF = PaidInCDF,
+                AmountInUSD = PaidInUsd,
+                AccountNumber = AccountNumber,
+                Method = PayementMethod,
+                PayementOrganization = PayementOrganization,
+                ToCompany = Wallet.Id == Entreprise.WalletId ? false : true,
+                TransactionId = TransactionId,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+            };
+            payement = _payementService.AddPayement(payement);
+            payements.Add(payement);
+            payement.SetTotalPaid(Entreprise.TauxDuJour);
+            return payement;
+        }
+
+        private (decimal Debt, Payement? Payement) PayFromVirtualAccount(Wallet wallet, decimal totalAmount)
+        {
+            if (wallet.Balance > 0)
+            {
+                var deductionResult = DeductFromWallet(Wallet.Balance, totalAmount);
+                var payement = new Payement
                 {
-                    decimal amountToPay = 0;
-                    if (Wallet.Balance > Debt)
-                    {
-                        amountToPay = Debt;
-                        Debt = 0;
-                    }
-                    else
-                    {
-                        amountToPay = Wallet.Balance;
-                        Debt -= amountToPay;
-                    }
-                    TotalPaid += amountToPay;
-                    payement = new Payement
-                    {
-                        AmountInUSD = amountToPay,
-                        AccountNumber = Wallet.Id.ToString(),
-                        Method = Entities.PayementMethod.Wallet,
-                        PayementOrganization = "Ets Rehema",
-                        ToCompany = true,
-                        TransactionId = TransactionId,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow
-                    };
-                    payement = _payementService.AddPayement(payement);
-                    payement.SetTotalPaid(Entreprise.TauxDuJour);
-                    payements.Add(payement);
-                }
-                if (Debt > 0)
-                    _walletService.AddDebt(Wallet.Id, Entreprise.WalletId, Debt, payement.Id);
+                    AmountInUSD = deductionResult.AmountDeducted,
+                    AccountNumber = Wallet.Id.ToString(),
+                    Method = Entities.PayementMethod.Wallet,
+                    PayementOrganization = "Ets Rehema",
+                    ToCompany = true,
+                    TransactionId = TransactionId,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
+                payement = _payementService.AddPayement(payement);
+                payement.SetTotalPaid(Entreprise.TauxDuJour);
+
+               
+                _walletService.AddDebt(wallet.Id, Entreprise.WalletId, deductionResult.AmountDeducted, payement.Id);
+
+                return (deductionResult.RemainingDebt, payement);
             }
 
-            return payement;
+            return (totalAmount, null);
+        }
+
+        private (decimal AmountDeducted, decimal RemainingDebt) DeductFromWallet(decimal walletBalance, decimal amountToDeduct)
+        {
+            decimal amountToPay;
+            decimal remainingDebt = 0;
+            if (walletBalance > amountToDeduct)
+            {
+                amountToPay = amountToDeduct;
+                remainingDebt = 0;
+            }
+            else
+            {
+                amountToPay = walletBalance;
+                remainingDebt = amountToDeduct - amountToPay;
+            }
+
+            return ( amountToPay, remainingDebt);
         }
     }
 }

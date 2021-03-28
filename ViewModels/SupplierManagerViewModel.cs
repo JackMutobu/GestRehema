@@ -18,8 +18,8 @@ namespace GestRehema.ViewModels
     {
         private readonly IArticleService _articleService;
         private readonly ISupplierService _supplierService;
-
-        public SupplierManagerViewModel(List<string> locations):base(new SupplierValidation())
+        private List<Article?> _articles = new List<Article?>();
+        public SupplierManagerViewModel(List<string> locations, Supplier? model = null):base(new SupplierValidation())
         {
             _articleService = Locator.Current.GetService<IArticleService>();
             _supplierService = Locator.Current.GetService<ISupplierService>();
@@ -27,7 +27,19 @@ namespace GestRehema.ViewModels
             SelectedArticles = new List<Article>();
             Locations = locations;
             ImageUrl = "/Assets/Placeholder/profile.png";
-            Model = new Supplier();
+            if(model == null)
+                Model = new Supplier();
+            else
+            {
+                Model = model;
+                ImageUrl = Model.ImageUrl ?? "/Assets/Placeholder/profile.png";
+                Name = Model.Name;
+                Adresse = Model.Adresse;
+                NumTelephone = Model.NumTelephone;
+                Email = Model.Email;
+                SupplierType = Model.SupplierType;
+                _articles = Model.Articles.Select(x => x.Article).ToList();
+            }
 
             Validate = ReactiveCommand
              .Create<ValidationParameter<Supplier>, string>(p => RaiseValidation(p.Model, p.PropertyName));
@@ -45,7 +57,8 @@ namespace GestRehema.ViewModels
                     InStock = a.InStock,
                     BuyingPrice = a.BuyingPrice,
                     SellingPrice = a.SellingPrice,
-                    TechnicalCode = a.TechnicalCode
+                    TechnicalCode = a.TechnicalCode,
+                    Selected = _articles.Any(x => x.Id == a.Id)
                 })))
                 .ToPropertyEx(this,x => x.Articles);
 
@@ -60,7 +73,7 @@ namespace GestRehema.ViewModels
                                             .ToList();
                 if(selectedArticles.Count > 0)
                 {
-                    Model.ImageUrl = ImageUrl;
+                    Model.ImageUrl = ImageUrl == "/Assets/Placeholder/profile.png" ? null : ImageUrl;
                     var regSupplier =  _supplierService.AddOrUpdateSupplier(Model);
                     _supplierService.AddArticlesToSupplier(regSupplier.Id, selectedArticles);
                     return regSupplier;
@@ -80,6 +93,8 @@ namespace GestRehema.ViewModels
 
         public Supplier Model { get; set; }
 
+
+
         [Reactive]
         public string Name { get; set; } = null!;
 
@@ -95,7 +110,12 @@ namespace GestRehema.ViewModels
         [Reactive]
         public string? ImageUrl { get; set; }
 
+        [Reactive]
+        public string? SupplierType { get; set; }
+
         public List<string> Locations { get; }
+
+        public List<string> SupplierTypes => Entities.SupplierType.GetList();
 
         [ObservableAsProperty]
         public ObservableCollection<SupplierManagerArticle> Articles { get; }
@@ -156,6 +176,15 @@ namespace GestRehema.ViewModels
                    return new ValidationParameter<Supplier>(Model, nameof(Supplier.Adresse));
                })
                .InvokeCommand(Validate);
+
+            this.WhenAnyValue(x => x.SupplierType)
+             .Where(x => x != null)
+             .Select(x =>
+             {
+                 Model.SupplierType = x;
+                 return new ValidationParameter<Supplier>(Model, nameof(Supplier.SupplierType));
+             })
+             .InvokeCommand(Validate);
         }
     }
 }

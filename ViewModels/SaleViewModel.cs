@@ -1,5 +1,6 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
+using GestRehema.Contants;
 using GestRehema.Entities;
 using GestRehema.Services;
 using GestRehema.Validations;
@@ -107,7 +108,7 @@ namespace GestRehema.ViewModels
                 .ToPropertyEx(this, x => x.IsBusy);
 
 
-            AddPayement = ReactiveCommand.Create(() => new SalePayementModel(SelectedSale!, Entreprise, Locator.Current.GetService<ICustomerService>().GetWallet(SelectedSale!.Customer!.Id) ?? throw new Exception("Wallet can not be null"), Debt, false));
+            AddPayement = ReactiveCommand.Create(() => new SalePayementModel(SelectedSale!, Entreprise, Locator.Current.GetService<ICustomerService>().GetWallet(SelectedSale!.Customer!.Id) ?? throw new Exception("Wallet can not be null"), Debt, PayementType.SaleNewPayement));
             AddPayement
                 .ToPropertyEx(this, x => x.PayementModel);
 
