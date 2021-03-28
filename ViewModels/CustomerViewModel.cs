@@ -13,6 +13,9 @@ using System.Reactive;
 using System.Linq;
 using DynamicData.Binding;
 using System.Collections.ObjectModel;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Analytics;
+using GestRehema.Contants;
 
 namespace GestRehema.ViewModels
 {
@@ -31,6 +34,9 @@ namespace GestRehema.ViewModels
         {
             _navigationRootViewModel = navigationRootViewModel ?? Locator.Current.GetService<NavigationRootViewModel>();
             Model = new Customer();
+            PayementModel = new CustomerPayementModel(Model, Entreprise);
+            Payements = new ObservableCollection<Payement>();
+            SelectedPayement = new Payement();
             _customerService = Locator.Current.GetService<ICustomerService>();
             _walletService = Locator.Current.GetService<IWalletService>();
             _payementService = Locator.Current.GetService<IPayementService>();
@@ -64,6 +70,8 @@ namespace GestRehema.ViewModels
             LoadCustomers.ThrownExceptions
               .Select(x => x.Message)
               .Subscribe(x => Errors = x);
+            LoadCustomers.ThrownExceptions
+              .Subscribe(x => Crashes.TrackError(x));
             LoadCustomers.IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
 
@@ -89,6 +97,10 @@ namespace GestRehema.ViewModels
             SaveCustomer.ThrownExceptions
               .Select(x => x.Message)
               .Subscribe(x => Errors = x);
+            SaveCustomer.ThrownExceptions
+             .Subscribe(x => Crashes.TrackError(x));
+            SaveCustomer
+               .Subscribe(x => Analytics.TrackEvent(nameof(AnalyticsKeys.CustomerSaved)));
             SaveCustomer.IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
 
@@ -96,13 +108,17 @@ namespace GestRehema.ViewModels
             SelectForDelete.ThrownExceptions
             .Select(x => x.Message)
             .Subscribe(x => Errors = x);
+            SelectForDelete.ThrownExceptions
+             .Subscribe(x => Crashes.TrackError(x));
             SelectForUpdate = ReactiveCommand.Create<int, Customer>(id => Customers.Single(x => x.Id == id));
             SelectForUpdate.ThrownExceptions
             .Select(x => x.Message)
             .Subscribe(x => Errors = x);
+            SelectForUpdate.ThrownExceptions
+             .Subscribe(x => Crashes.TrackError(x));
 
             SelectForUpdate
-                .Subscribe((Action<Customer>)(x =>
+                .Subscribe(x =>
                 {
                     ImageUrl = x.ImageUrl ?? "";
                     Name = x.Name;
@@ -120,12 +136,14 @@ namespace GestRehema.ViewModels
                         Adresse = x.Adresse,
                         ImageUrl = x.ImageUrl,
                     };
-                }));
+                });
 
             Delete = ReactiveCommand.CreateFromTask<int, int>(id => Task.Run(() => _customerService.DeleteCustomer(id)));
             Delete.ThrownExceptions
              .Select(x => x.Message)
              .Subscribe(x => Errors = x);
+            Delete.ThrownExceptions
+             .Subscribe(x => Crashes.TrackError(x));
             Delete.IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
             Delete
@@ -154,6 +172,8 @@ namespace GestRehema.ViewModels
             Pay.ThrownExceptions
             .Select(x => x.Message)
             .Subscribe(x => Errors = x);
+            Pay.ThrownExceptions
+             .Subscribe(x => Crashes.TrackError(x));
 
             Pay.IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
@@ -184,6 +204,8 @@ namespace GestRehema.ViewModels
             LoadPayements.ThrownExceptions
             .Select(x => x.Message)
             .Subscribe(x => Errors = x);
+            LoadPayements.ThrownExceptions
+             .Subscribe(x => Crashes.TrackError(x));
 
             this.WhenAnyValue(x => x.CustomerWallet)
               .Where(x => x != null)

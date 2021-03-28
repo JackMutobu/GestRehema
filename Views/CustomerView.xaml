@@ -228,9 +228,13 @@
                         </Grid>
                     </Border>
                 </ui:SimpleStackPanel>
-                <ui:SimpleStackPanel Grid.Row="1" Visibility="Visible"  Grid.Column="0">
+                <Grid Grid.Row="1" Visibility="Visible"  Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
                     <TextBlock Margin="5,0" Text="Paiements" FontSize="16"/>
-                    <ui:ListView x:Name="ListPayements" ItemsSource="{Binding Payements}">
+                    <ui:ListView Grid.Row="1" x:Name="ListPayements" ItemsSource="{Binding Payements}">
                         <ui:ListView.ItemContainerStyle>
                             <Style TargetType="ui:ListViewItem">
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -260,7 +264,7 @@
                             </DataTemplate>
                         </ui:ListView.ItemTemplate>
                     </ui:ListView>
-                </ui:SimpleStackPanel>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>

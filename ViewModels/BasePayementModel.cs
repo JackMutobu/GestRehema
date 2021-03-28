@@ -9,6 +9,7 @@ using System.Reactive;
 using System.Threading.Tasks;
 using System.Reactive.Linq;
 using GestRehema.Contants;
+using Microsoft.AppCenter.Analytics;
 
 namespace GestRehema.ViewModels
 {
@@ -233,6 +234,11 @@ namespace GestRehema.ViewModels
                         _walletService.DeductFromEntreprise(Entreprise.WalletId, TotalPaid, payement.Id);
                         break;
                 }
+
+                Analytics.TrackEvent( AnalyticsKeys.NewPayement, new Dictionary<string, string> 
+                {
+                    { "Type", PayementMethod },
+                });
 
                 return payements;
             }
