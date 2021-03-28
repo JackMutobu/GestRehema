@@ -18,5 +18,7 @@
 
         public const string NewPayement = nameof(NewPayement);
 
+        public const string NewExpense = nameof(NewExpense);
+
     }
 }

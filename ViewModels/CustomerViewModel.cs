@@ -34,7 +34,6 @@ namespace GestRehema.ViewModels
         {
             _navigationRootViewModel = navigationRootViewModel ?? Locator.Current.GetService<NavigationRootViewModel>();
             Model = new Customer();
-            PayementModel = new CustomerPayementModel(Model, Entreprise);
             Payements = new ObservableCollection<Payement>();
             SelectedPayement = new Payement();
             _customerService = Locator.Current.GetService<ICustomerService>();
@@ -264,7 +263,7 @@ namespace GestRehema.ViewModels
         public Wallet? CustomerWallet { get; private set; }
 
         [Reactive]
-        public CustomerPayementModel PayementModel { get; private set; }
+        public CustomerPayementModel? PayementModel { get; private set; }
 
 
         public List<string> CustomerTypes { get; } = new List<string> { "Journalier", "Organization(ONG)", "Autre magasin" };

@@ -1,6 +1,9 @@
-﻿using GestRehema.Entities;
+﻿using GestRehema.Contants;
+using GestRehema.Entities;
 using GestRehema.Services;
 using GestRehema.Validations;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -43,6 +46,8 @@ namespace GestRehema.ViewModels
              .ThrownExceptions
              .Select(x => x.Message)
              .Subscribe(x => Errors = x);
+            LoadCategories.ThrownExceptions
+              .Subscribe(x => Crashes.TrackError(x));
             LoadCategories
                 .IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
@@ -62,6 +67,8 @@ namespace GestRehema.ViewModels
             .ThrownExceptions
             .Select(x => x.Message)
             .Subscribe(x => Errors = x);
+            SaveExpense.ThrownExceptions
+              .Subscribe(x => Crashes.TrackError(x));
             SaveExpense
                 .IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
@@ -71,6 +78,8 @@ namespace GestRehema.ViewModels
             SaveExpense
                 .Select(_ => Entreprise.Id)
                 .InvokeCommand(LoadWallet);
+            SaveExpense
+               .Subscribe(x => Analytics.TrackEvent(nameof(AnalyticsKeys.NewExpense)));
 
             AddExpense = ReactiveCommand.Create<Unit, CashExpensePayementModel>(_ => 
             {
@@ -99,6 +108,8 @@ namespace GestRehema.ViewModels
               .ThrownExceptions
               .Select(x => x.Message)
               .Subscribe(x => Errors = x);
+            LoadExpenses.ThrownExceptions
+              .Subscribe(x => Crashes.TrackError(x));
             LoadExpenses
                 .IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);

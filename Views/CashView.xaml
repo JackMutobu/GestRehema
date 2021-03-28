@@ -12,9 +12,13 @@
             <ColumnDefinition Width="0.2*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <ui:SimpleStackPanel Margin="5,0">
+        <Grid Margin="5,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
             <TextBlock  Text="Catégories" FontSize="16"  Margin="0,15,15,10"/>
-            <ui:ListView  x:Name="ListCategories" ItemsSource="{Binding Categories}"   Margin="15,5,0,0">
+            <ui:ListView Grid.Row="1" x:Name="ListCategories" ItemsSource="{Binding Categories}"   Margin="15,5,0,0">
                 <ui:ListView.ItemContainerStyle>
                     <Style TargetType="ui:ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -37,7 +41,7 @@
                     </DataTemplate>
                 </ui:ListView.ItemTemplate>
             </ui:ListView>
-        </ui:SimpleStackPanel>
+        </Grid>
         <Border Padding="5" Grid.Column="1" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
             <Grid>
                 <Grid.RowDefinitions>
