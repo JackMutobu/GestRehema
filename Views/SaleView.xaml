@@ -157,9 +157,13 @@
                             </Grid>
                         </Border>
                     </ui:SimpleStackPanel>
-                    <ui:SimpleStackPanel x:Name="BtnDelivery" Grid.Row="2">
+                    <Grid x:Name="BtnDelivery" Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
                         <TextBlock Text="Produit(s)" FontSize="16"/>
-                        <ui:ListView x:Name="ListSaleArticles" ItemsSource="{Binding SaleArticles}">
+                        <ui:ListView Grid.Row="1" x:Name="ListSaleArticles" ItemsSource="{Binding SaleArticles}">
                             <ui:ListView.ItemContainerStyle>
                                 <Style TargetType="ui:ListViewItem">
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -247,7 +251,7 @@
                                 </DataTemplate>
                             </ui:ListView.ItemTemplate>
                         </ui:ListView>
-                    </ui:SimpleStackPanel>
+                    </Grid>
                     <Button x:Name="BtnDeliverAll"  Grid.Row="3" Margin="0,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
                         <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
                             <Viewbox Height="15">

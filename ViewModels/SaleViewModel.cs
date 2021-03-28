@@ -4,6 +4,8 @@ using GestRehema.Contants;
 using GestRehema.Entities;
 using GestRehema.Services;
 using GestRehema.Validations;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -26,7 +28,7 @@ namespace GestRehema.ViewModels
         public SaleViewModel(NavigationRootViewModel navigationRootViewModel = null!) : base(new SaleValidation())
         {
             _navigationRootViewModel = navigationRootViewModel ?? Locator.Current.GetService<NavigationRootViewModel>();
-
+            SaleArticles = new ObservableCollection<SaleArticleItem>();
             _sales.Connect()
             .ObserveOnDispatcher()
             .Bind(_targetCollectionSales)
@@ -48,6 +50,8 @@ namespace GestRehema.ViewModels
             LoadSales.ThrownExceptions
               .Select(x => x.Message)
               .Subscribe(x => Errors = x);
+            LoadSales.ThrownExceptions
+              .Subscribe(x => Crashes.TrackError(x));
             LoadSales.IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
 
@@ -56,6 +60,8 @@ namespace GestRehema.ViewModels
             LoadSale.ThrownExceptions
              .Select(x => x.Message)
              .Subscribe(x => Errors = x);
+            LoadSale.ThrownExceptions
+             .Subscribe(x => Crashes.TrackError(x));
             LoadSale
                 .Subscribe(x => 
                 SelectedSale = x);
@@ -103,6 +109,8 @@ namespace GestRehema.ViewModels
                 .ThrownExceptions
                 .Select(x => x.Message)
                 .Subscribe(x => Errors = x);
+            Pay.ThrownExceptions
+                .Subscribe(x => Crashes.TrackError(x));
             Pay
                 .IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
@@ -111,6 +119,8 @@ namespace GestRehema.ViewModels
             AddPayement = ReactiveCommand.Create(() => new SalePayementModel(SelectedSale!, Entreprise, Locator.Current.GetService<ICustomerService>().GetWallet(SelectedSale!.Customer!.Id) ?? throw new Exception("Wallet can not be null"), Debt, PayementType.SaleNewPayement));
             AddPayement
                 .ToPropertyEx(this, x => x.PayementModel);
+            AddPayement
+                .Subscribe(x => Analytics.TrackEvent(nameof(AnalyticsKeys.SaleNewPayement)));
 
             AddPayement
                 .SelectMany(x =>
@@ -136,6 +146,7 @@ namespace GestRehema.ViewModels
             });
             AddDelivery
                 .ToPropertyEx(this, x => x.DeliveryModel);
+          
 
             Deliver = ReactiveCommand.CreateFromTask<Unit, Sale>(_ => Task.Run(() =>
             {
@@ -169,9 +180,13 @@ namespace GestRehema.ViewModels
                 .ThrownExceptions
                 .Select(x => x.Message)
                 .Subscribe(x => Errors = x);
+            Deliver.ThrownExceptions
+                .Subscribe(x => Crashes.TrackError(x));
             Deliver
                 .IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
+            Deliver
+             .Subscribe(x => Analytics.TrackEvent(nameof(AnalyticsKeys.SaleNewDelivery)));
 
             DeliverAll = ReactiveCommand.CreateFromTask<int, Sale>(saleId => Task.Run(() => _saleService.DeliverAll(saleId)));
             DeliverAll
@@ -188,9 +203,13 @@ namespace GestRehema.ViewModels
                 .ThrownExceptions
                 .Select(x => x.Message)
                 .Subscribe(x => Errors = x);
+            DeliverAll.ThrownExceptions
+               .Subscribe(x => Crashes.TrackError(x));
             DeliverAll
                 .IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
+            DeliverAll
+               .Subscribe(x => Analytics.TrackEvent(nameof(AnalyticsKeys.SaleDeliverAll)));
 
         }
 

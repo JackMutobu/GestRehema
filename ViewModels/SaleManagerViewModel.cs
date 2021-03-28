@@ -5,6 +5,8 @@ using GestRehema.Contants;
 using GestRehema.Entities;
 using GestRehema.Services;
 using GestRehema.Validations;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -64,6 +66,8 @@ namespace GestRehema.ViewModels
                 .ThrownExceptions
                 .Select(x => x.Message)
                 .Subscribe(x => Errors = x);
+            LoadArticles.ThrownExceptions
+                .Subscribe(x => Crashes.TrackError(x));
             LoadArticles
                 .IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
@@ -86,6 +90,8 @@ namespace GestRehema.ViewModels
                 .ThrownExceptions
                 .Select(x => x.Message)
                 .Subscribe(x => Errors = x);
+            LoadCustomers.ThrownExceptions
+               .Subscribe(x => Crashes.TrackError(x));
             LoadCustomers
                 .IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
@@ -133,6 +139,8 @@ namespace GestRehema.ViewModels
                 .ThrownExceptions
                 .Select(x => x.Message)
                 .Subscribe(x => Errors = x);
+            AddToCart.ThrownExceptions
+               .Subscribe(x => Crashes.TrackError(x));
             AddToCart
                 .InvokeCommand(CalculateCartSubTotal);
 
@@ -155,6 +163,8 @@ namespace GestRehema.ViewModels
                 .ThrownExceptions
                 .Select(x => x.Message)
                 .Subscribe(x => Errors = x);
+            RemoveFromCart.ThrownExceptions
+               .Subscribe(x => Crashes.TrackError(x));
             RemoveFromCart
                 .InvokeCommand(CalculateCartSubTotal);
 
@@ -165,6 +175,8 @@ namespace GestRehema.ViewModels
                 .ThrownExceptions
                 .Select(x => x.Message)
                 .Subscribe(x => Errors = x);
+            Validate.ThrownExceptions
+               .Subscribe(x => Crashes.TrackError(x));
             Validate
                 .IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
@@ -188,6 +200,8 @@ namespace GestRehema.ViewModels
 
             AddPayement
                 .ToPropertyEx(this, x => x.PayementModel);
+            AddPayement
+               .Subscribe(x => Analytics.TrackEvent(nameof(AnalyticsKeys.SaleNewPayement)));
 
             AddPayement
                 .SelectMany(x =>
@@ -199,6 +213,7 @@ namespace GestRehema.ViewModels
                 .Where(x => string.IsNullOrEmpty(x))
                 .Select(_ => Unit.Default)
                 .InvokeCommand(AddPayement);
+
 
             Charge = ReactiveCommand.CreateFromTask<Unit, Sale>(_ => Task.Run(() =>
              {
@@ -228,6 +243,8 @@ namespace GestRehema.ViewModels
                 .ThrownExceptions
                 .Select(x => x.Message)
                 .Subscribe(x => Errors = x);
+            Charge.ThrownExceptions
+               .Subscribe(x => Crashes.TrackError(x));
             Charge
                 .Subscribe(x => Sale = x);
             Charge
@@ -235,9 +252,13 @@ namespace GestRehema.ViewModels
                 .InvokeCommand(CalculateCartSubTotal);
             Charge
                 .InvokeCommand(Validate);
+
             Pay
                 .Select(_ => new LoadParameter(SaleViewModel?.SearchQuery, SaleViewModel!.CurrentPage, SaleViewModel.ItemPerPage))
                 .InvokeCommand(SaleViewModel!.LoadSales);
+
+            Pay
+               .Subscribe(x => Analytics.TrackEvent(nameof(AnalyticsKeys.NewSaleDone)));
 
             UpdateSellingPrice = ReactiveCommand.Create(() => SelectedSaleCartItem);
 

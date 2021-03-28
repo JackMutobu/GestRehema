@@ -18,7 +18,9 @@ namespace GestRehema
         {
             base.OnStartup(e);
             Task.Run(() => AppCenter.Start("32f60010-1949-405c-a5ab-51b9c0cd6be9", typeof(Analytics), typeof(Crashes)));
-            
+
+            Analytics.SetEnabledAsync(true);
+
             var connectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
 
             _appBootstrapper = new AppBootstrapper(connectionString);
