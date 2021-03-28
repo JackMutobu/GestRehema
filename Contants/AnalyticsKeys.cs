@@ -20,5 +20,11 @@
 
         public const string NewExpense = nameof(NewExpense);
 
+        public const string AddedSupplier = nameof(AddedSupplier);
+
+        public const string UpdatedSupplier = nameof(UpdatedSupplier);
+
+        public const string SupplierSaved = nameof(SupplierSaved);
+
     }
 }

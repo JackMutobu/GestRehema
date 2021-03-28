@@ -11,6 +11,9 @@ using System;
 using GestRehema.Validations;
 using System.Linq;
 using System.Reactive;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Analytics;
+using GestRehema.Contants;
 
 namespace GestRehema.ViewModels
 {
@@ -86,8 +89,12 @@ namespace GestRehema.ViewModels
             SaveSupplier.ThrownExceptions
                 .Select(x => x.Message)
                 .Subscribe(x => Errors = x);
+            SaveSupplier.ThrownExceptions
+               .Subscribe(x => Crashes.TrackError(x));
             SaveSupplier.IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
+            SaveSupplier
+                .Subscribe(x => Analytics.TrackEvent(nameof(AnalyticsKeys.SupplierSaved)));
 
         }
 

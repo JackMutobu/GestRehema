@@ -202,9 +202,13 @@
                     </Grid>
                 </Border>
             </Grid>
-            <ui:SimpleStackPanel Grid.Row="1"   Grid.Column="1">
+            <Grid Grid.Row="1"   Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
                 <TextBlock Margin="5,0" Text="Produits" FontSize="16"/>
-                <ui:ListView ItemsSource="{Binding Articles}" x:Name="ListArticles" Grid.Row="2" Margin="0,10">
+                <ui:ListView Grid.Row="1" ItemsSource="{Binding Articles}" x:Name="ListArticles"  Margin="0,10">
                     <ui:ListView.ItemContainerStyle>
                         <Style TargetType="ui:ListViewItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -245,7 +249,7 @@
                         </DataTemplate>
                     </ui:ListView.ItemTemplate>
                 </ui:ListView>
-            </ui:SimpleStackPanel>
+            </Grid>
         </Grid>
     </Grid>
 </local:SupplierViewBase>

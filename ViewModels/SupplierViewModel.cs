@@ -11,6 +11,9 @@ using GestRehema.Services;
 using System.Reactive.Linq;
 using System.Reactive;
 using System.Linq;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Analytics;
+using GestRehema.Contants;
 
 namespace GestRehema.ViewModels
 {
@@ -53,6 +56,8 @@ namespace GestRehema.ViewModels
             LoadSuppliers.ThrownExceptions
                .Select(x => x.Message)
                .Subscribe(x => Errors = x);
+            LoadSuppliers.ThrownExceptions
+                .Subscribe(x => Crashes.TrackError(x));
             LoadSuppliers
                 .Where(x => SelectedSupplier == null)
                 .Where(x => x.Count > 0)
@@ -65,6 +70,8 @@ namespace GestRehema.ViewModels
             LoadLocations.ThrownExceptions
              .Select(x => x.Message)
              .Subscribe(x => Errors = x);
+            LoadLocations.ThrownExceptions
+               .Subscribe(x => Crashes.TrackError(x));
             LoadLocations
                 .Select(x =>
                 {
@@ -98,6 +105,8 @@ namespace GestRehema.ViewModels
             LoadArticles.ThrownExceptions
              .Select(x => x.Message)
              .Subscribe(x => Errors = x);
+            LoadArticles.ThrownExceptions
+               .Subscribe(x => Crashes.TrackError(x));
             LoadArticles.IsExecuting
             .ToPropertyEx(this,x => x.IsBusy);
             LoadArticles
@@ -122,6 +131,9 @@ namespace GestRehema.ViewModels
             AddSupplier
                .SelectMany(x => x.SaveSupplier)
                .Subscribe(x => SelectedSupplier = x);
+            AddSupplier
+                .SelectMany(x => x.SaveSupplier)
+                .Subscribe(x => Analytics.TrackEvent(nameof(AnalyticsKeys.AddedSupplier)));
 
             UpdateSupplier = ReactiveCommand.Create<Unit, SupplierManagerViewModel>(_ =>
             {
@@ -137,6 +149,9 @@ namespace GestRehema.ViewModels
             UpdateSupplier
                .SelectMany(x => x.SaveSupplier)
                .Subscribe(x => SelectedSupplier = x);
+            UpdateSupplier
+              .SelectMany(x => x.SaveSupplier)
+             .Subscribe(x => Analytics.TrackEvent(nameof(AnalyticsKeys.UpdatedSupplier)));
 
             LoadLocations.Execute().Subscribe();
             LoadLocations
