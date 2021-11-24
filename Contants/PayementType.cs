@@ -13,5 +13,9 @@
         public const string EntrepriseAccountDeposit = nameof(EntrepriseAccountDeposit);
 
         public const string EntrepriseAccountWithdrawal = nameof(EntrepriseAccountWithdrawal);
+
+        public const string NewSupplyPayement = nameof(NewSupplyPayement);
+
+        public const string SupplyNewPayement = nameof(SupplyNewPayement);
     }
 }

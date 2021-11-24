@@ -4,13 +4,15 @@ using System.Collections.ObjectModel;
 
 namespace GestRehema.Entities
 {
-    public class Supply:IBaseEntity
+    public class SupplyItem
     {
-        public Supply()
+        public SupplyItem()
         {
-            Expenses = new Collection<SupplyExpense>();
-            SupplyItems = new Collection<SupplyItem>();
+            ArticlesSupplied = new Collection<SupplyArticle>();
+            PayementHistory = new Collection<SupplyPayement>();
+            DeliveryHistory = new Collection<SupplyDelivery>();
         }
+
         public int Id { get; set; }
 
         public DateTime CreatedAt { get; set; }
@@ -27,9 +29,17 @@ namespace GestRehema.Entities
 
         public string DeliveryStatus { get; set; } = SupplyDeliveryStatus.AwaitingDelivery;
 
-        public ICollection<SupplyExpense> Expenses { get; set; }
+        public int SupplierId { get; set; }
+        public Supplier? Supplier { get; set; }
 
-        public ICollection<SupplyItem> SupplyItems { get; set; }
+        public int SupplyId { get; set; }
+        public Supply? Supply { get; set; }
+
+
+        public ICollection<SupplyArticle> ArticlesSupplied { get; set; }
+
+        public ICollection<SupplyPayement> PayementHistory { get; set; }
+
+        public ICollection<SupplyDelivery> DeliveryHistory { get; set; }
     }
-
 }

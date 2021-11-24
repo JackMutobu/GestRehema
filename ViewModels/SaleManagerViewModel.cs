@@ -74,8 +74,16 @@ namespace GestRehema.ViewModels
             LoadArticles
                 .Subscribe(articles =>
                 {
-                    _articles.Clear();
-                    _articles.AddRange(articles);
+                    try
+                    {
+                        _articles.Clear();
+                        _articles.AddRange(articles);
+                    }
+                    catch(Exception ex)
+                    {
+                        Crashes.TrackError(ex);
+                        Errors = ex.Message;
+                    }
                 });
 
             LoadCustomers = ReactiveCommand.CreateFromTask<LoadParameter, List<Customer>>(p => 
@@ -98,8 +106,16 @@ namespace GestRehema.ViewModels
             LoadCustomers
                 .Subscribe(items =>
                 {
-                    _customers.Clear();
-                    _customers.AddRange(items);
+                    try
+                    {
+                        _customers.Clear();
+                        _customers.AddRange(items);
+                    }
+                    catch (Exception ex)
+                    {
+                        Crashes.TrackError(ex);
+                        Errors = ex.Message;
+                    }
                 });
 
             LoadArticles
@@ -112,6 +128,12 @@ namespace GestRehema.ViewModels
             CalculateCartSubTotal = ReactiveCommand.CreateFromTask<List<SaleCartItem>, decimal>(items => Task.Run(()  => items.Sum(x => x.Total)));
             CalculateCartSubTotal
                 .ToPropertyEx(this, x => x.CartSubTotal);
+            CalculateCartSubTotal
+                .ThrownExceptions
+                .Select(x => x.Message)
+                .Subscribe(x => Errors = x);
+            CalculateCartSubTotal.ThrownExceptions
+               .Subscribe(x => Crashes.TrackError(x));
 
             AddToCart = ReactiveCommand.CreateFromTask<int, List<SaleCartItem>>(id => Task.Run(() =>
              {
@@ -132,8 +154,16 @@ namespace GestRehema.ViewModels
             AddToCart
                 .Subscribe(x =>
                 {
-                    _cartItems.Clear();
-                    _cartItems.AddRange(x);
+                    try
+                    {
+                        _cartItems.Clear();
+                        _cartItems.AddRange(x);
+                    }
+                    catch(Exception ex)
+                    {
+                        Crashes.TrackError(ex);
+                        Errors = ex.Message;
+                    }
                 });
             AddToCart
                 .ThrownExceptions
@@ -194,6 +224,9 @@ namespace GestRehema.ViewModels
                 .ThrownExceptions
                 .Select(x => x.Message)
                 .Subscribe(x => Errors = x);
+            Pay
+                .ThrownExceptions
+                .Subscribe(x => Crashes.TrackError(x));
             Pay
                 .IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);

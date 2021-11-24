@@ -1,6 +1,7 @@
 ﻿using GestRehema.Data;
 using GestRehema.Entities;
 using GestRehema.Extensions;
+using Microsoft.AppCenter.Crashes;
 using Microsoft.EntityFrameworkCore;
 using Splat;
 using System;
@@ -29,7 +30,10 @@ namespace GestRehema.Services
         }
 
         public List<Customer> SearchCustomers(string query, string? customerType = null)
-            => _dbContext
+        {
+            try
+            {
+                return _dbContext
             .Customers
             .Include(x => x.Wallet)
             .Where(x => x.Name.ToLower().Contains(query.ToLower())
@@ -39,6 +43,13 @@ namespace GestRehema.Services
             .ToList()
             .DistinctBy(x => x.Id)
             .ToList();
+            }
+            catch(Exception ex)
+            {
+                Crashes.TrackError(ex);
+                return new List<Customer>();
+            }
+        }
 
         public Customer AddOrUpdateCustomer(Customer item)
         {

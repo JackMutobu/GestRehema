@@ -1,0 +1,205 @@
+﻿<local:SuppliyViewBase x:Class="GestRehema.Views.SupplyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GestRehema.Views"
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+              xmlns:converters="clr-namespace:GestRehema.Converters"
+              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="850" d:DesignWidth="1200" Background="{DynamicResource AppContentBackgroundBrush}">
+    <local:SuppliyViewBase.Resources>
+        <converters:SaleArticleDeliveryToVisibility x:Key="DeliveryToVisibility"/>
+    </local:SuppliyViewBase.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid  Margin="20,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ui:SimpleStackPanel VerticalAlignment="Center">
+                <TextBox 
+                        x:Name="TxtSearch"
+                        ui:ControlHelper.PlaceholderText="Rechercher une vente par ID ou NOMS du fournisseur"
+                        MinWidth="350"
+                        HorizontalAlignment="Left"  Text="{Binding SearchQuery,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+            </ui:SimpleStackPanel>
+
+            <ui:SimpleStackPanel Spacing="10" Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button x:Name="BtnRefresh">
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                        <Viewbox Height="15">
+                            <Path  Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}" Data="M7.59375,3L9.0625,5 13,5C16.324219,5,19,7.675781,19,11L19,15 16,15 20,20.46875 24,15 21,15 21,11C21,6.59375,17.40625,3,13,3z M4,3.53125L0,9 3,9 3,13C3,17.40625,6.59375,21,11,21L16.40625,21 14.9375,19 11,19C7.675781,19,5,16.324219,5,13L5,9 8,9z" />
+                        </Viewbox>
+                        <TextBlock Text="Rafraîchir"/>
+                    </ui:SimpleStackPanel>
+                </Button>
+                <Button Command="{Binding AddSupply}"  Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
+                    <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                        <Viewbox Height="15">
+                            <Path  Stroke="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Data="M11,2L11,11 2,11 2,13 11,13 11,22 13,22 13,13 22,13 22,11 13,11 13,2z" />
+                        </Viewbox>
+                        <TextBlock Text="Nouveau approvisionement"/>
+                    </ui:SimpleStackPanel>
+                </Button>
+            </ui:SimpleStackPanel>
+
+        </Grid>
+        <TextBlock x:Name="TxtError" Grid.Row="1"  Visibility="Collapsed" Margin="0,10"  Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" />
+        <ui:ProgressBar  x:Name="ProgIndicator"  IsIndeterminate="True" Grid.Row="1"/>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="28*"/>
+                <ColumnDefinition Width="30*"/>
+            </Grid.ColumnDefinitions>
+            <DataGrid  x:Name="DtGridSupplies"
+                AutoGenerateColumns="False"
+                HeadersVisibility="Column"
+                CanUserAddRows="False"
+                GridLinesVisibility="Horizontal"
+                VirtualizingPanel.VirtualizationMode="Recycling"
+                ItemsSource="{Binding Supplies}"
+                VirtualizingPanel.IsVirtualizingWhenGrouping="True" Grid.ColumnSpan="2">
+                <DataGrid.Resources>
+                    <ResourceDictionary>
+                        <Style x:Key="{x:Type DataGridCell}" TargetType="{x:Type DataGridCell}">
+                            <Setter Property="BorderBrush" Value="{x:Null}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderBrush" Value="{x:Null}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                        <Style TargetType="{x:Type DataGridRow}">
+                            <Setter Property="BorderBrush" Value="{x:Null}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderBrush" Value="{x:Null}" />
+                                    <Setter Property="Margin" Value="0,20"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ResourceDictionary>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn 
+                        Header="ID"
+                        IsReadOnly="True"
+                        Binding="{Binding Id}" />
+                    <DataGridTextColumn
+                        Header="Date"
+                         IsReadOnly="True"
+                        Binding="{Binding ShortDateOperation}" />
+                    <DataGridTextColumn
+                        Header="Statut de paiement"
+                         IsReadOnly="True"
+                        Binding="{Binding PayementStatus}" />
+                    <DataGridTextColumn
+                        Header="Statut de livraison"
+                         IsReadOnly="True"
+                        Binding="{Binding DeliveryStatus}" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TabControl x:Name="TabSupplyItems" >
+                    <TabControl.Resources>
+                        <sys:Double x:Key="TabViewItemHeaderFontSize">16</sys:Double>
+                        <sys:Double x:Key="TabViewItemHeaderIconSize">16</sys:Double>
+                    </TabControl.Resources>
+                </TabControl>
+                <Border x:Name="BorderBill" Grid.Row="1" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="5">
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <ui:SimpleStackPanel Grid.Row="5" Margin="0,5" Spacing="5">
+                            <TextBlock Text="Resumé dépense" FontSize="16"/>
+                            <Border x:Name="BorderExpenseSummary" CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" Padding="5" HorizontalAlignment="Stretch">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Total depassé" FontSize="16" Margin="2,5"/>
+                                    <TextBlock Grid.Column="1" HorizontalAlignment="Right" FontSize="16" Margin="2,5">
+                                    <Run FontWeight="SemiBold" Text="{Binding TotalToPay,FallbackValue=200,Mode=OneWay}"/>
+                                    <Run FontWeight="SemiBold" Text="$" />
+                                    </TextBlock>
+
+
+
+                                    <Button x:Name="BtnViewExpense" Command="{Binding AddPayement}" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
+                                        <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                                            <Viewbox Height="15">
+                                                <Path  Stroke="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Data="M94,38C92.3,38 91,39.3 91,41 91,42.7 92.3,44 94,44L124,44C125.7,44 127,42.7 127,41 127,39.3 125.7,38 124,38L94,38z M55.714844,38.771484C51.251953,38.821289,46.837891,40.4375,43.400391,43.5L20.099609,63.800781C18.799609,64.900781,18.1,66.499609,18,68.099609L18,69 18,104 9,104 6,104C4.3,104 3,105.3 3,107 3,108.7 4.3,110 6,110L21,110 44.900391,110C46.500391,110 48,108.69961 48,107.09961 48,105.39961 46.7,104 45,104L24,104 24,68.400391 47.300781,48C51.100781,44.7,56.499609,43.900391,61.099609,45.900391L85.599609,56.800781C86.799609,57.300781 87.800781,58.3 88.300781,59.5 88.800781,60.7 88.800781,62.100781 88.300781,63.300781 87.200781,65.800781 84.299219,67.000391 81.699219,65.900391L63.199219,58C62.399219,57.7 61.499219,57.7 60.699219,58 59.899219,58.4 59.299609,59.000391 59.099609,59.900391L59,60.599609C56.3,69.699609 48.8,76.4 39.5,78 37.9,78.3 36.799609,79.8 37.099609,81.5 37.399609,83 38.599609,84 40.099609,84L40.599609,84C51.299609,82.1,60.000391,74.900391,63.900391,64.900391L79.400391,71.5C85.000391,73.9 91.500781,71.299219 93.800781,65.699219 95.000781,62.999219 95.000391,59.999219 93.900391,57.199219 92.800391,54.499219 90.7,52.299219 88,51.199219L63.599609,40.400391C61.087109,39.275391,58.392578,38.741602,55.714844,38.771484z M111,58A16,16,0,0,0,95,74A16,16,0,0,0,111,90A16,16,0,0,0,127,74A16,16,0,0,0,111,58z M74,84A6,6,0,0,0,68,90A6,6,0,0,0,74,96A6,6,0,0,0,80,90A6,6,0,0,0,74,84z M56,87C54.3,87,53,88.3,53,90L53,97C53,104.2,58.8,110,66,110L124,110C125.7,110 127,108.7 127,107 127,105.3 125.7,104 124,104L66,104C62.1,104,59,100.9,59,97L59,90C59,88.3,57.7,87,56,87z" />
+                                            </Viewbox>
+                                            <TextBlock Text="Gérer les dépenses" />
+                                        </ui:SimpleStackPanel>
+                                    </Button>
+                                </Grid>
+                            </Border>
+                        </ui:SimpleStackPanel>
+                        <Grid Grid.Row="6" Margin="0,5" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Actions" Margin="0,0,0,5" FontSize="16"/>
+                            <Button x:Name="BtnStock" Grid.ColumnSpan="2" Grid.Row="1" ToolTip="Regulariser le stock" Margin="2.5,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
+                                <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                                    <Viewbox Height="15">
+                                        <Path  Stroke="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Data="M4,0C2.90625,0,2,0.90625,2,2L2,24C2,25.09375,2.90625,26,4,26L22,26C23.09375,26,24,25.09375,24,24L24,2C24,0.90625,23.09375,0,22,0z M4,2L22,2 22,24 4,24z M8.71875,5C8.167969,5.078125 7.78125,5.589844 7.859375,6.140625 7.9375,6.691406 8.449219,7.078125 9,7L17,7C17.359375,7.003906 17.695313,6.816406 17.878906,6.503906 18.058594,6.191406 18.058594,5.808594 17.878906,5.496094 17.695313,5.183594 17.359375,4.996094 17,5L9,5C8.96875,5 8.9375,5 8.90625,5 8.875,5 8.84375,5 8.8125,5 8.78125,5 8.75,5 8.71875,5z M6.71875,11C6.167969,11.078125 5.78125,11.589844 5.859375,12.140625 5.9375,12.691406 6.449219,13.078125 7,13L14,13C14.359375,13.003906 14.695313,12.816406 14.878906,12.503906 15.058594,12.191406 15.058594,11.808594 14.878906,11.496094 14.695313,11.183594 14.359375,10.996094 14,11L7,11C6.96875,11 6.9375,11 6.90625,11 6.875,11 6.84375,11 6.8125,11 6.78125,11 6.75,11 6.71875,11z M17.71875,11C17.167969,11.078125 16.78125,11.589844 16.859375,12.140625 16.9375,12.691406 17.449219,13.078125 18,13L19,13C19.359375,13.003906 19.695313,12.816406 19.878906,12.503906 20.058594,12.191406 20.058594,11.808594 19.878906,11.496094 19.695313,11.183594 19.359375,10.996094 19,11L18,11C17.96875,11 17.9375,11 17.90625,11 17.875,11 17.84375,11 17.8125,11 17.78125,11 17.75,11 17.71875,11z M6.71875,14C6.167969,14.078125 5.78125,14.589844 5.859375,15.140625 5.9375,15.691406 6.449219,16.078125 7,16L14,16C14.359375,16.003906 14.695313,15.816406 14.878906,15.503906 15.058594,15.191406 15.058594,14.808594 14.878906,14.496094 14.695313,14.183594 14.359375,13.996094 14,14L7,14C6.96875,14 6.9375,14 6.90625,14 6.875,14 6.84375,14 6.8125,14 6.78125,14 6.75,14 6.71875,14z M17.71875,14C17.167969,14.078125 16.78125,14.589844 16.859375,15.140625 16.9375,15.691406 17.449219,16.078125 18,16L19,16C19.359375,16.003906 19.695313,15.816406 19.878906,15.503906 20.058594,15.191406 20.058594,14.808594 19.878906,14.496094 19.695313,14.183594 19.359375,13.996094 19,14L18,14C17.96875,14 17.9375,14 17.90625,14 17.875,14 17.84375,14 17.8125,14 17.78125,14 17.75,14 17.71875,14z M6.71875,17C6.167969,17.078125 5.78125,17.589844 5.859375,18.140625 5.9375,18.691406 6.449219,19.078125 7,19L14,19C14.359375,19.003906 14.695313,18.816406 14.878906,18.503906 15.058594,18.191406 15.058594,17.808594 14.878906,17.496094 14.695313,17.183594 14.359375,16.996094 14,17L7,17C6.96875,17 6.9375,17 6.90625,17 6.875,17 6.84375,17 6.8125,17 6.78125,17 6.75,17 6.71875,17z M17.71875,17C17.167969,17.078125 16.78125,17.589844 16.859375,18.140625 16.9375,18.691406 17.449219,19.078125 18,19L19,19C19.359375,19.003906 19.695313,18.816406 19.878906,18.503906 20.058594,18.191406 20.058594,17.808594 19.878906,17.496094 19.695313,17.183594 19.359375,16.996094 19,17L18,17C17.96875,17 17.9375,17 17.90625,17 17.875,17 17.84375,17 17.8125,17 17.78125,17 17.75,17 17.71875,17z" />
+                                    </Viewbox>
+                                    <TextBlock Text="Regulariser le stock"/>
+                                </ui:SimpleStackPanel>
+                            </Button>
+
+                            <Button x:Name="BtnPrintDeliveryBill" Visibility="Collapsed"  Grid.Row="1" ToolTip="Imprimer le bon de livraison" Grid.Column="1" Margin="2.5,1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
+                                <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                                    <Viewbox Height="15">
+                                        <Path  Stroke="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Data="M4,0C2.90625,0,2,0.90625,2,2L2,24C2,25.09375,2.90625,26,4,26L22,26C23.09375,26,24,25.09375,24,24L24,2C24,0.90625,23.09375,0,22,0z M4,2L22,2 22,24 4,24z M8.71875,5C8.167969,5.078125 7.78125,5.589844 7.859375,6.140625 7.9375,6.691406 8.449219,7.078125 9,7L17,7C17.359375,7.003906 17.695313,6.816406 17.878906,6.503906 18.058594,6.191406 18.058594,5.808594 17.878906,5.496094 17.695313,5.183594 17.359375,4.996094 17,5L9,5C8.96875,5 8.9375,5 8.90625,5 8.875,5 8.84375,5 8.8125,5 8.78125,5 8.75,5 8.71875,5z M6.71875,11C6.167969,11.078125 5.78125,11.589844 5.859375,12.140625 5.9375,12.691406 6.449219,13.078125 7,13L14,13C14.359375,13.003906 14.695313,12.816406 14.878906,12.503906 15.058594,12.191406 15.058594,11.808594 14.878906,11.496094 14.695313,11.183594 14.359375,10.996094 14,11L7,11C6.96875,11 6.9375,11 6.90625,11 6.875,11 6.84375,11 6.8125,11 6.78125,11 6.75,11 6.71875,11z M17.71875,11C17.167969,11.078125 16.78125,11.589844 16.859375,12.140625 16.9375,12.691406 17.449219,13.078125 18,13L19,13C19.359375,13.003906 19.695313,12.816406 19.878906,12.503906 20.058594,12.191406 20.058594,11.808594 19.878906,11.496094 19.695313,11.183594 19.359375,10.996094 19,11L18,11C17.96875,11 17.9375,11 17.90625,11 17.875,11 17.84375,11 17.8125,11 17.78125,11 17.75,11 17.71875,11z M6.71875,14C6.167969,14.078125 5.78125,14.589844 5.859375,15.140625 5.9375,15.691406 6.449219,16.078125 7,16L14,16C14.359375,16.003906 14.695313,15.816406 14.878906,15.503906 15.058594,15.191406 15.058594,14.808594 14.878906,14.496094 14.695313,14.183594 14.359375,13.996094 14,14L7,14C6.96875,14 6.9375,14 6.90625,14 6.875,14 6.84375,14 6.8125,14 6.78125,14 6.75,14 6.71875,14z M17.71875,14C17.167969,14.078125 16.78125,14.589844 16.859375,15.140625 16.9375,15.691406 17.449219,16.078125 18,16L19,16C19.359375,16.003906 19.695313,15.816406 19.878906,15.503906 20.058594,15.191406 20.058594,14.808594 19.878906,14.496094 19.695313,14.183594 19.359375,13.996094 19,14L18,14C17.96875,14 17.9375,14 17.90625,14 17.875,14 17.84375,14 17.8125,14 17.78125,14 17.75,14 17.71875,14z M6.71875,17C6.167969,17.078125 5.78125,17.589844 5.859375,18.140625 5.9375,18.691406 6.449219,19.078125 7,19L14,19C14.359375,19.003906 14.695313,18.816406 14.878906,18.503906 15.058594,18.191406 15.058594,17.808594 14.878906,17.496094 14.695313,17.183594 14.359375,16.996094 14,17L7,17C6.96875,17 6.9375,17 6.90625,17 6.875,17 6.84375,17 6.8125,17 6.78125,17 6.75,17 6.71875,17z M17.71875,17C17.167969,17.078125 16.78125,17.589844 16.859375,18.140625 16.9375,18.691406 17.449219,19.078125 18,19L19,19C19.359375,19.003906 19.695313,18.816406 19.878906,18.503906 20.058594,18.191406 20.058594,17.808594 19.878906,17.496094 19.695313,17.183594 19.359375,16.996094 19,17L18,17C17.96875,17 17.9375,17 17.90625,17 17.875,17 17.84375,17 17.8125,17 17.78125,17 17.75,17 17.71875,17z" />
+                                    </Viewbox>
+                                    <TextBlock Text="Bon de livraison"/>
+                                </ui:SimpleStackPanel>
+                            </Button>
+
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            
+           
+
+        </Grid>
+
+    </Grid>
+</local:SuppliyViewBase>

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Reactive.Linq;
 using GestRehema.Contants;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 namespace GestRehema.ViewModels
 {
@@ -64,7 +65,8 @@ namespace GestRehema.ViewModels
             Pay.ThrownExceptions
                 .Select(x => x.Message)
                 .Subscribe(x => Errors = x);
-
+            Pay.ThrownExceptions
+               .Subscribe(x => Crashes.TrackError(x));
             Pay.IsExecuting
                 .ToPropertyEx(this, x => x.IsBusy);
         }
@@ -232,6 +234,16 @@ namespace GestRehema.ViewModels
                         break;
                     case PayementType.EntrepriseAccountWithdrawal:
                         _walletService.DeductFromEntreprise(Entreprise.WalletId, TotalPaid, payement.Id);
+                        break;
+                    case PayementType.NewSupplyPayement:
+                        if(Debt > 0)
+                            _walletService.AddExcess(Wallet.Id, Entreprise.WalletId, Debt, payement.Id);
+                        if (TotalPaid > 0)
+                            _walletService.DeductFromEntreprise(Entreprise.WalletId, TotalPaid, payement.Id);
+                        break;
+                    case PayementType.SupplyNewPayement:
+                        if (TotalPaid > 0)
+                            _walletService.AddDebt(Wallet.Id, Entreprise.WalletId, TotalPaid);
                         break;
                 }
 

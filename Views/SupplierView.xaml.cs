@@ -6,7 +6,6 @@ using GestRehema.Extensions;
 using System.Linq;
 using System.Windows.Controls.Primitives;
 using GestRehema.Entities;
-using System.Reactive;
 
 namespace GestRehema.Views
 {

@@ -1,6 +1,7 @@
 ﻿using GestRehema.Data;
 using GestRehema.Entities;
 using GestRehema.Extensions;
+using Microsoft.AppCenter.Crashes;
 using Microsoft.EntityFrameworkCore;
 using Splat;
 using System;
@@ -21,10 +22,11 @@ namespace GestRehema.Services
         int UpdateArticle(Article article);
         ArticleStock UpdateStock(ArticleStock articleStock);
         int DeleteArticle(int articleId);
-        List<Article> SearchArticles(string query);
+        List<Article> SearchArticles(string query, int? supplierId = null);
         List<string> GetCategories();
         Article ReduceStock(double qty, int articleId);
-        List<Article> GetArticlesForSupplier(int supplierId);
+        List<Article> GetArticlesBySupplierId(int supplierId);
+
     }
 
     public class ArticleService : IArticleService
@@ -35,17 +37,29 @@ namespace GestRehema.Services
             _dbContext = Locator.Current.GetService<AppDbContext>();
         }
 
-        public List<Article> SearchArticles(string query)
-            => _dbContext
+        public List<Article> SearchArticles(string query, int? supplierId = null)
+        {
+            try
+            {
+                return _dbContext
             .Articles
-            .Where(x => x.Name.ToLower().Contains(query.ToLower()) 
-            || x.Id.ToString().Contains(query) 
-            || (!string.IsNullOrEmpty(x.TechnicalCode) && x.TechnicalCode.ToLower().Contains(query.ToLower())))
+            .Include(x => x.Suppliers)
+            .Where(x => (supplierId == null || x.Suppliers.Any(s => s.SupplierId == supplierId))
+            && (x.Name.ToLower().Contains(query.ToLower())
+            || x.Id.ToString().Contains(query)
+            || (!string.IsNullOrEmpty(x.TechnicalCode) && x.TechnicalCode.ToLower().Contains(query.ToLower()))))
             .ToList()
             .OrderByDescending(x => x.UpdatedAt)
             .ThenBy(x => x.Id)
             .DistinctBy(x => x.Id)
             .ToList();
+            }
+            catch(Exception ex)
+            {
+                Crashes.TrackError(ex);
+                return new List<Article>();
+            }
+        }
 
         public Article AddOrUpdateArticle(Article article)
         {
@@ -114,12 +128,6 @@ namespace GestRehema.Services
             throw new Exception("Article inconnu");
         }
 
-        public List<Article> GetArticlesForSupplier(int supplierId)
-            => _dbContext.Articles
-            .Include(x => x.Suppliers)
-            .Where(x => x.Suppliers.Any(x => x.SupplierId == supplierId))
-            .ToList();
-
         public ArticleStock UpdateStock(ArticleStock articleStock)
         {
             if (articleStock.Quantity == 0 || articleStock.BuyinPrice == 0)
@@ -182,6 +190,11 @@ namespace GestRehema.Services
            => _dbContext.Articles.Select(x => x.Category)
             .ToList()
             .DistinctBy(x => x)
+            .ToList();
+        public List<Article> GetArticlesBySupplierId(int supplierId)
+            => _dbContext.Articles
+            .Include(x => x.Suppliers)
+            .Where(x => x.Suppliers.Any(s => s.SupplierId == supplierId))
             .ToList();
     }
 }

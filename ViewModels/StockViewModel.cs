@@ -43,6 +43,12 @@ namespace GestRehema.ViewModels
                .Create<ValidationParameter<Article>, string>(p => RaiseValidation(p.Model, p.PropertyName));
             Validate
                 .Subscribe(x => Errors = x);
+            Validate
+                .ThrownExceptions
+                .Subscribe(x => Errors = x.Message);
+            Validate.ThrownExceptions
+                .Subscribe(x => Crashes.TrackError(x));
+
 
             ValidateModel();
 
@@ -181,6 +187,12 @@ namespace GestRehema.ViewModels
             LoadArticle
                 .Where(x => x != null)
                 .Subscribe(x => SelectedArticle = x);
+            LoadArticle.ThrownExceptions
+                .Select(x => x.Message)
+                .Subscribe(x => Errors = x);
+            LoadArticle.ThrownExceptions
+                .Subscribe(x => Crashes.TrackError(x));
+
             LoadArticles
                 .Where(x => x != null && x.Count > 0)
                 .Select(x => x.First().Id)

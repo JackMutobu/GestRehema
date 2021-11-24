@@ -101,7 +101,7 @@ namespace GestRehema.ViewModels
               .Select(x => new LoadParameter(SearchQuery, CurrentPage, ItemPerPage))
               .InvokeCommand(LoadSuppliers);
 
-            LoadArticles = ReactiveCommand.CreateFromTask<Supplier, List<Article>>(sup => Task.Run(() => _articleService.GetArticlesForSupplier(sup.Id)), Observable.Return(!IsBusy));
+            LoadArticles = ReactiveCommand.CreateFromTask<Supplier?, List<Article>>(sup => Task.Run(() => _articleService.GetArticlesBySupplierId(sup.Id)), Observable.Return(!IsBusy));
             LoadArticles.ThrownExceptions
              .Select(x => x.Message)
              .Subscribe(x => Errors = x);
@@ -134,6 +134,8 @@ namespace GestRehema.ViewModels
             AddSupplier
                 .SelectMany(x => x.SaveSupplier)
                 .Subscribe(x => Analytics.TrackEvent(nameof(AnalyticsKeys.AddedSupplier)));
+            AddSupplier.ThrownExceptions
+               .Subscribe(x => Crashes.TrackError(x));
 
             UpdateSupplier = ReactiveCommand.Create<Unit, SupplierManagerViewModel>(_ =>
             {
@@ -152,11 +154,13 @@ namespace GestRehema.ViewModels
             UpdateSupplier
               .SelectMany(x => x.SaveSupplier)
              .Subscribe(x => Analytics.TrackEvent(nameof(AnalyticsKeys.UpdatedSupplier)));
+            UpdateSupplier.ThrownExceptions
+               .Subscribe(x => Crashes.TrackError(x));
 
-            LoadLocations.Execute().Subscribe();
-            LoadLocations
-                .Select(x => new LoadParameter(SearchQuery, CurrentPage, ItemPerPage))
-                .InvokeCommand(LoadSuppliers);
+            LoadSuppliers
+                .Take(1)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(LoadLocations);
 
         }
 
@@ -200,7 +204,7 @@ namespace GestRehema.ViewModels
 
         public ReactiveCommand<Unit, SupplierManagerViewModel> UpdateSupplier { get; }
 
-        public ReactiveCommand<Supplier, List<Article>> LoadArticles { get; }
+        public ReactiveCommand<Supplier?, List<Article>> LoadArticles { get; }
 
         public ReactiveCommand<Unit, List<string>> LoadLocations { get; }
 

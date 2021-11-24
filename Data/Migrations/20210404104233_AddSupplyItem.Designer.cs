@@ -4,14 +4,16 @@ using GestRehema.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GestRehema.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210404104233_AddSupplyItem")]
+    partial class AddSupplyItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -211,7 +213,7 @@ namespace GestRehema.Data.Migrations
                             Position = "Admin",
                             Postnom = "Informatique",
                             Prenom = "Rehema",
-                            UserId = new Guid("04ba28d3-ddc5-4fbe-85fc-82bdd627c2f7")
+                            UserId = new Guid("f5ecaa76-9980-4fac-bfd8-ab85f69af426")
                         });
                 });
 
@@ -283,8 +285,8 @@ namespace GestRehema.Data.Migrations
                         {
                             Id = -1,
                             Contact = "+243971871546\r\n+243822903906\r\n+243819521649",
-                            CreatedAt = new DateTime(2021, 4, 4, 12, 19, 24, 670, DateTimeKind.Utc).AddTicks(5436),
-                            DateDuJour = new DateTime(2021, 4, 4, 12, 19, 24, 670, DateTimeKind.Utc).AddTicks(2747),
+                            CreatedAt = new DateTime(2021, 4, 4, 10, 42, 27, 74, DateTimeKind.Utc).AddTicks(5182),
+                            DateDuJour = new DateTime(2021, 4, 4, 10, 42, 27, 74, DateTimeKind.Utc).AddTicks(3351),
                             Description = "Votre besoin en construction est assuré",
                             IDNAT = "493-N50888J",
                             Location = "Bunia",
@@ -781,7 +783,7 @@ namespace GestRehema.Data.Migrations
 
                     b.HasIndex("SupplyId");
 
-                    b.ToTable("SupplyItems");
+                    b.ToTable("SupplyItem");
                 });
 
             modelBuilder.Entity("GestRehema.Entities.SupplyPayement", b =>
@@ -846,10 +848,10 @@ namespace GestRehema.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("04ba28d3-ddc5-4fbe-85fc-82bdd627c2f7"),
+                            Id = new Guid("f5ecaa76-9980-4fac-bfd8-ab85f69af426"),
                             AccessLevel = "all",
-                            CreatedAt = new DateTime(2021, 4, 4, 12, 19, 24, 672, DateTimeKind.Utc).AddTicks(6682),
-                            Password = "10000.1TpDjLNsBNzjMEi/ZUXiRg==.ubct/0bOB8RxbcMppRfFY2D6Fi+7mz3MIYQu2daXB8c=",
+                            CreatedAt = new DateTime(2021, 4, 4, 10, 42, 27, 76, DateTimeKind.Utc).AddTicks(7574),
+                            Password = "10000.ikIma2MCgQhe1q2VTsr3sg==.CvQeB4jd5OS5PzjFEa9tBrVraP5w6ioZzQR8VdEVTNg=",
                             Role = "SuperAdmin",
                             Username = "admin@rehema.com"
                         });
@@ -888,7 +890,7 @@ namespace GestRehema.Data.Migrations
                             AmountInDebt = 0m,
                             AmountInExcess = 0m,
                             AmountOwned = 0m,
-                            CreatedAt = new DateTime(2021, 4, 4, 12, 19, 24, 667, DateTimeKind.Utc).AddTicks(8559)
+                            CreatedAt = new DateTime(2021, 4, 4, 10, 42, 27, 72, DateTimeKind.Utc).AddTicks(8717)
                         });
                 });
 

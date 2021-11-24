@@ -68,6 +68,8 @@ namespace GestRehema.Views
             else if (navItem!.Content.ToString() == "Caisse")
                 ViewModel!.NavigateToCash.Execute().Subscribe();
             else if(navItem!.Content.ToString() == "Fournisseurs")
+                ViewModel!.NavigateToSupplier.Execute().Subscribe();
+            else if (navItem!.Content.ToString() == "Approvisionement")
                 ViewModel!.NavigateToSupply.Execute().Subscribe();
         }
 

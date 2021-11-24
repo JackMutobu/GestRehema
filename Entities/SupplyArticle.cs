@@ -4,8 +4,8 @@ namespace GestRehema.Entities
 {
     public class SupplyArticle
     {
-        public int SupplyId { get; set; }
-        public Supply? Supply { get; set; }
+        public int SupplyItemId { get; set; }
+        public SupplyItem? SupplyItem { get; set; }
 
         public int ArticleId { get; set; }
         public Article? Article { get; set; }

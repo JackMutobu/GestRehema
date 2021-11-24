@@ -44,6 +44,8 @@ namespace GestRehema.Data
 
         public DbSet<Supply> Supplies { get; set; } = null!;
 
+        public DbSet<SupplyItem> SupplyItems { get; set; } = null!;
+
         public DbSet<SupplyArticle> SupplyArticles { get; set; } = null!;
 
         public DbSet<SupplyDelivery> SupplyDeliveries { get; set; } = null!;
@@ -141,7 +143,7 @@ namespace GestRehema.Data
             modelBuilder.Entity<SupplyArticle>()
           .HasKey(sa => new {
               sa.ArticleId,
-              sa.SupplyId
+              sa.SupplyItemId
           });
 
             modelBuilder.Entity<ArticleSupplier>()
@@ -150,15 +152,15 @@ namespace GestRehema.Data
              sa.SupplierId
          });
             modelBuilder.Entity<SupplyArticle>()
-                .HasOne(sa => sa.Supply)
+                .HasOne(sa => sa.SupplyItem)
                 .WithMany(s => s.ArticlesSupplied)
-                .HasForeignKey(sa => sa.SupplyId);
+                .HasForeignKey(sa => sa.SupplyItemId);
             modelBuilder.Entity<SaleArticle>()
                         .HasOne(asa => asa.Article)
                         .WithMany(a => a.Sales)
                         .HasForeignKey(asa => asa.ArticleId);
 
-            modelBuilder.Entity<Supply>()
+            modelBuilder.Entity<SupplyItem>()
                        .HasOne(asa => asa.Supplier)
                        .WithMany(a => a.Supplies)
                        .HasForeignKey(asa => asa.SupplierId)

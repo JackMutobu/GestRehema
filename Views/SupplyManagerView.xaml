@@ -1,0 +1,283 @@
+﻿<local:SupplyManagerViewBase x:Class="GestRehema.Views.SupplyManagerView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GestRehema.Views"
+         WindowStyle="None"
+         Title="Gérer un approvisionement"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+         xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        mc:Ignorable="d"   d:Height="550" d:Width="1200" Width="1250" Height="700"  Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <ui:ProgressBar  x:Name="ProgIndicator" Grid.ColumnSpan="3" IsIndeterminate="True" />
+        <TextBlock x:Name="TxtError" Grid.Column="2"  Margin="0,10"  Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}" />
+        <Border Grid.Row="1" MinWidth="300" BorderThickness="0,0,1,0" Padding="5" BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Choisir le fournisseur" FontSize="16"  Margin="0,10,15,10"/>
+                <ui:SimpleStackPanel Spacing="10" Grid.Row="1" Margin="5" Orientation="Horizontal">
+                    <TextBox x:Name="TxtSearchCustomer" Text="{Binding SearchSupplierQuery,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ui:ControlHelper.PlaceholderText="Rechercher un fournisseur" MinWidth="220"/>
+                    <Button x:Name="BtnAddCustomer"  >
+                        <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                            <Viewbox Height="15">
+                                <Path  Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}" Data="M12,2C8.144531,2 5,5.144531 5,9 5,11.410156 6.230469,13.550781 8.09375,14.8125 4.527344,16.34375 2,19.882813 2,24L4,24C4,19.570313 7.570313,16 12,16 13.375,16 14.65625,16.359375 15.78125,16.96875 14.671875,18.34375 14,20.101563 14,22 14,26.40625 17.59375,30 22,30 26.40625,30 30,26.40625 30,22 30,17.59375 26.40625,14 22,14 20.253906,14 18.628906,14.574219 17.3125,15.53125 16.871094,15.253906 16.390625,15.019531 15.90625,14.8125 17.769531,13.550781 19,11.410156 19,9 19,5.144531 15.855469,2 12,2z M12,4C14.773438,4 17,6.226563 17,9 17,11.773438 14.773438,14 12,14 9.226563,14 7,11.773438 7,9 7,6.226563 9.226563,4 12,4z M22,16C25.324219,16 28,18.675781 28,22 28,25.324219 25.324219,28 22,28 18.675781,28 16,25.324219 16,22 16,18.675781 18.675781,16 22,16z M21,18L21,21 18,21 18,23 21,23 21,26 23,26 23,23 26,23 26,21 23,21 23,18z" />
+                            </Viewbox>
+                            <TextBlock Text="Nouveau"/>
+                        </ui:SimpleStackPanel>
+                    </Button>
+                </ui:SimpleStackPanel>
+
+                <ui:ListView x:Name="ListCustomers" ItemsSource="{Binding Suppliers}" SelectedItem="{Binding SelectedSupplier}" Grid.Row="2" >
+                    <ui:ListView.ItemContainerStyle>
+                        <Style TargetType="ui:ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Margin" Value="0"/>
+                            <Setter Property="Padding" Value="0"/>
+                        </Style>
+                    </ui:ListView.ItemContainerStyle>
+                    <ui:ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ui:ThemeShadowChrome    HorizontalAlignment="Stretch" Depth="8" Margin="0,1" CornerRadius="2">
+                                <Border CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" Padding="5" HorizontalAlignment="Stretch">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ui:PersonPicture Height="55" DisplayName="{Binding Name}" ProfilePicture="{Binding ImageUrl}"/>
+                                        <ui:SimpleStackPanel Grid.Column="1" Margin="10,0,0,0">
+                                            <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{Binding CustomerType}" Margin="0,5" FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" FontWeight="Medium" />
+                                            <TextBlock Text="{Binding NumTelephone}" FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                                        </ui:SimpleStackPanel>
+
+                                    </Grid>
+                                </Border>
+                            </ui:ThemeShadowChrome>
+                        </DataTemplate>
+                    </ui:ListView.ItemTemplate>
+                </ui:ListView>
+            </Grid>
+        </Border>
+        <Border Grid.Row="1" MinWidth="350" Grid.Column="1" BorderThickness="0,0,1,0" Padding="5" BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Choisir le(s) produit(s)" FontSize="16"  Margin="0,10,0,10"/>
+                <TextBox x:Name="TxtSearchArticle" Text="{Binding SearchArticleQuery,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" ui:ControlHelper.PlaceholderText="Rechercher un produit" MinWidth="220" Margin="5,5,0,5" HorizontalAlignment="Stretch"/>
+
+                <ui:ListView x:Name="ListArticles" ItemsSource="{Binding Articles}" Grid.Row="2" Margin="0,10">
+                    <ui:ListView.ItemContainerStyle>
+                        <Style TargetType="ui:ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Margin" Value="0"/>
+                            <Setter Property="Padding" Value="0"/>
+                        </Style>
+                    </ui:ListView.ItemContainerStyle>
+                    <ui:ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ui:ThemeShadowChrome    HorizontalAlignment="Stretch" Depth="5" Margin="0,1" CornerRadius="2">
+                                <Border CornerRadius="2" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" Padding="5" HorizontalAlignment="Stretch">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Height="80" Margin="0,5" Source="{Binding ImageUrl}" />
+                                        <ui:SimpleStackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
+                                            <TextBlock  FontSize="16" FontWeight="SemiBold">
+                                        <Run Text="{Binding Name}"/>
+                                        <Run Text=" - "/>
+                                        <Run Text="{Binding TechnicalCode}"/>
+                                            </TextBlock>
+                                            <TextBlock  FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
+                                                <Run Text="En Stock:"/>
+                                                <Run Text="{Binding InStock,StringFormat={}{0:F2}}"/>
+                                            </TextBlock>
+                                            <TextBlock  Margin="0,10,0,0" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
+                                        <Run Text="{Binding BuyingPrice,StringFormat={}{0:F2}}"/>
+                                        <Run Text="$"/>
+                                            </TextBlock>
+                                        </ui:SimpleStackPanel>
+                                        <Button Grid.Column="2" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SupplyManagerViewBase}}, Path= DataContext.AddToCart}" CommandParameter="{Binding Id}" Margin="10,0" Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
+                                            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                                                <Viewbox Height="20">
+                                                    <Path  Stroke="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Data="M17,15C15.901469,15,15,15.901469,15,17L15,18C15,19.098531,15.901469,20,17,20L21.763672,20 22.224609,20.230469C24.312609,21.274469,25.736156,23.279703,26.035156,25.595703L26.992188,33 27,33A1.0001,1.0001,0,0,0,27.007812,33.128906L31.007812,64.128906A1.0001,1.0001,0,0,0,32.064453,64.998047L32.792969,64.951172C31.059795,66.607258,30,68.93019,30,71.455078L30,73A1.0001,1.0001,0,0,0,31,74L38,74 38,75.453125C36.242172,76.22621 35,77.958906 35,80 35,82.755288 37.244712,85 40,85 42.755288,85 45,82.755288 45,80 45,79.014679 44.694142,78.10795 44.203125,77.337891 44.629671,76.446034 44.913366,75.344555 44.972656,74L66,74 66,75.453125C64.242172,76.22621 63,77.958906 63,80 63,82.755288 65.244712,85 68,85 70.755288,85 73,82.755288 73,80 73,79.014679 72.694142,78.10795 72.203125,77.337891 72.629671,76.446034 72.913366,75.344555 72.972656,74L75,74A1.0001,1.0001,0,1,0,75,72L32,72 32,71.455078C32,68.214072,34.212634,65.410164,37.359375,64.652344L78.064453,61.998047A1.0001,1.0001,0,0,0,78.978516,61.208984L84.978516,33.208984A1.0001,1.0001,0,0,0,84,32L43,32 43,25.589844C43,20.812948,39.242648,16.853029,34.472656,16.601562L23.052734,16.001953A1.0001,1.0001,0,0,0,23,16L23,15.5A0.50005,0.50005,0,0,0,22.5,15L17,15z M17,16L22,16 22,16.921875A1.0001,1.0001,0,0,0,22,17.085938L22,19 17,19C16.442531,19,16,18.557469,16,18L16,17C16,16.442531,16.442531,16,17,16z M23,18L34.367188,18.599609C38.095235,18.796144,41,21.85674,41,25.589844L41,32 28.878906,32 28.019531,25.339844C27.635531,22.362844,25.802187,19.783406,23.117188,18.441406L23,18.382812 23,18z M29.138672,34L41.832031,34A1.0001,1.0001,0,0,0,42.158203,34L82.761719,34 77.179688,60.050781 32.871094,62.941406 29.138672,34z M55.984375,39.986328A1.0001,1.0001,0,0,0,55,41L55,47 49,47A1.0001,1.0001,0,1,0,49,49L55,49 55,55A1.0001,1.0001,0,1,0,57,55L57,49 63,49A1.0001,1.0001,0,1,0,63,47L57,47 57,41A1.0001,1.0001,0,0,0,55.984375,39.986328z M39,74L43.972656,74C43.916348,75.250913,43.66339,76.230784,43.285156,76.998047A0.50005,0.50005,0,0,0,43.132812,77.314453C42.617325,78.212045 41.932769,78.793938 41.248047,79.193359 40.273301,79.761961 39.484283,79.889866 39,79.939453L39,75.867188A0.50005,0.50005,0,0,0,39,75.679688L39,74z M67,74L71.972656,74C71.916348,75.250913,71.66339,76.230784,71.285156,76.998047A0.50005,0.50005,0,0,0,71.132812,77.314453C70.617325,78.212045 69.932769,78.793938 69.248047,79.193359 68.273301,79.761961 67.484283,79.889866 67,79.939453L67,75.867188A0.50005,0.50005,0,0,0,67,75.679688L67,74z M38,76.564453L38,80.5A0.50005,0.50005,0,0,0,38.5,81C38.5,81 40.126638,81.0047 41.751953,80.056641 42.41376,79.670587 43.069523,79.103954 43.621094,78.335938 43.858692,78.843311 44,79.402253 44,80 44,82.214712 42.214712,84 40,84 37.785288,84 36,82.214712 36,80 36,78.521475 36.807879,77.253369 38,76.564453z M66,76.564453L66,80.5A0.50005,0.50005,0,0,0,66.5,81C66.5,81 68.126638,81.0047 69.751953,80.056641 70.41376,79.670587 71.069523,79.103954 71.621094,78.335938 71.858692,78.843311 72,79.402253 72,80 72,82.214712 70.214712,84 68,84 65.785288,84 64,82.214712 64,80 64,78.521475 64.807879,77.253369 66,76.564453z" />
+                                                </Viewbox>
+                                                <TextBlock Text="Ajouter au panier"/>
+                                            </ui:SimpleStackPanel>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+                            </ui:ThemeShadowChrome>
+                        </DataTemplate>
+                    </ui:ListView.ItemTemplate>
+                </ui:ListView>
+            </Grid>
+        </Border>
+        <Border Grid.Row="1" Grid.Column="2" Padding="5" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Fournisseur" FontSize="16"  Margin="0,10,15,5"/>
+                    <ui:ThemeShadowChrome  Grid.Row="1"  HorizontalAlignment="Stretch" Depth="5" Margin="5" CornerRadius="2">
+                        <Border CornerRadius="2" DataContext="{Binding SelectedSupplier}" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" Padding="5" HorizontalAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ui:PersonPicture Height="80" DisplayName="{Binding Name}" ProfilePicture="{Binding ImageUrl}"/>
+                                <ui:SimpleStackPanel Grid.Column="1" Margin="10,0,0,0">
+                                    <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding SupplierType}" Margin="0,5" FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" FontWeight="Medium" />
+                                    <TextBlock Text="{Binding NumTelephone}" FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                                </ui:SimpleStackPanel>
+
+                            </Grid>
+                        </Border>
+                    </ui:ThemeShadowChrome>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Produit(s)" FontSize="16"  Margin="0,5,0,5"/>
+
+                    <ui:ListView x:Name="ListProduits" ItemsSource="{Binding SupplyCartitems}" Grid.Row="2" Margin="0,10">
+                        <ui:ListView.ItemContainerStyle>
+                            <Style TargetType="ui:ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="Margin" Value="0"/>
+                                <Setter Property="Padding" Value="0"/>
+                            </Style>
+                        </ui:ListView.ItemContainerStyle>
+                        <ui:ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border  Padding="5" HorizontalAlignment="Stretch">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ui:ThemeShadowChrome    HorizontalAlignment="Stretch" Depth="2"  >
+                                            <Border Padding="5,0" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+                                                <Image Height="65"  Source="{Binding Article.ImageUrl,FallbackValue=/Assets/Placeholder/product.jpg}" />
+                                            </Border>
+                                        </ui:ThemeShadowChrome>
+
+                                        <ui:SimpleStackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
+                                            <TextBlock  FontSize="16" FontWeight="SemiBold">
+                                        <Run Text="{Binding Article.Name}"/>
+                                        <Run Text=" - "/>
+                                        <Run Text="{Binding Article.TechnicalCode}"/>
+                                            </TextBlock>
+                                            <TextBlock  FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
+                                            <Run Text="{Binding ElementName=NmBoxQteConditionement,Path=Value,StringFormat={}{0:F2}}"/>
+                                            <Run Text="{Binding Article.Conditionement}"/>
+                                            <LineBreak/>
+                                            <Run Text="{Binding ElementName=NmBoxQteUnitOfMeasure,Path=Value,StringFormat={}{0:F2}}"/>
+                                            <Run Text="{Binding Article.UnitOfMeasure}"/>
+                                            </TextBlock>
+                                            <TextBlock  Margin="0,10,0,0" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
+                                        <Run Text="{Binding Total,Mode=OneWay}"/>
+                                        <Run Text="$"/>
+                                            </TextBlock>
+                                        </ui:SimpleStackPanel>
+                                        <ui:SimpleStackPanel Grid.Column="2" Spacing="5" VerticalAlignment="Center" Orientation="Horizontal">
+                                            <ui:SimpleStackPanel>
+                                                <ui:NumberBox x:Name="NmBoxQteConditionement" Value="{Binding QtyInConditionement,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,FallbackValue=1,StringFormat={}{0:F2}}"  Header="{Binding HeaderInConditionement}" SpinButtonPlacementMode="Inline"/>
+                                                <ui:NumberBox x:Name="NmBoxQteUnitOfMeasure" Value="{Binding QtyInUnitOfMeasure,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,FallbackValue=1,StringFormat={}{0:F2}}"  Header="{Binding HeaderInUnitOfMeasure}" SpinButtonPlacementMode="Inline"/>
+                                            </ui:SimpleStackPanel>
+                                            <ui:SimpleStackPanel Spacing="5">
+                                                <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:SupplyManagerViewBase}}, Path= DataContext.RemoveFromCart}" CommandParameter="{Binding Article.Id}"  Background="#cf1411"   ToolTip="Retirer du panier" VerticalAlignment="Center">
+                                                    <Viewbox Height="19">
+                                                        <Path  Stroke="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Data="M4.9902344,3.9902344A1.0001,1.0001,0,0,0,4.2929688,5.7070312L10.585938,12 4.2929688,18.292969A1.0001,1.0001,0,1,0,5.7070312,19.707031L12,13.414062 18.292969,19.707031A1.0001,1.0001,0,1,0,19.707031,18.292969L13.414062,12 19.707031,5.7070312A1.0001,1.0001,0,0,0,18.980469,3.9902344A1.0001,1.0001,0,0,0,18.292969,4.2929688L12,10.585938 5.7070312,4.2929688A1.0001,1.0001,0,0,0,4.9902344,3.9902344z" />
+                                                    </Viewbox>
+                                                </Button>
+                                                <Button  Command="{Binding UpdateBuyingPrice}" ToolTip="Modifier le prix d'achat de cet article">
+                                                    <Viewbox Height="19">
+                                                        <Path  Stroke="{DynamicResource SystemControlForegroundBaseHighBrush}" Data="M50.152344,1.0117188C49.609344,0.92971875,49.095719,1.3016563,49.011719,1.8476562L48.283203,6.5878906 33.724609,4.9765625C32.511609,4.8425625,31.319078,5.2590469,30.455078,6.1230469L2.484375,34.095703C0.924375,35.655703,0.924375,38.194906,2.484375,39.753906L23.697266,60.966797C24.452266,61.721797 25.457391,62.136719 26.525391,62.136719 27.593391,62.136719 28.598516,61.721797 29.353516,60.966797L57.326172,32.992188C58.189172,32.129188,58.606656,30.938609,58.472656,29.724609L56.884766,15.367188 62.070312,14.996094C62.621313,14.956094 63.035094,14.478734 62.996094,13.927734 62.957094,13.377734 62.488687,12.974953 61.929688,13.001953L56.666016,13.378906 56.361328,10.625C56.153328,8.75,54.698219,7.2968437,52.824219,7.0898438L50.271484,6.8066406 50.988281,2.1523438C51.072281,1.6073438,50.697344,1.0957187,50.152344,1.0117188z M33.28125,6.9511719C33.35525,6.9511719,33.430859,6.9558438,33.505859,6.9648438L52.605469,9.078125C53.542469,9.182125,54.269047,9.9087031,54.373047,10.845703L54.669922,13.521484 51.666016,13.736328C51.472016,13.332328 51.223484,12.952953 50.896484,12.626953 49.336484,11.066953 46.798281,11.066953 45.238281,12.626953 43.678281,14.186953 43.678281,16.723203 45.238281,18.283203 46.018281,19.063203 47.043359,19.453125 48.068359,19.453125 49.093359,19.453125 50.116484,19.062203 50.896484,18.283203 51.589484,17.590203 51.980969,16.685797 52.042969,15.716797L54.888672,15.513672 56.484375,29.945312C56.551375,30.552312,56.343109,31.147125,55.912109,31.578125L27.939453,59.552734C27.159453,60.331734,25.891328,60.331734,25.111328,59.552734L3.8984375,38.339844C3.1184375,37.559844,3.1194375,36.289766,3.8984375,35.509766L31.869141,7.5390625C32.248141,7.1600625,32.75325,6.9511719,33.28125,6.9511719z M48.068359,13.302734C48.619359,13.302734 49.170844,13.512641 49.589844,13.931641 49.995844,14.338641 50.21875,14.878125 50.21875,15.453125 50.21875,16.028125 49.995844,16.568609 49.589844,16.974609 48.749844,17.812609 47.385875,17.812609 46.546875,16.974609 45.707875,16.135609 45.707875,14.770641 46.546875,13.931641 46.966875,13.512641 47.517359,13.302734 48.068359,13.302734z M41.703125,20.818359C41.447375,20.818359,41.191594,20.915828,40.996094,21.111328L38.875,23.232422 38.167969,22.525391C36.217969,20.576391,33.046656,20.577391,31.097656,22.525391L29.683594,23.939453C27.733594,25.888453,27.733594,29.062719,29.683594,31.011719L31.097656,32.423828 31.097656,32.425781 32.511719,33.839844C33.680719,35.009844,33.680719,36.912031,32.511719,38.082031L31.095703,39.496094C29.924703,40.666094,28.022516,40.665094,26.853516,39.496094L26.146484,38.789062 30.388672,34.546875C30.779672,34.155875 30.779672,33.523813 30.388672,33.132812 29.997672,32.741813 29.365609,32.741812 28.974609,33.132812L24.732422,37.375 24.023438,36.667969C22.854437,35.497969 22.854437,33.593828 24.023438,32.423828 24.414437,32.032828 24.414437,31.400766 24.023438,31.009766 23.632438,30.618766 23.000375,30.618766 22.609375,31.009766 20.659375,32.958766 20.659375,36.131078 22.609375,38.080078L23.318359,38.789062 21.195312,40.910156C20.804313,41.300156 20.804313,41.933219 21.195312,42.324219 21.390313,42.519219 21.646344,42.617188 21.902344,42.617188 22.158344,42.617188 22.414375,42.519219 22.609375,42.324219L24.732422,40.203125 25.439453,40.910156C26.414453,41.885156 27.693609,42.371094 28.974609,42.371094 30.254609,42.371094 31.535766,41.884156 32.509766,40.910156L33.925781,39.496094C35.874781,37.546094,35.874781,34.374781,33.925781,32.425781L33.21875,31.71875 37.460938,27.476562C37.851937,27.085562 37.851937,26.4535 37.460938,26.0625 37.069938,25.6715 36.437875,25.6715 36.046875,26.0625L31.802734,30.304688 31.095703,29.597656C29.926703,28.427656,29.926703,26.525469,31.095703,25.355469L32.509766,23.939453C33.678766,22.769453,35.582906,22.769453,36.753906,23.939453L39.580078,26.769531C40.749078,27.939531 40.749078,29.841719 39.580078,31.011719 39.189078,31.402719 39.189078,32.034781 39.580078,32.425781 39.971078,32.816781 40.603141,32.816781 40.994141,32.425781 42.944141,30.476781 42.944141,27.304469 40.994141,25.355469L40.287109,24.648438 42.410156,22.525391C42.801156,22.134391 42.801156,21.502328 42.410156,21.111328 42.214656,20.915828 41.958875,20.818359 41.703125,20.818359z M7.46875,33.837891C7.212875,33.837891,6.9567188,33.937313,6.7617188,34.132812L5.3476562,35.546875C4.9566562,35.937875 4.9566563,36.569938 5.3476562,36.960938 5.5426563,37.155938 5.7986875,37.253906 6.0546875,37.253906 6.3106875,37.253906 6.5667187,37.155937 6.7617188,36.960938L8.1757812,35.546875C8.5667813,35.155875 8.5667812,34.523812 8.1757812,34.132812 7.9802812,33.937313 7.724625,33.837891 7.46875,33.837891z M11.003906,37.373047C10.747906,37.373047,10.491875,37.472469,10.296875,37.667969L8.8828125,39.082031C8.4918125,39.473031 8.4918125,40.106094 8.8828125,40.496094 9.0778125,40.691094 9.3338437,40.789062 9.5898438,40.789062 9.8458438,40.789062 10.101875,40.691094 10.296875,40.496094L11.710938,39.080078C12.101938,38.689078 12.101938,38.057969 11.710938,37.667969 11.515937,37.472469 11.259906,37.373047 11.003906,37.373047z M14.539062,40.910156C14.283313,40.910156,14.027531,41.007625,13.832031,41.203125L12.417969,42.617188C12.026969,43.007188 12.026969,43.64025 12.417969,44.03125 12.612969,44.22625 12.869,44.324219 13.125,44.324219 13.381,44.324219 13.637031,44.22625 13.832031,44.03125L15.246094,42.617188C15.637094,42.227187 15.637094,41.594125 15.246094,41.203125 15.050594,41.007625 14.794812,40.910156 14.539062,40.910156z M18.076172,44.445312C17.820297,44.445437,17.564141,44.543281,17.369141,44.738281L15.953125,46.152344C15.562125,46.542344 15.562125,47.175406 15.953125,47.566406 16.148125,47.761406 16.404156,47.859375 16.660156,47.859375 16.916156,47.859375 17.172187,47.761406 17.367188,47.566406L18.783203,46.152344C19.174203,45.762344 19.174203,45.129281 18.783203,44.738281 18.587703,44.542781 18.332047,44.445188 18.076172,44.445312z M21.611328,47.980469C21.355453,47.980469,21.099297,48.077937,20.904297,48.273438L19.490234,49.6875C19.099234,50.0785 19.099234,50.710563 19.490234,51.101562 19.685234,51.296563 19.941266,51.394531 20.197266,51.394531 20.453266,51.394531 20.709297,51.296563 20.904297,51.101562L22.318359,49.6875C22.709359,49.2965 22.709359,48.664437 22.318359,48.273438 22.122859,48.077938 21.867203,47.980469 21.611328,47.980469z M25.146484,51.515625C24.890484,51.515625,24.634453,51.613094,24.439453,51.808594L23.025391,53.224609C22.634391,53.615609 22.634391,54.248672 23.025391,54.638672 23.220391,54.833672 23.476422,54.931641 23.732422,54.931641 23.988422,54.931641 24.244453,54.833672 24.439453,54.638672L25.853516,53.222656C26.244516,52.831656 26.244516,52.198594 25.853516,51.808594 25.658516,51.613094 25.402484,51.515625 25.146484,51.515625z M28.681641,55.050781C28.425641,55.050781,28.169609,55.150203,27.974609,55.345703L26.560547,56.759766C26.169547,57.150766 26.169547,57.783828 26.560547,58.173828 26.755547,58.368828 27.011578,58.466797 27.267578,58.466797 27.523578,58.466797 27.779609,58.368828 27.974609,58.173828L29.388672,56.759766C29.779672,56.368766 29.779672,55.735703 29.388672,55.345703 29.193672,55.150203 28.937641,55.050781 28.681641,55.050781z" />
+                                                    </Viewbox>
+                                                </Button>
+                                            </ui:SimpleStackPanel>
+                                        </ui:SimpleStackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ui:ListView.ItemTemplate>
+                    </ui:ListView>
+                </Grid>
+
+                <Grid Grid.Row="2" Margin="0,5,0,0">
+                    <ui:ThemeShadowChrome    HorizontalAlignment="Stretch" Depth="8" Margin="5,2.5" CornerRadius="5">
+                        <Border CornerRadius="5" Background="{DynamicResource SystemControlBackgroundAltHighBrush}" Padding="5" HorizontalAlignment="Stretch">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Margin="0,5" FontSize="16" FontWeight="SemiBold" Text="Total"/>
+                                <TextBlock Grid.Column="1" HorizontalAlignment="Right" Margin="0,5" FontSize="16" FontWeight="SemiBold">
+                                    <Run Text="{Binding CartSubTotal,Mode=OneWay,StringFormat={}{0:F2}}"/>
+                                    <Run Text="$"/>
+                                </TextBlock>
+                                <Button x:Name="BtnPay" Command="{Binding Pay}"  Grid.Row="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
+
+                                    <ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                                        <Viewbox Height="20">
+                                            <Path  Stroke="{DynamicResource SystemControlForegroundChromeWhiteBrush}" Data="M94,38C92.3,38 91,39.3 91,41 91,42.7 92.3,44 94,44L124,44C125.7,44 127,42.7 127,41 127,39.3 125.7,38 124,38L94,38z M55.714844,38.771484C51.251953,38.821289,46.837891,40.4375,43.400391,43.5L20.099609,63.800781C18.799609,64.900781,18.1,66.499609,18,68.099609L18,69 18,104 9,104 6,104C4.3,104 3,105.3 3,107 3,108.7 4.3,110 6,110L21,110 44.900391,110C46.500391,110 48,108.69961 48,107.09961 48,105.39961 46.7,104 45,104L24,104 24,68.400391 47.300781,48C51.100781,44.7,56.499609,43.900391,61.099609,45.900391L85.599609,56.800781C86.799609,57.300781 87.800781,58.3 88.300781,59.5 88.800781,60.7 88.800781,62.100781 88.300781,63.300781 87.200781,65.800781 84.299219,67.000391 81.699219,65.900391L63.199219,58C62.399219,57.7 61.499219,57.7 60.699219,58 59.899219,58.4 59.299609,59.000391 59.099609,59.900391L59,60.599609C56.3,69.699609 48.8,76.4 39.5,78 37.9,78.3 36.799609,79.8 37.099609,81.5 37.399609,83 38.599609,84 40.099609,84L40.599609,84C51.299609,82.1,60.000391,74.900391,63.900391,64.900391L79.400391,71.5C85.000391,73.9 91.500781,71.299219 93.800781,65.699219 95.000781,62.999219 95.000391,59.999219 93.900391,57.199219 92.800391,54.499219 90.7,52.299219 88,51.199219L63.599609,40.400391C61.087109,39.275391,58.392578,38.741602,55.714844,38.771484z M111,58A16,16,0,0,0,95,74A16,16,0,0,0,111,90A16,16,0,0,0,127,74A16,16,0,0,0,111,58z M74,84A6,6,0,0,0,68,90A6,6,0,0,0,74,96A6,6,0,0,0,80,90A6,6,0,0,0,74,84z M56,87C54.3,87,53,88.3,53,90L53,97C53,104.2,58.8,110,66,110L124,110C125.7,110 127,108.7 127,107 127,105.3 125.7,104 124,104L66,104C62.1,104,59,100.9,59,97L59,90C59,88.3,57.7,87,56,87z" />
+                                        </Viewbox>
+                                        <TextBlock Text="Paiement" FontSize="16"/>
+                                    </ui:SimpleStackPanel>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </ui:ThemeShadowChrome>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</local:SupplyManagerViewBase>
